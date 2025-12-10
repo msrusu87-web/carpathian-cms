@@ -1,0 +1,28 @@
+<?php
+
+return [
+    // ... existing translations ...
+    
+    // Dashboard Widgets
+    'Total Pages' => 'Total Pages',
+    'Published pages' => 'Published pages',
+    'Blog Posts' => 'Blog Posts',
+    'Total blog posts' => 'Total blog posts',
+    'Products' => 'Products',
+    'Shop products' => 'Shop products',
+    'Orders' => 'Orders',
+    'Total orders' => 'Total orders',
+    'Website Visits' => 'Website Visits',
+    'Approximate visits' => 'Approximate visits',
+    'Contact Messages' => 'Contact Messages',
+    'View messages below' => 'View messages below',
+    'Quick Actions' => 'Quick Actions',
+    'New Page' => 'New Page',
+    'New Blog Post' => 'New Blog Post',
+    'New Product' => 'New Product',
+    'AI Writer' => 'AI Writer',
+    'Media' => 'Media',
+    'AI Settings' => 'AI Settings',
+    'AI Repair' => 'AI Repair',
+    'AI Repair will scan your database' => 'AI Repair will scan your database for broken links, missing images, orphaned records, invalid templates, and cache issues.',
+];

@@ -1,0 +1,396 @@
+<?php
+
+/**
+ * Romanian (RO) Translation File for Carpathian CMS
+ * File: lang/ro/messages.php
+ * 
+ * Instructions:
+ * 1. Upload this file to: /var/www/cms.carphatian.ro/lang/ro/messages.php
+ * 2. Set APP_LOCALE=ro in .env file
+ * 3. Run: php artisan config:clear && php artisan cache:clear
+ * 4. Restart: sudo systemctl restart php8.3-fpm
+ */
+
+return [
+    // ========================================
+    // CRITICAL - Homepage Hero Section
+    // ========================================
+    'hero_title' => 'Transformă-ți ideile în realitate digitală',
+    'hero_subtitle' => 'Platformă CMS modernă cu inteligență artificială integrată pentru businessul tău',
+    
+    // ========================================
+    // CRITICAL - Branding & Identity
+    // ========================================
+    'carpathian' => 'Carpathian',
+    'professional_solutions' => 'Soluții profesionale pentru businessul tău',
+    
+    // ========================================
+    // CRITICAL - Navigation & Footer
+    // ========================================
+    'quick_links' => 'Link-uri Rapide',
+    'all_rights_reserved' => 'Toate drepturile rezervate',
+    
+    // ========================================
+    // Homepage Sections
+    // ========================================
+    'features_title' => 'Funcționalități Puternice',
+    'features_subtitle' => 'Tot ce ai nevoie pentru un site web modern și performant',
+    'products_showcase' => 'Vitrina Produselor',
+    'products_subtitle' => 'Descoperă soluțiile noastre',
+    'latest_articles' => 'Ultimele Articole',
+    'articles_subtitle' => 'Rămâi la curent cu cele mai noi articole și știri',
+    
+    // ========================================
+    // Feature Cards (from homepage)
+    // ========================================
+    'modern_design' => 'Design Modern',
+    'modern_design_desc' => 'Interfață intuitivă și design responsive pentru toate dispozitivele',
+    
+    'high_performance' => 'Performanță Ridicată',
+    'high_performance_desc' => 'Optimizat pentru viteză și performanță maximă',
+    
+    'ai_integration' => 'Integrare AI',
+    'ai_integration_desc' => 'Utilizează inteligența artificială pentru automatizare',
+    
+    'security' => 'Securitate',
+    'security_desc' => 'Protecție avansată și backup automat',
+    
+    'multi_platform' => 'Multi-Platform',
+    'multi_platform_desc' => 'Funcționează perfect pe desktop, tabletă și mobil',
+    
+    'customizable' => 'Personalizabil',
+    'customizable_desc' => 'Configurează totul conform nevoilor tale',
+    
+    // ========================================
+    // Call to Actions
+    // ========================================
+    'see_details' => 'Vezi Detalii',
+    'read_more' => 'Citește Mai Mult',
+    'learn_more' => 'Află Mai Mult',
+    'get_started' => 'Începe Acum',
+    'contact_us' => 'Contactează-ne',
+    'view_all' => 'Vezi Tot',
+    'view_all_products' => 'Vezi Toate Produsele',
+    'view_all_articles' => 'Vezi Toate Articolele',
+    'download_now' => 'Descarcă Acum',
+    'try_demo' => 'Încearcă Demo',
+    'request_quote' => 'Solicită Ofertă',
+    
+    // ========================================
+    // Main Navigation
+    // ========================================
+    'home' => 'Acasă',
+    'about' => 'Despre',
+    'services' => 'Servicii',
+    'portfolio' => 'Portofoliu',
+    'blog' => 'Blog',
+    'shop' => 'Magazin',
+    'products' => 'Produse',
+    'contact' => 'Contact',
+    'freelancer' => 'Freelancer',
+    'admin' => 'Admin',
+    'login' => 'Autentificare',
+    'register' => 'Înregistrare',
+    'logout' => 'Deconectare',
+    'dashboard' => 'Panou Control',
+    'profile' => 'Profil',
+    
+    // ========================================
+    // Products & E-Commerce
+    // ========================================
+    'price' => 'Preț',
+    'currency' => 'RON',
+    'from_price' => 'de la',
+    'starting_at' => 'începând de la',
+    'add_to_cart' => 'Adaugă în Coș',
+    'buy_now' => 'Cumpără Acum',
+    'checkout' => 'Finalizare Comandă',
+    'cart' => 'Coș',
+    'wishlist' => 'Lista Dorințe',
+    'out_of_stock' => 'Stoc Epuizat',
+    'in_stock' => 'În Stoc',
+    'on_sale' => 'La Reducere',
+    'new_arrival' => 'Nou Sosit',
+    'featured' => 'Recomandat',
+    'best_seller' => 'Cel Mai Vândut',
+    'discount' => 'Reducere',
+    'free_shipping' => 'Transport Gratuit',
+    
+    // Product Types (from catalog)
+    'website_standard' => 'Website Standard',
+    'website_standard_desc' => 'Site web profesional cu design modern și funcționalități complete',
+    'ecommerce_complete' => 'E-Commerce Complet',
+    'ecommerce_complete_desc' => 'Magazin online cu sistem de plăți, gestiune stocuri și rapoarte',
+    'landing_premium' => 'Landing Page Premium',
+    'landing_premium_desc' => 'Pagină de destinație optimizată pentru conversii maxime',
+    'portal_corporate' => 'Portal Corporate',
+    'portal_corporate_desc' => 'Soluție complexă pentru companii cu multiple funcționalități',
+    'blog_professional' => 'Blog Profesional',
+    'blog_professional_desc' => 'Platformă de blogging cu SEO avansat și analytics',
+    'webapp_custom' => 'Aplicație Web Custom',
+    'webapp_custom_desc' => 'Dezvoltare personalizată conform cerințelor tale specifice',
+    
+    // ========================================
+    // Blog & Articles
+    // ========================================
+    'blog_title' => 'Blog',
+    'categories' => 'Categorii',
+    'category' => 'Categorie',
+    'tags' => 'Etichete',
+    'tag' => 'Etichetă',
+    'author' => 'Autor',
+    'published' => 'Publicat',
+    'published_on' => 'Publicat pe',
+    'updated_on' => 'Actualizat pe',
+    'reading_time' => 'Timp citire',
+    'minutes' => 'minute',
+    'comments' => 'Comentarii',
+    'comment' => 'Comentariu',
+    'no_comments' => 'Fără comentarii',
+    'leave_comment' => 'Lasă un comentariu',
+    'related_articles' => 'Articole Similare',
+    'popular_posts' => 'Postări Populare',
+    'recent_posts' => 'Postări Recente',
+    
+    // Blog Categories
+    'news' => 'Știri',
+    'tutorials' => 'Tutoriale',
+    'tips' => 'Sfaturi',
+    'updates' => 'Actualizări',
+    'announcements' => 'Anunțuri',
+    
+    // ========================================
+    // Contact & Footer
+    // ========================================
+    'contact_info' => 'Informații Contact',
+    'contact_form' => 'Formular Contact',
+    'email' => 'Email',
+    'phone' => 'Telefon',
+    'address' => 'Adresă',
+    'send_message' => 'Trimite Mesaj',
+    'your_name' => 'Numele Tău',
+    'your_email' => 'Email-ul Tău',
+    'your_phone' => 'Telefonul Tău',
+    'your_message' => 'Mesajul Tău',
+    'subject' => 'Subiect',
+    'message_sent' => 'Mesajul a fost trimis cu succes!',
+    'message_failed' => 'Eroare la trimiterea mesajului. Încearcă din nou.',
+    
+    // Social & Follow
+    'follow_us' => 'Urmărește-ne',
+    'share' => 'Distribuie',
+    'social_media' => 'Social Media',
+    
+    // Footer Links
+    'copyright' => 'Copyright',
+    'privacy_policy' => 'Politica de Confidențialitate',
+    'terms_conditions' => 'Termeni și Condiții',
+    'cookie_policy' => 'Politica de Cookie-uri',
+    'sitemap' => 'Hartă Site',
+    'faq' => 'Întrebări Frecvente',
+    
+    // ========================================
+    // Common UI Elements
+    // ========================================
+    'welcome' => 'Bine ai venit',
+    'welcome_back' => 'Bine ai revenit',
+    'hello' => 'Salut',
+    'loading' => 'Se încarcă...',
+    'search' => 'Caută',
+    'search_placeholder' => 'Caută pe site...',
+    'filter' => 'Filtrează',
+    'sort' => 'Sortează',
+    'sort_by' => 'Sortează după',
+    'show' => 'Afișează',
+    'hide' => 'Ascunde',
+    'expand' => 'Extinde',
+    'collapse' => 'Restrânge',
+    'close' => 'Închide',
+    'open' => 'Deschide',
+    'back' => 'Înapoi',
+    'next' => 'Următorul',
+    'previous' => 'Anterior',
+    'continue' => 'Continuă',
+    'submit' => 'Trimite',
+    'send' => 'Trimite',
+    'save' => 'Salvează',
+    'cancel' => 'Anulează',
+    'delete' => 'Șterge',
+    'remove' => 'Elimină',
+    'edit' => 'Editează',
+    'create' => 'Creează',
+    'update' => 'Actualizează',
+    'confirm' => 'Confirmă',
+    'yes' => 'Da',
+    'no' => 'Nu',
+    'ok' => 'OK',
+    'select' => 'Selectează',
+    'choose' => 'Alege',
+    'upload' => 'Încarcă',
+    'download' => 'Descarcă',
+    'print' => 'Tipărește',
+    'export' => 'Exportă',
+    'import' => 'Importă',
+    
+    // ========================================
+    // Status & Notifications
+    // ========================================
+    'success' => 'Succes',
+    'error' => 'Eroare',
+    'warning' => 'Avertisment',
+    'info' => 'Informație',
+    'notice' => 'Notificare',
+    'alert' => 'Alertă',
+    'saved_successfully' => 'Salvat cu succes',
+    'updated_successfully' => 'Actualizat cu succes',
+    'deleted_successfully' => 'Șters cu succes',
+    'created_successfully' => 'Creat cu succes',
+    'something_went_wrong' => 'Ceva nu a mers bine',
+    'please_try_again' => 'Te rugăm să încerci din nou',
+    
+    // ========================================
+    // Errors & 404
+    // ========================================
+    'error_404' => 'Pagina nu a fost găsită',
+    'error_403' => 'Acces Interzis',
+    'error_500' => 'Eroare de Server',
+    'error_503' => 'Serviciu Indisponibil',
+    'page_not_found' => 'Pagina nu a fost găsită',
+    'page_not_found_desc' => 'Ne pare rău, pagina pe care o cauți nu există.',
+    'back_to_home' => 'Înapoi la Acasă',
+    'go_home' => 'Mergi la Acasă',
+    'access_denied' => 'Acces refuzat',
+    'unauthorized' => 'Neautorizat',
+    
+    // ========================================
+    // Forms & Validation
+    // ========================================
+    'required_field' => 'Câmp obligatoriu',
+    'optional_field' => 'Câmp opțional',
+    'invalid_email' => 'Email invalid',
+    'invalid_phone' => 'Număr de telefon invalid',
+    'password_too_short' => 'Parola este prea scurtă',
+    'passwords_dont_match' => 'Parolele nu se potrivesc',
+    'terms_agreement' => 'Accept termenii și condițiile',
+    'privacy_agreement' => 'Accept politica de confidențialitate',
+    'newsletter_subscribe' => 'Abonează-te la newsletter',
+    
+    // ========================================
+    // Date & Time
+    // ========================================
+    'today' => 'Astăzi',
+    'yesterday' => 'Ieri',
+    'tomorrow' => 'Mâine',
+    'this_week' => 'Săptămâna aceasta',
+    'this_month' => 'Luna aceasta',
+    'this_year' => 'Anul acesta',
+    'date' => 'Data',
+    'time' => 'Ora',
+    'datetime' => 'Data și Ora',
+    
+    // ========================================
+    // Stats & Metrics
+    // ========================================
+    'views' => 'Vizualizări',
+    'visitors' => 'Vizitatori',
+    'users' => 'Utilizatori',
+    'downloads' => 'Descărcări',
+    'shares' => 'Distribuiri',
+    'likes' => 'Aprecieri',
+    'total' => 'Total',
+    'count' => 'Număr',
+    'statistics' => 'Statistici',
+    'analytics' => 'Analiză',
+    
+    // ========================================
+    // User Account
+    // ========================================
+    'my_account' => 'Contul Meu',
+    'my_profile' => 'Profilul Meu',
+    'my_orders' => 'Comenzile Mele',
+    'my_wishlist' => 'Lista Mea de Dorințe',
+    'account_settings' => 'Setări Cont',
+    'change_password' => 'Schimbă Parola',
+    'update_profile' => 'Actualizează Profilul',
+    'personal_info' => 'Informații Personale',
+    'billing_info' => 'Informații Facturare',
+    'shipping_info' => 'Informații Livrare',
+    
+    // ========================================
+    // SEO & Meta
+    // ========================================
+    'meta_description' => 'Carpathian CMS - Platformă modernă de gestionare a conținutului web cu inteligență artificială integrată',
+    'meta_keywords' => 'CMS, Laravel, Content Management, AI, Carpathian, Website Builder',
+    'meta_author' => 'Carpathian Team',
+    
+    // ========================================
+    // Languages
+    // ========================================
+    'language' => 'Limbă',
+    'languages' => 'Limbi',
+    'ro' => 'Română',
+    'en' => 'English',
+    'choose_language' => 'Alege Limba',
+    
+    // ========================================
+    // Miscellaneous
+    // ========================================
+    'coming_soon' => 'În Curând',
+    'under_construction' => 'În Construcție',
+    'maintenance_mode' => 'Mod Mentenanță',
+    'more_info' => 'Mai Multe Informații',
+    'details' => 'Detalii',
+    'description' => 'Descriere',
+    'features' => 'Caracteristici',
+    'specifications' => 'Specificații',
+    'documentation' => 'Documentație',
+    'support' => 'Suport',
+    'help' => 'Ajutor',
+    'demo' => 'Demo',
+    'preview' => 'Previzualizare',
+    'live_preview' => 'Previzualizare Live',
+    
+    // Blog
+    'our_blog' => 'Blogul Nostru',
+    'blog_subtitle' => 'Ultimele articole, știri și actualizări din lumea tehnologiei',
+    
+    // Product Detail Page
+    'product_details' => 'Detalii Produs',
+    'related_products' => 'Produse Similare',
+    'view_details' => 'Vezi Detalii',
+    
+    // Contact Page - Additional translations
+    'contact_information' => 'Informații de Contact',
+    'send' => 'Trimite',
+    'send_message' => 'Trimite Mesaj',
+    'working_hours' => 'Program de Lucru',
+    'name' => 'Nume',
+    'email' => 'Email',
+    'subject' => 'Subiect',
+    'message' => 'Mesaj',
+    'phone' => 'Telefon',
+    'address' => 'Adresă',
+    'contact_us' => 'Contactează-ne',
+    'follow_us' => 'Urmărește-ne',
+];
+    
+    // Contact page
+    'contact_us' => 'Contactează-ne',
+    'contact_information' => 'Informații de Contact',
+    'send_message' => 'Trimite-ne un Mesaj',
+    'name' => 'Nume',
+    'subject' => 'Subiect',
+    'message' => 'Mesaj',
+    'send' => 'Trimite',
+    'phone' => 'Telefon',
+    'address' => 'Adresă',
+    'working_hours' => 'Program de Lucru',
+    'follow_us' => 'Urmărește-ne',
+    
+    // Footer
+    'carpathian' => 'Carpathian',
+    'professional_solutions' => 'Soluții profesionale pentru businessul tău',
+    'quick_links' => 'Link-uri Rapide',
+    'pages' => 'Pagini',
+    'all_rights_reserved' => 'Toate drepturile rezervate',
+];

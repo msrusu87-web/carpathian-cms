@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+<defs>
+<linearGradient id="mGI" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" style="stop-color:#1e3a8a"/>
+<stop offset="50%" style="stop-color:#3b82f6"/>
+<stop offset="100%" style="stop-color:#60a5fa"/>
+</linearGradient>
+<linearGradient id="aGI" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" style="stop-color:#06b6d4"/>
+<stop offset="100%" style="stop-color:#3b82f6"/>
+</linearGradient>
+</defs>
+<circle cx="200" cy="200" r="190" fill="#fff" stroke="url(#aGI)" stroke-width="4"/>
+<g transform="translate(50,80)">
+<path d="M30 200L100 80 170 200Z" fill="url(#mGI)" opacity="0.8"/>
+<path d="M110 200L200 30 290 200Z" fill="url(#mGI)"/>
+<path d="M230 200L300 90 370 200Z" fill="url(#mGI)" opacity="0.9"/>
+<path d="M200 30L175 70 225 70Z" fill="#fff" opacity="0.95"/>
+<path d="M100 80L85 105 115 105Z" fill="#fff" opacity="0.8"/>
+<path d="M300 90L285 115 315 115Z" fill="#fff" opacity="0.85"/>
+<line x1="200" y1="120" x2="260" y2="150" stroke="url(#aGI)" stroke-width="3" opacity="0.7"/>
+<line x1="140" y1="150" x2="200" y2="120" stroke="url(#aGI)" stroke-width="3" opacity="0.7"/>
+<line x1="260" y1="150" x2="280" y2="140" stroke="url(#aGI)" stroke-width="2" opacity="0.6"/>
+<line x1="140" y1="150" x2="120" y2="140" stroke="url(#aGI)" stroke-width="2" opacity="0.6"/>
+<circle cx="200" cy="120" r="6" fill="#06b6d4"/>
+<circle cx="260" cy="150" r="5" fill="#3b82f6"/>
+<circle cx="140" cy="150" r="5" fill="#3b82f6"/>
+<circle cx="280" cy="140" r="4" fill="#60a5fa"/>
+<circle cx="120" cy="140" r="4" fill="#60a5fa"/>
+</g>
+<text x="200" y="340" font-family="Segoe UI,Arial,sans-serif" font-size="48" font-weight="700" fill="#1e3a8a" text-anchor="middle" letter-spacing="2">C</text>
+</svg>

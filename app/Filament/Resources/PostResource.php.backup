@@ -1,0 +1,303 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\PostResource\Pages;
+use App\Models\Post;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+
+class PostResource extends Resource
+{
+
+    protected static ?string $navigationIcon = 'heroicon-o-newspaper';
+
+    protected static ?string $navigationGroup = 'Blog';
+    protected static ?string $navigationLabel = 'Articole';
+
+    protected static ?int $navigationSort = 1;
+    protected static ?string $model = Post::class;
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make('Post Content')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            Forms\Components\TextInput::make('title')
+                                ->required()
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Str::slug($state)))
+                                ->maxLength(255),
+                            
+                            Forms\Components\TextInput::make('slug')
+                                ->required()
+                                ->unique(ignoreRecord: true)
+                                ->maxLength(255),
+                        ]),
+                        
+                        TinyEditor::make('content')
+                            ->required()
+                            ->columnSpanFull()
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsDirectory('uploads')
+                            ->profile('full')
+                            ->extraSetups([
+                                'height' => 500,
+                                'plugins' => 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
+                                'toolbar' => 'undo redo | accordion accordionremove | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
+                                'quickbars_selection_toolbar' => 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+                                'toolbar_mode' => 'sliding',
+                                'contextmenu' => 'link image table',
+                            ]),
+                        
+                        Forms\Components\Textarea::make('excerpt')
+                            ->rows(3)
+                            ->maxLength(500)
+                            ->columnSpanFull()
+                            ->helperText('Brief summary of the post (optional)'),
+                    ]),
+
+                Section::make('Media')
+                    ->schema([
+                        Forms\Components\FileUpload::make('featured_image')
+                            ->image()
+                            ->directory('posts')
+                            ->maxSize(2048)
+                            ->helperText('Recommended size: 1200x630px'),
+                    ])
+                    ->collapsible(),
+
+                Section::make('Publishing')
+                    ->schema([
+                        Grid::make(3)->schema([
+                            Forms\Components\Select::make('status')
+                                ->options([
+                                    'draft' => 'Draft',
+                                    'published' => 'Published',
+                                    'scheduled' => 'Scheduled',
+                                ])
+                                ->default('draft')
+                                ->required(),
+                            
+                            Forms\Components\Toggle::make('is_featured')
+                                ->label('Featured Post')
+                                ->helperText('Show in featured sections'),
+                            
+                            Forms\Components\Toggle::make('allow_comments')
+                                ->label('Allow Comments')
+                                ->default(true),
+                        ]),
+                        
+                        Forms\Components\DateTimePicker::make('published_at')
+                            ->label('Publish Date')
+                            ->default(now())
+                            ->helperText('Leave empty to publish immediately'),
+                    ]),
+
+                Section::make('Organization')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            Forms\Components\Select::make('category_id')
+                                ->relationship('category', 'name')
+                                ->searchable()
+                                ->preload()
+                                ->createOptionForm([
+                                    Forms\Components\TextInput::make('name')->required(),
+                                    Forms\Components\TextInput::make('slug')->required(),
+                                    Forms\Components\Textarea::make('description'),
+                                ]),
+                            
+                            Forms\Components\Select::make('user_id')
+                                ->relationship('user', 'name')
+                                ->default(auth()->id())
+                                ->required()
+                                ->label('Author'),
+                        ]),
+                        
+                        Forms\Components\Select::make('tags')
+                            ->relationship('tags', 'name')
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('name')->required(),
+                                Forms\Components\TextInput::make('slug')->required(),
+                            ]),
+                    ])
+                    ->collapsible(),
+
+                Section::make('SEO')
+                    ->schema([
+                        Forms\Components\TextInput::make('meta_title')
+                            ->maxLength(60)
+                            ->helperText('Recommended: 50-60 characters'),
+                        
+                        Forms\Components\Textarea::make('meta_description')
+                            ->rows(3)
+                            ->maxLength(160)
+                            ->helperText('Recommended: 150-160 characters'),
+                        
+                        Forms\Components\Textarea::make('meta_keywords')
+                            ->rows(2)
+                            ->helperText('Comma-separated keywords'),
+                    ])
+                    ->collapsible()
+                    ->collapsed(),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\ImageColumn::make('featured_image')
+                    ->label('Image')
+                    ->circular(),
+                
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable()
+                    ->sortable()
+                    ->limit(50)
+                    ->weight('bold'),
+                
+                Tables\Columns\BadgeColumn::make('status')
+                    ->colors([
+                        'secondary' => 'draft',
+                        'success' => 'published',
+                        'warning' => 'scheduled',
+                    ])
+                    ->icons([
+                        'heroicon-o-pencil' => 'draft',
+                        'heroicon-o-check-circle' => 'published',
+                        'heroicon-o-clock' => 'scheduled',
+                    ]),
+                
+                Tables\Columns\TextColumn::make('category.name')
+                    ->sortable()
+                    ->searchable()
+                    ->badge()
+                    ->color('info'),
+                
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Author')
+                    ->sortable()
+                    ->searchable(),
+                
+                Tables\Columns\IconColumn::make('is_featured')
+                    ->label('Featured')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-star')
+                    ->falseIcon('heroicon-o-star')
+                    ->trueColor('warning')
+                    ->falseColor('gray'),
+                
+                Tables\Columns\TextColumn::make('views')
+                    ->numeric()
+                    ->sortable()
+                    ->alignEnd(),
+                
+                Tables\Columns\TextColumn::make('published_at')
+                    ->dateTime('M d, Y')
+                    ->sortable()
+                    ->toggleable(),
+                
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->filters([
+                SelectFilter::make('status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'published' => 'Published',
+                        'scheduled' => 'Scheduled',
+                    ]),
+                
+                SelectFilter::make('category')
+                    ->relationship('category', 'name'),
+                
+                TernaryFilter::make('is_featured')
+                    ->label('Featured Posts'),
+                
+                Tables\Filters\TrashedFilter::make(),
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('view_post')
+                    ->label('View on Site')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (Post $record): string => url('/posts/' . $record->slug))
+                    ->openUrlInNewTab(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
+                    
+                    Tables\Actions\BulkAction::make('publish')
+                        ->label('Publish Selected')
+                        ->icon('heroicon-o-check-circle')
+                        ->requiresConfirmation()
+                        ->action(fn ($records) => $records->each->update(['status' => 'published', 'published_at' => now()])),
+                    
+                    Tables\Actions\BulkAction::make('draft')
+                        ->label('Move to Draft')
+                        ->icon('heroicon-o-pencil')
+                        ->requiresConfirmation()
+                        ->action(fn ($records) => $records->each->update(['status' => 'draft'])),
+                    
+                    Tables\Actions\BulkAction::make('feature')
+                        ->label('Mark as Featured')
+                        ->icon('heroicon-o-star')
+                        ->requiresConfirmation()
+                        ->action(fn ($records) => $records->each->update(['is_featured' => true])),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListPosts::route('/'),
+            'create' => Pages\CreatePost::route('/create'),
+            'edit' => Pages\EditPost::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'draft')->count();
+    }
+}

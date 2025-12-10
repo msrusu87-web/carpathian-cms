@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 140">
+  <defs>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow2">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Mountain peaks with gradient -->
+  <path d="M 25 65 L 50 35 L 75 65 M 55 50 L 75 25 L 95 50" 
+        stroke="url(#grad2)" stroke-width="5" fill="none" 
+        stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- AI spark icon -->
+  <circle cx="82" cy="30" r="6" fill="#fbbf24" filter="url(#glow2)"/>
+  <path d="M 82 22 L 82 38 M 74 30 L 90 30 M 76 24 L 88 36 M 76 36 L 88 24" 
+        stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Text: Carpathian CMS (light for dark backgrounds) -->
+  <text x="120" y="60" font-family="'Inter', 'Segoe UI', sans-serif" 
+        font-size="42" font-weight="700" fill="#f3f4f6" letter-spacing="-1">
+    Carpathian <tspan fill="url(#grad2)">CMS</tspan>
+  </text>
+  
+  <!-- Slogan: AI Powered -->
+  <text x="120" y="85" font-family="'Inter', 'Segoe UI', sans-serif" 
+        font-size="16" font-weight="600" fill="#d1d5db" letter-spacing="1">
+    AI POWERED
+  </text>
+  
+  <!-- Decorative underline -->
+  <rect x="120" y="90" width="90" height="2.5" fill="url(#grad2)" opacity="0.5" rx="1"/>
+</svg>

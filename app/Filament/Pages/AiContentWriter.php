@@ -1,0 +1,221 @@
+<?php
+
+namespace App\Filament\Pages;
+
+use Filament\Pages\Page;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use App\Services\GroqAiService;
+use App\Models\Post;
+use App\Models\Page as PageModel;
+use App\Models\Category;
+use Illuminate\Support\Str;
+
+class AiContentWriter extends Page implements HasForms
+{
+    use InteractsWithForms;
+
+    protected static ?string $navigationIcon = 'heroicon-o-sparkles';
+    protected static ?string $navigationGroup = 'AI';
+    protected static ?int $navigationSort = 1;
+    protected static string $view = 'filament.pages.ai-content-writer';
+
+    public ?array $data = [];
+    public ?string $generatedContent = null;
+    public bool $isGenerating = false;
+
+    public function mount(): void
+    {
+        $this->form->fill();
+    }
+
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Select::make('content_type')
+                    ->label('Content Type')
+                    ->options([
+                        'blog_post' => 'Blog Post',
+                        'page' => 'Page',
+                        'product_description' => 'Product Description',
+                    ])
+                    ->required()
+                    ->default('blog_post')
+                    ->live(),
+
+                TextInput::make('title')
+                    ->label('Content Title')
+                    ->required()
+                    ->placeholder('e.g., "10 Tips for Better SEO"')
+                    ->maxLength(255),
+
+                Textarea::make('description')
+                    ->label('Content Description / Instructions')
+                    ->placeholder('Describe what you want the AI to write about...')
+                    ->rows(4)
+                    ->required(),
+
+                Select::make('tone')
+                    ->label('Tone')
+                    ->options([
+                        'professional' => 'Professional',
+                        'casual' => 'Casual',
+                        'friendly' => 'Friendly',
+                        'formal' => 'Formal',
+                        'humorous' => 'Humorous',
+                    ])
+                    ->default('professional'),
+
+                Select::make('length')
+                    ->label('Content Length')
+                    ->options([
+                        'short' => 'Short (300-500 words)',
+                        'medium' => 'Medium (500-1000 words)',
+                        'long' => 'Long (1000-2000 words)',
+                    ])
+                    ->default('medium'),
+
+                Select::make('category_id')
+                    ->label('Category (for Blog Posts)')
+                    ->options(Category::pluck('name', 'id'))
+                    ->visible(fn ($get) => $get('content_type') === 'blog_post'),
+            ])
+            ->statePath('data');
+    }
+
+    public function generate()
+    {
+        $this->validate();
+        
+        $this->isGenerating = true;
+        $this->generatedContent = null;
+
+        try {
+            $data = $this->form->getState();
+            
+            $groqService = new GroqAiService();
+            
+            // Build the prompt
+            $prompt = $this->buildPrompt($data);
+            
+            // Generate content
+            $response = $groqService->generateContent($prompt);
+            
+            if ($response['success']) {
+                $this->generatedContent = $response['content'];
+                
+                Notification::make()
+                    ->success()
+                    ->title('Content Generated!')
+                    ->body('Your content has been generated successfully.')
+                    ->send();
+            } else {
+                Notification::make()
+                    ->danger()
+                    ->title('Generation Failed')
+                    ->body($response['error'] ?? 'Failed to generate content')
+                    ->send();
+            }
+            
+        } catch (\Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title('Error')
+                ->body($e->getMessage())
+                ->send();
+        } finally {
+            $this->isGenerating = false;
+        }
+    }
+
+    public function saveAsPost()
+    {
+        if (!$this->generatedContent) {
+            Notification::make()
+                ->warning()
+                ->title('No Content')
+                ->body('Please generate content first')
+                ->send();
+            return;
+        }
+
+        $data = $this->form->getState();
+
+        $post = Post::create([
+            'title' => $data['title'],
+            'slug' => Str::slug($data['title']),
+            'content' => $this->generatedContent,
+            'excerpt' => Str::limit(strip_tags($this->generatedContent), 200),
+            'status' => 'draft',
+            'category_id' => $data['category_id'] ?? null,
+            'user_id' => auth()->id(),
+            'meta_title' => $data['title'],
+            'meta_description' => Str::limit(strip_tags($this->generatedContent), 160),
+        ]);
+
+        Notification::make()
+            ->success()
+            ->title('Post Created!')
+            ->body('Your post has been saved as a draft.')
+            ->send();
+
+        $this->redirect(route('filament.admin.resources.posts.edit', ['record' => $post->id]));
+    }
+
+    public function saveAsPage()
+    {
+        if (!$this->generatedContent) {
+            Notification::make()
+                ->warning()
+                ->title('No Content')
+                ->body('Please generate content first')
+                ->send();
+            return;
+        }
+
+        $data = $this->form->getState();
+
+        $page = PageModel::create([
+            'title' => $data['title'],
+            'slug' => Str::slug($data['title']),
+            'content' => $this->generatedContent,
+            'status' => 'draft',
+            'user_id' => auth()->id(),
+            'meta_title' => $data['title'],
+            'meta_description' => Str::limit(strip_tags($this->generatedContent), 160),
+        ]);
+
+        Notification::make()
+            ->success()
+            ->title('Page Created!')
+            ->body('Your page has been saved as a draft.')
+            ->send();
+
+        $this->redirect(route('filament.admin.resources.pages.edit', ['record' => $page->id]));
+    }
+
+    protected function buildPrompt(array $data): string
+    {
+        $lengthGuide = [
+            'short' => '300-500 words',
+            'medium' => '500-1000 words',
+            'long' => '1000-2000 words',
+        ];
+
+        $prompt = "You are a professional content writer. ";
+        $prompt .= "Write a {$data['tone']} {$data['content_type']} about: {$data['title']}.\n\n";
+        $prompt .= "Instructions: {$data['description']}\n\n";
+        $prompt .= "Length: {$lengthGuide[$data['length']]}\n\n";
+        $prompt .= "Format: Use HTML tags for formatting (h2, h3, p, ul, li, strong, em). ";
+        $prompt .= "Make it SEO-friendly, engaging, and well-structured with clear headings.\n\n";
+        $prompt .= "Return ONLY the HTML content, no markdown, no explanations, no meta information.";
+
+        return $prompt;
+    }
+}

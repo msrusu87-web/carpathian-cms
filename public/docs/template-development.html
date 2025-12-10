@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Development Guide | Carpathian CMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-6 py-12 max-w-4xl">
+        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <div class="flex items-center mb-6">
+                <a href="/" class="text-pink-600 hover:text-pink-700 mr-4">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+            
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-palette text-pink-600 mr-3"></i>
+                Template Development Guide
+            </h1>
+            <p class="text-gray-600 text-lg mb-8">Learn how to create and upload templates for Carpathian CMS</p>
+
+            <div class="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Upload Template in Admin</h2>
+                <ol class="space-y-3 text-gray-700">
+                    <li class="flex items-start">
+                        <span class="bg-pink-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">1</span>
+                        <span>Go to <strong>Admin → CMS → Templates</strong></span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-pink-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">2</span>
+                        <span>Click <strong>"Upload Template Package"</strong> button (green, top of table)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-pink-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">3</span>
+                        <span>Select your ZIP file with package.json, style.css, and layouts/</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-pink-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">4</span>
+                        <span>After upload, activate it and optionally set as default template</span>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Package Structure</h3>
+                <p class="text-gray-700 mb-4">Your template ZIP must contain:</p>
+                <ul class="space-y-2 text-gray-700">
+                    <li><i class="fas fa-file text-blue-600 mr-2"></i><code class="bg-gray-800 text-green-400 px-2 py-1 rounded">package.json</code> - Manifest with name, slug, version, color_scheme</li>
+                    <li><i class="fas fa-file text-blue-600 mr-2"></i><code class="bg-gray-800 text-green-400 px-2 py-1 rounded">style.css</code> - Your template CSS</li>
+                    <li><i class="fas fa-folder text-blue-600 mr-2"></i><code class="bg-gray-800 text-green-400 px-2 py-1 rounded">layouts/</code> - Directory with JSON layout files</li>
+                </ul>
+            </div>
+
+            <div class="bg-gradient-to-r from-pink-600 to-purple-600 rounded-xl p-8 text-white text-center">
+                <h3 class="text-2xl font-bold mb-4">Ready to Upload?</h3>
+                <p class="mb-6">Go to the admin panel to upload your template</p>
+                <a href="/admin/templates" class="bg-white text-pink-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors inline-block">
+                    <i class="fas fa-upload mr-2"></i>
+                    Go to Templates
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

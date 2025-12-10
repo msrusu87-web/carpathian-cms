@@ -1,0 +1,36 @@
+{
+  "name": "Freelancer Marketplace",
+  "slug": "freelancer",
+  "version": "1.0.0",
+  "author": "Carphatian CMS",
+  "description": "Sistem complet de freelancing similar cu Fiverr/Upwork. Include: Profiluri Freelancer, Gig-uri (servicii), Comenzi, Mesaje și Câștiguri.",
+  "requires": {
+    "php": ">=8.1",
+    "laravel": ">=11.0"
+  },
+  "features": [
+    "Profiluri Freelancer complete",
+    "Sistem de Gig-uri (servicii)",
+    "Management comenzi",
+    "Sistem de mesagerie",
+    "Tracking câștiguri",
+    "Rating și review-uri",
+    "Frontend menu automat"
+  ],
+  "config": {
+    "frontend_menus": [
+      {
+        "name": "Freelancer",
+        "slug": "freelancer-menu",
+        "location": "header",
+        "items": [
+          {"title": "Freelancer", "url": "/freelancer", "icon": "briefcase"},
+          {"title": "Găsește Freelanceri", "url": "/freelancer/profiles", "icon": "users"},
+          {"title": "Servicii (Gigs)", "url": "/freelancer/gigs", "icon": "star"},
+          {"title": "Comenzi Active", "url": "/freelancer/orders", "icon": "shopping-cart"},
+          {"title": "Devino Freelancer", "url": "/freelancer/become", "icon": "rocket"}
+        ]
+      }
+    ]
+  }
+}
