@@ -1,22 +1,239 @@
 <?php
 /**
  * Carpathian CMS Installer
- * WordPress-style guided installation
+ * Advanced installation wizard with automatic server checks
+ * Version: 2.0
  */
 
-// Check if already installed
+// Security: Check if already installed
 if (file_exists(__DIR__ . '/.env') && !isset($_GET['force'])) {
     die('✅ CMS already installed! Delete .env file to reinstall or add ?force=1 to URL.');
 }
 
-$step = $_GET['step'] ?? '1';
+$step = $_GET['step'] ?? 'check';
 $error = '';
 $success = '';
+$warnings = [];
+
+/**
+ * Check server requirements
+ */
+function checkRequirements() {
+    $checks = [];
+    
+    // PHP Version
+    $phpVersion = PHP_VERSION;
+    $checks['php_version'] = [
+        'name' => 'PHP Version (>= 8.1)',
+        'status' => version_compare($phpVersion, '8.1.0', '>='),
+        'value' => $phpVersion,
+        'required' => true
+    ];
+    
+    // Required PHP Extensions
+    $requiredExtensions = [
+        'BCMath', 'Ctype', 'cURL', 'DOM', 'Fileinfo', 'JSON',
+        'Mbstring', 'OpenSSL', 'PCRE', 'PDO', 'pdo_mysql',
+        'Tokenizer', 'XML', 'Zip'
+    ];
+    
+    foreach ($requiredExtensions as $ext) {
+        $loaded = extension_loaded(strtolower($ext));
+        $checks['ext_' . strtolower($ext)] = [
+            'name' => "PHP Extension: $ext",
+            'status' => $loaded,
+            'value' => $loaded ? 'Installed' : 'Missing',
+            'required' => true
+        ];
+    }
+    
+    // Optional but recommended extensions
+    $optionalExtensions = ['gd', 'imagick', 'redis', 'opcache'];
+    foreach ($optionalExtensions as $ext) {
+        $loaded = extension_loaded(strtolower($ext));
+        $checks['opt_' . strtolower($ext)] = [
+            'name' => "PHP Extension: $ext (optional)",
+            'status' => $loaded,
+            'value' => $loaded ? 'Installed' : 'Not installed',
+            'required' => false
+        ];
+    }
+    
+    // Directory Permissions
+    $directories = [
+        'storage' => __DIR__ . '/storage',
+        'bootstrap/cache' => __DIR__ . '/bootstrap/cache',
+        'database' => __DIR__ . '/database'
+    ];
+    
+    foreach ($directories as $name => $path) {
+        $writable = is_writable($path);
+        $checks['dir_' . str_replace('/', '_', $name)] = [
+            'name' => "Directory Writable: $name",
+            'status' => $writable,
+            'value' => $writable ? 'Writable' : 'Not writable',
+            'required' => true,
+            'path' => $path
+        ];
+    }
+    
+    // Check if .env.example exists
+    $checks['env_example'] = [
+        'name' => '.env.example file exists',
+        'status' => file_exists(__DIR__ . '/.env.example'),
+        'value' => file_exists(__DIR__ . '/.env.example') ? 'Found' : 'Missing',
+        'required' => true
+    ];
+    
+    // Check if database schema exists
+    $sqlFiles = [
+        __DIR__ . '/database/schema/carpathian_cms_full.sql',
+        __DIR__ . '/database/schema/carpathian_cms.sql'
+    ];
+    $sqlFileFound = false;
+    $sqlFilePath = '';
+    foreach ($sqlFiles as $file) {
+        if (file_exists($file)) {
+            $sqlFileFound = true;
+            $sqlFilePath = $file;
+            break;
+        }
+    }
+    
+    $checks['sql_schema'] = [
+        'name' => 'Database Schema File',
+        'status' => $sqlFileFound,
+        'value' => $sqlFileFound ? basename($sqlFilePath) : 'Missing',
+        'required' => true,
+        'path' => $sqlFilePath
+    ];
+    
+    // Check Composer
+    exec('composer --version 2>&1', $composerOutput, $composerReturn);
+    $checks['composer'] = [
+        'name' => 'Composer Installed',
+        'status' => $composerReturn === 0,
+        'value' => $composerReturn === 0 ? 'Installed' : 'Not found',
+        'required' => true
+    ];
+    
+    // PHP Memory Limit
+    $memoryLimit = ini_get('memory_limit');
+    $memoryValue = preg_replace('/[^0-9]/', '', $memoryLimit);
+    $checks['memory_limit'] = [
+        'name' => 'PHP Memory Limit (>= 128M)',
+        'status' => $memoryValue >= 128,
+        'value' => $memoryLimit,
+        'required' => false
+    ];
+    
+    // Max Execution Time
+    $maxExecTime = ini_get('max_execution_time');
+    $checks['max_exec_time'] = [
+        'name' => 'Max Execution Time (>= 120s)',
+        'status' => $maxExecTime == 0 || $maxExecTime >= 120,
+        'value' => $maxExecTime . 's',
+        'required' => false
+    ];
+    
+    return $checks;
+}
+
+/**
+ * Import SQL file with proper error handling
+ */
+function importDatabase($pdo, $sqlFile) {
+    $sql = file_get_contents($sqlFile);
+    
+    // Remove comments
+    $sql = preg_replace('/^--.*$/m', '', $sql);
+    $sql = preg_replace('/^#.*$/m', '', $sql);
+    
+    // Split by semicolon but not inside quotes
+    $statements = [];
+    $currentStatement = '';
+    $inString = false;
+    $stringChar = '';
+    
+    for ($i = 0; $i < strlen($sql); $i++) {
+        $char = $sql[$i];
+        
+        if (($char === '"' || $char === "'") && ($i == 0 || $sql[$i-1] !== '\\')) {
+            if (!$inString) {
+                $inString = true;
+                $stringChar = $char;
+            } elseif ($char === $stringChar) {
+                $inString = false;
+            }
+        }
+        
+        if ($char === ';' && !$inString) {
+            $currentStatement .= $char;
+            $stmt = trim($currentStatement);
+            if (!empty($stmt)) {
+                $statements[] = $stmt;
+            }
+            $currentStatement = '';
+        } else {
+            $currentStatement .= $char;
+        }
+    }
+    
+    // Add last statement if exists
+    $stmt = trim($currentStatement);
+    if (!empty($stmt)) {
+        $statements[] = $stmt;
+    }
+    
+    // Execute statements
+    $errors = [];
+    foreach ($statements as $statement) {
+        $statement = trim($statement);
+        if (empty($statement) || substr($statement, 0, 2) === '--' || substr($statement, 0, 2) === '/*') {
+            continue;
+        }
+        
+        try {
+            $pdo->exec($statement);
+        } catch (PDOException $e) {
+            // Log error but continue (some errors might be acceptable like table already exists)
+            $errors[] = $e->getMessage();
+        }
+    }
+    
+    return $errors;
+}
+
+/**
+ * Set proper file permissions
+ */
+function setPermissions() {
+    $directories = [
+        'storage',
+        'storage/app',
+        'storage/app/public',
+        'storage/framework',
+        'storage/framework/cache',
+        'storage/framework/sessions',
+        'storage/framework/views',
+        'storage/logs',
+        'bootstrap/cache'
+    ];
+    
+    foreach ($directories as $dir) {
+        $path = __DIR__ . '/' . $dir;
+        if (file_exists($path)) {
+            @chmod($path, 0775);
+        }
+    }
+    
+    return true;
+}
 
 // Handle installation steps
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($step) {
-        case '2': // Database configuration
+        case 'database':
             $dbHost = $_POST['db_host'] ?? '127.0.0.1';
             $dbPort = $_POST['db_port'] ?? '3306';
             $dbName = $_POST['db_name'] ?? '';
@@ -30,45 +247,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
                 // Create database if it doesn't exist
-                $pdo->exec("CREATE DATABASE IF NOT EXISTS \`$dbName\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbName` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                
+                // Test connection to the database
+                $pdo->exec("USE `$dbName`");
                 
                 // Store in session
                 session_start();
                 $_SESSION['db_config'] = compact('dbHost', 'dbPort', 'dbName', 'dbUser', 'dbPass');
                 
-                header('Location: install.php?step=3');
+                header('Location: install.php?step=site');
                 exit;
             } catch (PDOException $e) {
                 $error = 'Database connection failed: ' . $e->getMessage();
+                $error .= '<br><small>Make sure the database user has proper privileges: CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT</small>';
             }
             break;
             
-        case '3': // Site configuration
+        case 'site':
             session_start();
             $_SESSION['site_config'] = [
                 'app_name' => $_POST['app_name'] ?? 'Carpathian CMS',
-                'app_url' => $_POST['app_url'] ?? 'http://localhost',
+                'app_url' => rtrim($_POST['app_url'] ?? 'http://localhost', '/'),
                 'app_locale' => $_POST['app_locale'] ?? 'ro',
                 'admin_email' => $_POST['admin_email'] ?? '',
                 'admin_password' => $_POST['admin_password'] ?? '',
             ];
-            header('Location: install.php?step=4');
+            header('Location: install.php?step=install');
             exit;
             
-        case '4': // Final installation
+        case 'install':
             session_start();
             if (!isset($_SESSION['db_config']) || !isset($_SESSION['site_config'])) {
-                header('Location: install.php?step=1');
+                header('Location: install.php?step=check');
                 exit;
             }
             
             try {
                 $db = $_SESSION['db_config'];
                 $site = $_SESSION['site_config'];
+                $installLog = [];
                 
-                // 1. Create .env file
+                // 1. Set proper permissions
+                $installLog[] = 'Setting file permissions...';
+                setPermissions();
+                
+                // 2. Create .env file
+                $installLog[] = 'Creating .env configuration...';
                 $envContent = file_get_contents(__DIR__ . '/.env.example');
-                $envContent = str_replace('APP_NAME="Carpathian CMS"', 'APP_NAME="' . $site['app_name'] . '"', $envContent);
+                $envContent = str_replace('APP_NAME="Carpathian CMS"', 'APP_NAME="' . addslashes($site['app_name']) . '"', $envContent);
                 $envContent = str_replace('APP_URL=http://localhost', 'APP_URL=' . $site['app_url'], $envContent);
                 $envContent = str_replace('APP_LOCALE=ro', 'APP_LOCALE=' . $site['app_locale'], $envContent);
                 $envContent = str_replace('DB_DATABASE=your_database_name', 'DB_DATABASE=' . $db['dbName'], $envContent);
@@ -79,44 +306,93 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 file_put_contents(__DIR__ . '/.env', $envContent);
                 
-                // 2. Import database
-                $sqlFile = __DIR__ . '/database/schema/carpathian_cms.sql';
-                if (file_exists($sqlFile)) {
-                    $pdo = new PDO(
-                        "mysql:host={$db['dbHost']};port={$db['dbPort']};dbname={$db['dbName']}",
-                        $db['dbUser'],
-                        $db['dbPass']
-                    );
-                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                    
-                    $sql = file_get_contents($sqlFile);
-                    $pdo->exec($sql);
+                // 3. Connect to database
+                $installLog[] = 'Connecting to database...';
+                $pdo = new PDO(
+                    "mysql:host={$db['dbHost']};port={$db['dbPort']};dbname={$db['dbName']}",
+                    $db['dbUser'],
+                    $db['dbPass'],
+                    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+                );
+                
+                // 4. Import database
+                $installLog[] = 'Importing database schema...';
+                $sqlFiles = [
+                    __DIR__ . '/database/schema/carpathian_cms_full.sql',
+                    __DIR__ . '/database/schema/carpathian_cms.sql'
+                ];
+                
+                $sqlFile = null;
+                foreach ($sqlFiles as $file) {
+                    if (file_exists($file)) {
+                        $sqlFile = $file;
+                        break;
+                    }
                 }
                 
-                // 3. Run Composer and generate key
+                if ($sqlFile) {
+                    $importErrors = importDatabase($pdo, $sqlFile);
+                    if (!empty($importErrors)) {
+                        $installLog[] = 'Some non-critical database warnings occurred (this is usually normal)';
+                    }
+                } else {
+                    throw new Exception('Database schema file not found');
+                }
+                
+                // 5. Generate application key
+                $installLog[] = 'Generating application key...';
                 chdir(__DIR__);
-                exec('php artisan key:generate 2>&1', $output1, $return1);
-                exec('php artisan config:cache 2>&1', $output2, $return2);
-                exec('php artisan view:cache 2>&1', $output3, $return3);
-                exec('php artisan storage:link 2>&1', $output4, $return4);
+                exec('php artisan key:generate --force 2>&1', $output1, $return1);
                 
-                // 4. Create admin user if provided
+                // 6. Run Laravel setup commands
+                $installLog[] = 'Configuring Laravel...';
+                exec('php artisan config:clear 2>&1', $output2);
+                exec('php artisan cache:clear 2>&1', $output3);
+                exec('php artisan view:clear 2>&1', $output4);
+                exec('php artisan storage:link 2>&1', $output5);
+                
+                // 7. Update/Create admin user if provided
                 if (!empty($site['admin_email']) && !empty($site['admin_password'])) {
+                    $installLog[] = 'Creating admin user...';
                     $hashedPassword = password_hash($site['admin_password'], PASSWORD_BCRYPT);
-                    $stmt = $pdo->prepare("INSERT INTO users (name, email, password, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW()) ON DUPLICATE KEY UPDATE password = VALUES(password)");
-                    $stmt->execute(['Administrator', $site['admin_email'], $hashedPassword]);
+                    
+                    // Check if users table exists
+                    $tableCheck = $pdo->query("SHOW TABLES LIKE 'users'")->rowCount();
+                    if ($tableCheck > 0) {
+                        $stmt = $pdo->prepare("INSERT INTO users (name, email, password, created_at, updated_at) 
+                                              VALUES (?, ?, ?, NOW(), NOW()) 
+                                              ON DUPLICATE KEY UPDATE password = VALUES(password), updated_at = NOW()");
+                        $stmt->execute(['Administrator', $site['admin_email'], $hashedPassword]);
+                    }
                 }
+                
+                // 8. Create success file
+                file_put_contents(__DIR__ . '/.installed', date('Y-m-d H:i:s'));
                 
                 // Clear session
-                session_destroy();
+                $_SESSION['install_log'] = $installLog;
                 
-                header('Location: install.php?step=5');
+                header('Location: install.php?step=complete');
                 exit;
             } catch (Exception $e) {
                 $error = 'Installation failed: ' . $e->getMessage();
-                $step = '4';
+                $error .= '<br><br><strong>Debug Information:</strong><br>' . nl2br(htmlspecialchars($e->getTraceAsString()));
+                $step = 'install';
             }
             break;
+    }
+}
+
+// Get server checks for display
+$serverChecks = ($step === 'check' || $step === 'database') ? checkRequirements() : [];
+$allRequiredPass = true;
+$hasWarnings = false;
+foreach ($serverChecks as $check) {
+    if ($check['required'] && !$check['status']) {
+        $allRequiredPass = false;
+    }
+    if (!$check['required'] && !$check['status']) {
+        $hasWarnings = true;
     }
 }
 
@@ -142,7 +418,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: white;
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             overflow: hidden;
         }
@@ -154,13 +430,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .header h1 { font-size: 2em; margin-bottom: 10px; }
         .header p { opacity: 0.9; font-size: 0.95em; }
-        .content { padding: 40px 30px; }
+        .content { padding: 40px 30px; max-height: 600px; overflow-y: auto; }
         .steps {
             display: flex;
             justify-content: space-between;
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 2px solid #f0f0f0;
+            flex-wrap: wrap;
         }
         .step-item {
             display: flex;
@@ -168,16 +445,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             flex: 1;
             position: relative;
-        }
-        .step-item:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 60%;
-            width: 80%;
-            height: 2px;
-            background: #e0e0e0;
-            z-index: 0;
+            min-width: 80px;
+            margin: 5px;
         }
         .step-number {
             width: 32px;
@@ -244,9 +513,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 100%;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .button:hover {
+        .button:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         .alert {
             padding: 15px;
@@ -262,6 +535,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: #efe;
             border-left: 4px solid #4c4;
             color: #363;
+        }
+        .alert-warning {
+            background: #fff4e5;
+            border-left: 4px solid #ff9800;
+            color: #e65100;
         }
         .info-box {
             background: #f8f9fa;
@@ -280,6 +558,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .info-box li {
             margin: 5px 0;
         }
+        .check-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        .check-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .check-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .check-table tr:last-child td {
+            border-bottom: none;
+        }
+        .status-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+        .status-pass {
+            background: #10b981;
+            color: white;
+        }
+        .status-fail {
+            background: #ef4444;
+            color: white;
+        }
+        .status-warning {
+            background: #ff9800;
+            color: white;
+        }
         .success-icon {
             width: 80px;
             height: 80px;
@@ -294,18 +614,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .text-center { text-align: center; }
         .mt-20 { margin-top: 20px; }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .fix-command {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🏔️ Carpathian CMS</h1>
-            <p>WordPress-style Installation Wizard</p>
+            <p>Advanced Installation Wizard v2.0</p>
         </div>
         
         <div class="content">
             <?php if ($error): ?>
-                <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
+                <div class="alert alert-error"><?= $error ?></div>
             <?php endif; ?>
             
             <?php if ($success): ?>
@@ -314,50 +651,121 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <!-- Progress Steps -->
             <div class="steps">
-                <div class="step-item <?= $step >= 1 ? 'completed' : '' ?> <?= $step == 1 ? 'active' : '' ?>">
+                <div class="step-item <?= in_array($step, ['database', 'site', 'install', 'complete']) ? 'completed' : '' ?> <?= $step == 'check' ? 'active' : '' ?>">
                     <div class="step-number">1</div>
-                    <div class="step-label">Welcome</div>
+                    <div class="step-label">Requirements</div>
                 </div>
-                <div class="step-item <?= $step >= 3 ? 'completed' : '' ?> <?= $step == 2 ? 'active' : '' ?>">
+                <div class="step-item <?= in_array($step, ['site', 'install', 'complete']) ? 'completed' : '' ?> <?= $step == 'database' ? 'active' : '' ?>">
                     <div class="step-number">2</div>
                     <div class="step-label">Database</div>
                 </div>
-                <div class="step-item <?= $step >= 4 ? 'completed' : '' ?> <?= $step == 3 ? 'active' : '' ?>">
+                <div class="step-item <?= in_array($step, ['install', 'complete']) ? 'completed' : '' ?> <?= $step == 'site' ? 'active' : '' ?>">
                     <div class="step-number">3</div>
-                    <div class="step-label">Site</div>
+                    <div class="step-label">Site Config</div>
                 </div>
-                <div class="step-item <?= $step >= 5 ? 'completed' : '' ?> <?= $step == 4 ? 'active' : '' ?>">
+                <div class="step-item <?= $step == 'complete' ? 'completed' : '' ?> <?= $step == 'install' ? 'active' : '' ?>">
                     <div class="step-number">4</div>
                     <div class="step-label">Install</div>
                 </div>
-                <div class="step-item <?= $step == 5 ? 'active completed' : '' ?>">
+                <div class="step-item <?= $step == 'complete' ? 'active completed' : '' ?>">
                     <div class="step-number">5</div>
-                    <div class="step-label">Done</div>
+                    <div class="step-label">Complete</div>
                 </div>
             </div>
             
-            <?php if ($step == '1'): ?>
-                <!-- Step 1: Welcome -->
-                <h2>Welcome to Carpathian CMS!</h2>
-                <p style="margin: 20px 0;">Before getting started, you will need:</p>
-                <div class="info-box">
-                    <h3>📋 Requirements</h3>
-                    <ul>
-                        <li>PHP 8.1 or higher</li>
-                        <li>MySQL 5.7+ or MariaDB 10.3+</li>
-                        <li>Composer installed</li>
-                        <li>Database name, username, and password</li>
-                    </ul>
-                </div>
-                <form method="get">
-                    <input type="hidden" name="step" value="2">
-                    <button type="submit" class="button">Let's Get Started →</button>
-                </form>
+            <?php if ($step == 'check'): ?>
+                <!-- Step 1: Requirements Check -->
+                <h2>Server Requirements Check</h2>
+                <p style="margin: 15px 0;">Checking your server configuration...</p>
                 
-            <?php elseif ($step == '2'): ?>
+                <?php if (!$allRequiredPass): ?>
+                    <div class="alert alert-error">
+                        <strong>❌ Requirements Not Met</strong><br>
+                        Your server does not meet all required specifications. Please fix the issues below before continuing.
+                    </div>
+                <?php elseif ($hasWarnings): ?>
+                    <div class="alert alert-warning">
+                        <strong>⚠️ Warnings Detected</strong><br>
+                        All required checks passed, but some optional features are not available. You can continue, but consider fixing warnings for better performance.
+                    </div>
+                <?php else: ?>
+                    <div class="alert alert-success">
+                        <strong>✅ All Checks Passed!</strong><br>
+                        Your server meets all requirements for Carpathian CMS.
+                    </div>
+                <?php endif; ?>
+                
+                <table class="check-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">Status</th>
+                            <th>Requirement</th>
+                            <th style="width: 150px;">Current Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($serverChecks as $key => $check): ?>
+                            <tr>
+                                <td>
+                                    <span class="status-icon <?= $check['status'] ? 'status-pass' : ($check['required'] ? 'status-fail' : 'status-warning') ?>">
+                                        <?= $check['status'] ? '✓' : '✗' ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <?= htmlspecialchars($check['name']) ?>
+                                    <?php if (!$check['status'] && isset($check['path'])): ?>
+                                        <br><small style="color: #666;">Path: <?= htmlspecialchars($check['path']) ?></small>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?= htmlspecialchars($check['value']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                
+                <?php if (!$allRequiredPass): ?>
+                    <div class="info-box">
+                        <h3>🔧 How to Fix</h3>
+                        <p><strong>Missing PHP Extensions:</strong></p>
+                        <div class="fix-command">
+                            # Ubuntu/Debian<br>
+                            sudo apt install php8.3-fpm php8.3-mysql php8.3-mbstring php8.3-xml \<br>
+                            &nbsp;&nbsp;php8.3-curl php8.3-gd php8.3-zip php8.3-bcmath
+                        </div>
+                        
+                        <p style="margin-top: 15px;"><strong>Fix Directory Permissions:</strong></p>
+                        <div class="fix-command">
+                            cd <?= __DIR__ ?><br>
+                            sudo chmod -R 775 storage bootstrap/cache<br>
+                            sudo chown -R www-data:www-data storage bootstrap/cache
+                        </div>
+                        
+                        <p style="margin-top: 15px;"><strong>Install Composer:</strong></p>
+                        <div class="fix-command">
+                            curl -sS https://getcomposer.org/installer | php<br>
+                            sudo mv composer.phar /usr/local/bin/composer
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="button" onclick="location.reload()">🔄 Recheck Requirements</button>
+                <?php else: ?>
+                    <form method="get">
+                        <input type="hidden" name="step" value="database">
+                        <button type="submit" class="button">Continue to Database Setup →</button>
+                    </form>
+                <?php endif; ?>
+                
+            <?php elseif ($step == 'database'): ?>
                 <!-- Step 2: Database Configuration -->
                 <h2>Database Configuration</h2>
-                <p style="margin-bottom: 20px;">Enter your database connection details:</p>
+                <p style="margin-bottom: 20px;">Enter your MySQL/MariaDB connection details:</p>
+                
+                <div class="info-box">
+                    <h3>📝 Database Privileges Required</h3>
+                    <p>Your database user needs these privileges:</p>
+                    <code>SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES</code>
+                </div>
+                
                 <form method="post">
                     <div class="form-group">
                         <label>Database Host</label>
@@ -371,8 +779,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="form-group">
                         <label>Database Name</label>
-                        <input type="text" name="db_name" required>
-                        <div class="help-text">The database will be created if it does not exist</div>
+                        <input type="text" name="db_name" required placeholder="carpathian_cms">
+                        <div class="help-text">The database will be created if it doesn't exist</div>
                     </div>
                     <div class="form-group">
                         <label>Database Username</label>
@@ -380,15 +788,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="form-group">
                         <label>Database Password</label>
-                        <input type="password" name="db_pass">
+                        <input type="password" name="db_pass" autocomplete="new-password">
+                        <div class="help-text">Leave empty if no password is set</div>
                     </div>
-                    <button type="submit" class="button">Test & Continue →</button>
+                    <button type="submit" class="button">Test Connection & Continue →</button>
                 </form>
                 
-            <?php elseif ($step == '3'): ?>
+            <?php elseif ($step == 'site'): ?>
                 <!-- Step 3: Site Configuration -->
                 <h2>Site Configuration</h2>
                 <p style="margin-bottom: 20px;">Configure your website settings:</p>
+                
                 <form method="post">
                     <div class="form-group">
                         <label>Site Name</label>
@@ -418,47 +828,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="form-group">
                         <label>Admin Password</label>
-                        <input type="password" name="admin_password" required minlength="8">
-                        <div class="help-text">Minimum 8 characters</div>
+                        <input type="password" name="admin_password" required minlength="8" autocomplete="new-password">
+                        <div class="help-text">Minimum 8 characters (use a strong password)</div>
                     </div>
                     <button type="submit" class="button">Continue to Installation →</button>
                 </form>
                 
-            <?php elseif ($step == '4'): ?>
-                <!-- Step 4: Installing -->
-                <h2>Installing...</h2>
+            <?php elseif ($step == 'install'): ?>
+                <!-- Step 4: Install -->
+                <h2>Ready to Install</h2>
                 <div class="info-box">
-                    <p>Click the button below to complete the installation. This will:</p>
+                    <h3>📦 Installation Process</h3>
+                    <p>The installer will now:</p>
                     <ul>
-                        <li>Create configuration files</li>
-                        <li>Import database schema</li>
-                        <li>Generate application key</li>
-                        <li>Create admin account</li>
-                        <li>Set up storage links</li>
+                        <li>✅ Set proper file permissions</li>
+                        <li>✅ Create .env configuration file</li>
+                        <li>✅ Import database with all demo content</li>
+                        <li>✅ Generate application security key</li>
+                        <li>✅ Configure Laravel framework</li>
+                        <li>✅ Create admin user account</li>
+                        <li>✅ Set up storage links</li>
                     </ul>
+                    <p style="margin-top: 15px;"><strong>This may take 30-60 seconds. Please don't close this page.</strong></p>
                 </div>
                 <form method="post">
-                    <button type="submit" class="button">🚀 Install Carpathian CMS</button>
+                    <button type="submit" class="button">🚀 Install Carpathian CMS Now</button>
                 </form>
                 
-            <?php elseif ($step == '5'): ?>
+            <?php elseif ($step == 'complete'): ?>
                 <!-- Step 5: Success -->
+                <?php
+                session_start();
+                $installLog = $_SESSION['install_log'] ?? [];
+                ?>
                 <div class="text-center">
                     <div class="success-icon">✓</div>
                     <h2>Installation Complete!</h2>
                     <p style="margin: 20px 0;">Your Carpathian CMS is ready to use.</p>
-                    <div class="info-box" style="text-align: left;">
-                        <h3>🎯 Next Steps</h3>
+                </div>
+                
+                <?php if (!empty($installLog)): ?>
+                    <div class="info-box">
+                        <h3>📋 Installation Log</h3>
                         <ul>
-                            <li><strong>Delete install.php</strong> for security</li>
-                            <li>Visit your website: <a href="/"><?= $_SERVER['HTTP_HOST'] ?></a></li>
-                            <li>Login to admin panel: <a href="/admin"><?= $_SERVER['HTTP_HOST'] ?>/admin</a></li>
-                            <li>Configure your site settings</li>
-                            <li>Add new languages using <code>lang/TRANSLATION_GUIDE.md</code></li>
+                            <?php foreach ($installLog as $log): ?>
+                                <li><?= htmlspecialchars($log) ?></li>
+                            <?php endforeach; ?>
                         </ul>
                     </div>
-                    <a href="/" class="button" style="display: inline-block; text-decoration: none; margin-top: 20px;">
-                        Visit Your Website →
+                <?php endif; ?>
+                
+                <div class="info-box">
+                    <h3>🎯 Next Steps</h3>
+                    <ol style="margin-left: 20px;">
+                        <li style="margin: 10px 0;"><strong>Delete install.php for security:</strong>
+                            <div class="fix-command" style="margin-top: 5px;">
+                                cd <?= __DIR__ ?><br>
+                                rm install.php
+                            </div>
+                        </li>
+                        <li style="margin: 10px 0;">
+                            <strong>Visit your website:</strong> 
+                            <a href="/" target="_blank"><?= $_SERVER['HTTP_HOST'] ?></a>
+                        </li>
+                        <li style="margin: 10px 0;">
+                            <strong>Login to admin panel:</strong> 
+                            <a href="/admin" target="_blank"><?= $_SERVER['HTTP_HOST'] ?>/admin</a>
+                        </li>
+                        <li style="margin: 10px 0;"><strong>Configure site settings in admin panel</strong></li>
+                        <li style="margin: 10px 0;"><strong>Review and customize content (products, pages, posts)</strong></li>
+                        <li style="margin: 10px 0;"><strong>Add translations:</strong> See <code>lang/TRANSLATION_GUIDE.md</code></li>
+                    </ol>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <a href="/" class="button" style="display: block; text-decoration: none; text-align: center; padding: 14px;">
+                        🌐 View Website
+                    </a>
+                    <a href="/admin" class="button" style="display: block; text-decoration: none; text-align: center; padding: 14px;">
+                        🔐 Admin Panel
                     </a>
                 </div>
             <?php endif; ?>

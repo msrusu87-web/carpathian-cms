@@ -317,3 +317,100 @@ This CMS is open-source under the MIT License. No commercial license required.
 **CMS Version**: 1.0.0  
 **Minimum PHP**: 8.1  
 **Recommended PHP**: 8.3
+
+---
+
+## 🔐 File Permissions & Ownership (CRITICAL)
+
+### Correct File Permissions for Laravel
+
+Laravel requires specific file permissions to function correctly. **Failure to set these permissions properly will result in errors during installation and operation.**
+
+#### Quick Setup Commands
+
+```bash
+# Navigate to your project directory
+cd /var/www/cms.carphatian.ro
+
+# Set owner to web server user (Ubuntu/Debian)
+sudo chown -R www-data:www-data .
+
+# Set directory permissions
+sudo find . -type d -exec chmod 755 {} \;
+
+# Set file permissions
+sudo find . -type f -exec chmod 644 {} \;
+
+# Set writable permissions for storage and cache
+sudo chmod -R 775 storage
+sudo chmod -R 775 bootstrap/cache
+
+# Set executable permission for artisan
+sudo chmod +x artisan
+```
+
+#### Detailed Permissions Breakdown
+
+| Directory/File | Owner | Group | Permissions | Why |
+|----------------|-------|-------|-------------|-----|
+| `/` (root) | www-data | www-data | 755 | Base directory |
+| `storage/*` | www-data | www-data | 775 | Laravel writes logs, cache, sessions |
+| `bootstrap/cache/*` | www-data | www-data | 775 | Compiled classes, routes cache |
+| `.env` | www-data | www-data | 644 | Configuration (sensitive!) |
+| `artisan` | www-data | www-data | 755 | Artisan CLI tool |
+
+### Automated Permission Script
+
+```bash
+#!/bin/bash
+# Fix Permissions Script
+cd /var/www/cms.carphatian.ro
+sudo chown -R www-data:www-data .
+sudo find . -type d -exec chmod 755 {} \;
+sudo find . -type f -exec chmod 644 {} \;
+sudo chmod -R 775 storage bootstrap/cache
+sudo chmod +x artisan
+```
+
+## 📦 Database Configuration
+
+### Required MySQL Privileges
+
+```sql
+CREATE DATABASE carpathian_cms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'cms_user'@'localhost' IDENTIFIED BY 'your_strong_password';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, 
+      CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, 
+      SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, TRIGGER, REFERENCES 
+ON carpathian_cms.* TO 'cms_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+## 🚀 Post-Installation Commands
+
+```bash
+# 1. Fix permissions
+sudo chown -R www-data:www-data .
+sudo chmod -R 775 storage bootstrap/cache
+
+# 2. Visit install.php in browser
+# http://your-domain.com/install.php
+
+# 3. Delete install.php after completion
+rm install.php
+```
+
+## 🔧 Common Installation Issues
+
+### "Permission denied" errors
+```bash
+sudo chmod -R 775 storage bootstrap/cache
+sudo chown -R www-data:www-data storage bootstrap/cache
+```
+
+### "500 Internal Server Error"
+```bash
+php artisan key:generate
+php artisan storage:link
+php artisan config:clear
+```
