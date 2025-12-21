@@ -9,13 +9,31 @@
         </svg>
     </button>
 
-    <div x-show="open" @click.away="open = false" class="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" x-transition>
+    <div x-show="open" @click.away="open = false" class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" x-transition>
         <div class="py-1">
-            <a href="{{ url('en') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'en' ? 'bg-gray-50 font-semibold' : '' }}">
-                English
+            <a href="{{ route('lang.switch', 'ro') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'ro' ? 'bg-gray-50 font-semibold' : '' }}">
+                <span class="text-lg">🇷🇴</span>
+                <span>Română</span>
             </a>
-            <a href="{{ url('ro') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'ro' ? 'bg-gray-50 font-semibold' : '' }}">
-                Română
+            <a href="{{ route('lang.switch', 'en') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'en' ? 'bg-gray-50 font-semibold' : '' }}">
+                <span class="text-lg">🇬🇧</span>
+                <span>English</span>
+            </a>
+            <a href="{{ route('lang.switch', 'de') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'de' ? 'bg-gray-50 font-semibold' : '' }}">
+                <span class="text-lg">🇩🇪</span>
+                <span>Deutsch</span>
+            </a>
+            <a href="{{ route('lang.switch', 'es') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'es' ? 'bg-gray-50 font-semibold' : '' }}">
+                <span class="text-lg">🇪🇸</span>
+                <span>Español</span>
+            </a>
+            <a href="{{ route('lang.switch', 'fr') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'fr' ? 'bg-gray-50 font-semibold' : '' }}">
+                <span class="text-lg">🇫🇷</span>
+                <span>Français</span>
+            </a>
+            <a href="{{ route('lang.switch', 'it') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'it' ? 'bg-gray-50 font-semibold' : '' }}">
+                <span class="text-lg">🇮🇹</span>
+                <span>Italiano</span>
             </a>
         </div>
     </div>

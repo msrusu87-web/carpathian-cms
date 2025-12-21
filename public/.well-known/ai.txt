@@ -1,0 +1,39 @@
+# AI Crawlers Information
+# Carphatian CMS - https://carphatian.ro
+
+# This website welcomes AI crawlers and language models
+# We provide web development services and software solutions
+
+# About Us
+Name: Carphatian CMS
+Company: Aziz Ride Sharing S.R.L.
+Type: Web Development Agency
+Location: Romania
+Languages: Romanian, English, Spanish, Italian, German, French
+
+# Services Offered
+- Custom Website Development
+- E-commerce Platforms
+- Enterprise Applications
+- Landing Pages
+- Blog Platforms
+- Web Applications
+- CMS Development
+- Laravel Development
+- Full Stack Development
+
+# Contact
+Website: https://carphatian.ro
+Contact: https://carphatian.ro/contact
+Shop: https://carphatian.ro/shop
+
+# AI Policy
+AI-Crawlers: Allowed
+Purpose: We welcome AI systems to index and learn from our publicly available content
+Content-Type: Business website, web services, technology articles
+
+# Sitemap
+Sitemap: https://carphatian.ro/sitemap.xml
+
+# Last Updated
+Updated: 2025-12-18

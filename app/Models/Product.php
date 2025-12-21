@@ -11,12 +11,13 @@ class Product extends Model
 {
     use HasTranslations;
 
-    public $translatable = ['name', 'description', 'content'];
+    public $translatable = ['name', 'description', 'content', 'meta_title', 'meta_description', 'meta_keywords'];
 
     protected $fillable = [
         'category_id', 'name', 'slug', 'description', 'content',
         'sku', 'price', 'sale_price', 'stock', 'images',
-        'attributes', 'meta', 'is_featured', 'is_active'
+        'attributes', 'meta', 'is_featured', 'is_active',
+        'meta_title', 'meta_description', 'meta_keywords'
     ];
 
     protected $casts = [
@@ -72,4 +73,61 @@ class Product extends Model
     {
         return $this->sale_price && $this->sale_price < $this->price;
     }
+
+    /**
+     * Get price in selected currency
+     */
+    public function getPriceInCurrency(?string $currency = null): float
+    {
+        $currencyService = app(\App\Services\CurrencyService::class);
+        $targetCurrency = $currency ?? $currencyService->getCurrentCurrency();
+        $baseCurrency = $this->base_currency ?? 'RON';
+        
+        return $currencyService->convert($this->price, $baseCurrency, $targetCurrency);
+    }
+
+    /**
+     * Get sale price in selected currency
+     */
+    public function getSalePriceInCurrency(?string $currency = null): ?float
+    {
+        if (!$this->sale_price) {
+            return null;
+        }
+
+        $currencyService = app(\App\Services\CurrencyService::class);
+        $targetCurrency = $currency ?? $currencyService->getCurrentCurrency();
+        $baseCurrency = $this->base_currency ?? 'RON';
+        
+        return $currencyService->convert($this->sale_price, $baseCurrency, $targetCurrency);
+    }
+
+    /**
+     * Get formatted price with currency
+     */
+    public function getFormattedPrice(?string $currency = null): string
+    {
+        $currencyService = app(\App\Services\CurrencyService::class);
+        $targetCurrency = $currency ?? $currencyService->getCurrentCurrency();
+        $price = $this->getPriceInCurrency($targetCurrency);
+        
+        return $currencyService->formatPrice($price, $targetCurrency);
+    }
+
+    /**
+     * Get formatted sale price with currency
+     */
+    public function getFormattedSalePrice(?string $currency = null): ?string
+    {
+        $salePrice = $this->getSalePriceInCurrency($currency);
+        if (!$salePrice) {
+            return null;
+        }
+
+        $currencyService = app(\App\Services\CurrencyService::class);
+        $targetCurrency = $currency ?? $currencyService->getCurrentCurrency();
+        
+        return $currencyService->formatPrice($salePrice, $targetCurrency);
+    }
 }
+

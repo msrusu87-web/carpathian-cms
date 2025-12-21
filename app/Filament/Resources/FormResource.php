@@ -12,10 +12,19 @@ use Filament\Tables\Table;
 
 class FormResource extends Resource
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Content');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Forms');
+    }
+
     protected static ?string $model = Form::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationGroup = 'Conținut';
-
+    
     public static function form(FilamentForm $form): FilamentForm
     {
         return $form

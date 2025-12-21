@@ -21,3 +21,39 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Additional exclusions
+*.log
+storage/logs/*.log
+.env.*
+!.env.example
+
+# Test files
+public/session-test.php
+public/test*.php
+public/force-login.php
+public/working-login.html
+
+# Compiled views (can be regenerated)
+storage/framework/views/*.php
+
+# User uploads (keep structure but not files)
+public/uploads/*
+!public/uploads/.gitkeep
+storage/app/public/*
+!storage/app/public/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test scripts
+test-*.php
+test-*.sh
+test_*.php
+*.backup
+*.bak

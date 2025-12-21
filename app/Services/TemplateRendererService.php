@@ -16,12 +16,20 @@ class TemplateRendererService
 
     public function __construct()
     {
-        $this->activeTemplate = Template::active()->first() ?? Template::default()->first();
+        // Don't load template in constructor - lazy load when needed
+    }
+
+    protected function getActiveTemplate(): ?Template
+    {
+        if ($this->activeTemplate === null) {
+            $this->activeTemplate = Template::active()->first() ?? Template::default()->first();
+        }
+        return $this->activeTemplate;
     }
 
     public function renderPage(Page $page): string
     {
-        $template = $page->template ?? $this->activeTemplate;
+        $template = $page->template ?? $this->getActiveTemplate();
         
         return $this->render($template, [
             'type' => 'page',
@@ -35,7 +43,7 @@ class TemplateRendererService
 
     public function renderPost(Post $post): string
     {
-        $template = $post->template ?? $this->activeTemplate;
+        $template = $post->template ?? $this->getActiveTemplate();
         
         return $this->render($template, [
             'type' => 'post',

@@ -24,7 +24,20 @@ class Settings extends Page
     protected static ?string $slug = "site-settings";
 
 
-    protected static ?string $navigationGroup = "Settings";
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Settings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Site Settings');
+    }
+
+    public function getTitle(): string
+    {
+        return __('Site Settings');
+    }
 
     protected static ?int $navigationSort = 100;
 
@@ -51,78 +64,78 @@ class Settings extends Page
     {
         return $form
             ->schema([
-                Section::make("General Settings")
-                    ->description("Basic website configuration")
+                Section::make(__("General Settings"))
+                    ->description(__("Basic website configuration"))
                     ->schema([
                         TextInput::make("site_name")
-                            ->label("Site Name")
+                            ->label(__("Site Name"))
                             ->required()
                             ->maxLength(255)
-                            ->placeholder("Carpathian CMS"),
+                            ->placeholder(__("Carpathian CMS")),
                         
                         Select::make("site_protocol")
-                            ->label("Protocol")
+                            ->label(__("Protocol"))
                             ->options([
-                                "http" => "HTTP",
-                                "https" => "HTTPS (Recommended)",
+                                "http" => __("HTTP"),
+                                "https" => __("HTTPS (Recommended)"),
                             ])
                             ->required()
                             ->default("https"),
                         
                         TextInput::make("site_url")
-                            ->label("Domain/URL")
+                            ->label(__("Domain/URL"))
                             ->required()
-                            ->placeholder("cms.carphatian.ro")
-                            ->helperText("Enter domain without protocol"),
+                            ->placeholder(__("cms.carphatian.ro"))
+                            ->helperText(__("Enter domain without protocol")),
                         
                         Textarea::make("site_description")
-                            ->label("Site Description")
+                            ->label(__("Site Description"))
                             ->rows(3),
                         
                         TextInput::make("admin_email")
-                            ->label("Admin Email")
+                            ->label(__("Admin Email"))
                             ->email()
                             ->required(),
                     ])->columns(2),
 
-                Section::make("Branding")
-                    ->description("Upload your logo and favicon")
+                Section::make(__("Branding"))
+                    ->description(__("Upload your logo and favicon"))
                     ->schema([
                         FileUpload::make("logo")
-                            ->label("Logo")
+                            ->label(__("Logo"))
                             ->image()
                             ->maxSize(2048)
                             ->directory("branding")
-                            ->helperText("Recommended: 200x60px PNG/SVG"),
+                            ->helperText(__("Recommended: 200x60px PNG/SVG")),
                         
                         FileUpload::make("favicon")
-                            ->label("Favicon")
+                            ->label(__("Favicon"))
                             ->image()
                             ->maxSize(512)
                             ->directory("branding")
-                            ->helperText("Recommended: 32x32px ICO/PNG"),
+                            ->helperText(__("Recommended: 32x32px ICO/PNG")),
                     ])->columns(2),
 
-                Section::make("Backup & Maintenance")
-                    ->description("Configure automatic backups")
+                Section::make(__("Backup & Maintenance"))
+                    ->description(__("Configure automatic backups"))
                     ->schema([
                         Toggle::make("backup_enabled")
-                            ->label("Enable Automatic Backups")
+                            ->label(__("Enable Automatic Backups"))
                             ->default(true),
                         
                         Select::make("backup_schedule")
-                            ->label("Backup Schedule")
+                            ->label(__("Backup Schedule"))
                             ->options([
-                                "hourly" => "Every Hour",
-                                "daily" => "Every Day",
-                                "weekly" => "Once a Week",
-                                "monthly" => "Once a Month",
+                                "hourly" => __("Every Hour"),
+                                "daily" => __("Every Day"),
+                                "weekly" => __("Once a Week"),
+                                "monthly" => __("Once a Month"),
                             ])
                             ->required()
                             ->default("daily"),
                         
                         Toggle::make("maintenance_mode")
-                            ->label("Maintenance Mode"),
+                            ->label(__("Maintenance Mode")),
                     ])->columns(3),
             ])
             ->statePath("data");
@@ -132,24 +145,24 @@ class Settings extends Page
     {
         return [
             Action::make("save")
-                ->label("Save Settings")
+                ->label(__("Save Settings"))
                 ->icon("heroicon-o-check")
                 ->color("success")
                 ->action("save"),
             
             Action::make("backup_database")
-                ->label("Download Database")
+                ->label(__("Download Database"))
                 ->icon("heroicon-o-arrow-down-tray")
                 ->color("primary")
                 ->action("downloadDatabaseBackup"),
             
             Action::make("restore_backup")
-                ->label("Restore Backup")
+                ->label(__("Restore Backup"))
                 ->icon("heroicon-o-arrow-up-tray")
                 ->color("warning")
                 ->form([
                     FileUpload::make("backup_file")
-                        ->label("SQL File")
+                        ->label(__("SQL File"))
                         ->acceptedFileTypes([".sql"])
                         ->required(),
                 ])
@@ -178,7 +191,7 @@ class Settings extends Page
         Artisan::call("cache:clear");
 
         Notification::make()
-            ->title("Settings saved successfully")
+            ->title(__("Settings saved successfully"))
             ->success()
             ->send();
     }
@@ -227,7 +240,7 @@ class Settings extends Page
             return response()->download($path, $filename)->deleteFileAfterSend();
         } catch (\Exception $e) {
             Notification::make()
-                ->title("Backup failed")
+                ->title(__("Backup failed"))
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
@@ -240,7 +253,7 @@ class Settings extends Page
             $path = Storage::path($data["backup_file"]);
 
             if (!file_exists($path)) {
-                throw new \Exception("File not found");
+                throw new \Exception(__("File not found"));
             }
 
             $cmd = sprintf(
@@ -255,18 +268,18 @@ class Settings extends Page
             exec($cmd, $output, $returnVar);
 
             if ($returnVar !== 0) {
-                throw new \Exception("Restore failed");
+                throw new \Exception(__("Restore failed"));
             }
 
             Storage::delete($data["backup_file"]);
 
             Notification::make()
-                ->title("Database restored successfully")
+                ->title(__("Database restored successfully"))
                 ->success()
                 ->send();
         } catch (\Exception $e) {
             Notification::make()
-                ->title("Restore failed")
+                ->title(__("Restore failed"))
                 ->body($e->getMessage())
                 ->danger()
                 ->send();

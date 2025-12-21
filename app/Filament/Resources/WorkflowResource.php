@@ -12,10 +12,19 @@ use Filament\Tables\Table;
 
 class WorkflowResource extends Resource
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Settings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Workflows');
+    }
+
     protected static ?string $model = Workflow::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-path';
-    protected static ?string $navigationGroup = 'Setări';
-
+    
     public static function form(Form $form): Form
     {
         return $form

@@ -23,10 +23,10 @@
   <path d="M 82 22 L 82 38 M 74 30 L 90 30 M 76 24 L 88 36 M 76 36 L 88 24" 
         stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
   
-  <!-- Text: Carpathian CMS -->
+  <!-- Text: Carphatian CMS -->
   <text x="120" y="60" font-family="'Inter', 'Segoe UI', sans-serif" 
         font-size="42" font-weight="700" fill="#1f2937" letter-spacing="-1">
-    Carpathian <tspan fill="url(#grad1)">CMS</tspan>
+    Carphatian <tspan fill="url(#grad1)">CMS</tspan>
   </text>
   
   <!-- Slogan: AI Powered -->

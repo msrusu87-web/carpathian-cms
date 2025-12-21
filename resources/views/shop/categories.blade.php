@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categorii - {{ config('app.name') }}</title>
+    <title>{{ __('messages.categories') }} - {{ config('app.name') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -14,17 +14,17 @@
         <!-- Breadcrumb -->
         <nav class="text-sm mb-6">
             <ol class="flex items-center space-x-2 text-gray-600">
-                <li><a href="/" class="hover:text-blue-600">Acasă</a></li>
+                <li><a href="/" class="hover:text-blue-600">{{ __('messages.home') }}</a></li>
                 <li><i class="fas fa-chevron-right text-xs"></i></li>
                 <li><a href="{{ route('shop.index') }}" class="hover:text-blue-600">Shop</a></li>
                 <li><i class="fas fa-chevron-right text-xs"></i></li>
-                <li class="text-blue-600 font-medium">Categorii</li>
+                <li class="text-blue-600 font-medium">{{ __('messages.categories') }}</li>
             </ol>
         </nav>
 
         <div class="mb-8">
-            <h1 class="text-4xl font-bold text-gray-800 mb-2">Categorii Servicii</h1>
-            <p class="text-gray-600">Explorează serviciile noastre organizate pe categorii</p>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">{{ __('messages.service_categories') }}</h1>
+            <p class="text-gray-600">{{ __('messages.explore_services_by_category') }}</p>
         </div>
 
         @if($categories->count() > 0)
@@ -78,7 +78,7 @@
 
                             <a href="{{ route('shop.category', $category->slug) }}" 
                                class="block bg-gradient-to-r from-blue-600 to-blue-700 text-white text-center px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition font-semibold">
-                                <i class="fas fa-eye mr-2"></i> Vezi Servicii
+                                <i class="fas fa-eye mr-2"></i> {{ __('messages.view_services') }}
                             </a>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
         @else
             <div class="text-center py-16">
                 <i class="fas fa-folder-open text-gray-300 text-6xl mb-4"></i>
-                <p class="text-gray-500 text-lg">Nu există categorii disponibile momentan.</p>
+                <p class="text-gray-500 text-lg">{{ __('messages.no_categories_available') }}</p>
             </div>
         @endif
     </main>

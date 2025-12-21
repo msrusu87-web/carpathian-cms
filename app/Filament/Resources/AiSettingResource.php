@@ -14,15 +14,20 @@ use Filament\Notifications\Notification;
 
 class AiSettingResource extends Resource
 {
+
+    public static function getNavigationLabel(): string
+    {
+        return __('AI Settings');
+    }
     protected static ?string $model = AiSetting::class;
+    protected static ?string $navigationGroup = 'AI';
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
 
-    protected static ?string $navigationGroup = 'AI';
-
+    
     protected static ?int $navigationSort = 4;
 
-    protected static ?string $navigationLabel = 'AI Settings';
+    
 
     public static function form(Form $form): Form
     {
@@ -31,17 +36,20 @@ class AiSettingResource extends Resource
                 Forms\Components\Section::make('Provider Details')
                     ->schema([
                         Forms\Components\Select::make('provider')
+                                                ->label(__('Provider'))
                             ->options(AiSetting::getProviders())
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->helperText('Choose the AI provider'),
 
                         Forms\Components\TextInput::make('name')
+                                                ->label(__('Name'))
                             ->required()
                             ->maxLength(255)
                             ->helperText('Display name for this provider'),
 
                         Forms\Components\Textarea::make('api_key')
+                                               ->label(__('API Key'))
                             ->label('API Key')
                             ->password()
                             ->revealable()
@@ -53,6 +61,7 @@ class AiSettingResource extends Resource
                             ->helperText('Model name (e.g., gpt-4, llama-3.3-70b-versatile, gemini-pro)'),
 
                         Forms\Components\TextInput::make('order')
+                                                ->label(__('Order'))
                             ->numeric()
                             ->default(0)
                             ->helperText('Display order'),
@@ -62,6 +71,7 @@ class AiSettingResource extends Resource
                 Forms\Components\Section::make('Status')
                     ->schema([
                         Forms\Components\Toggle::make('is_active')
+                                               ->label(__('Active'))
                             ->label('Active')
                             ->default(false)
                             ->helperText('Enable this AI provider'),
@@ -88,10 +98,12 @@ class AiSettingResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                                        ->label(__('Name'))
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\BadgeColumn::make('provider')
+                                        ->label(__('Provider'))
                     ->formatStateUsing(fn (string $state): string => AiSetting::getProviders()[$state] ?? $state)
                     ->colors([
                         'success' => 'groq',
@@ -101,6 +113,7 @@ class AiSettingResource extends Resource
                     ]),
 
                 Tables\Columns\IconColumn::make('api_key')
+                                       ->label(__('API Key'))
                     ->label('API Key')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
@@ -120,6 +133,7 @@ class AiSettingResource extends Resource
                     ->boolean(),
 
                 Tables\Columns\TextColumn::make('order')
+                                        ->label(__('Order'))
                     ->sortable(),
             ])
             ->filters([

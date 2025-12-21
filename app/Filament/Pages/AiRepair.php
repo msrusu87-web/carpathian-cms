@@ -12,10 +12,18 @@ use Filament\Actions\Action;
 class AiRepair extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
-    protected static ?string $navigationGroup = 'AI';
-    protected static ?string $navigationLabel = 'AI Repair';
     protected static ?int $navigationSort = 3;
     protected static string $view = 'filament.pages.ai-repair';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('AI');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('AI Repair');
+    }
 
     public string $repairLog = '';
     public bool $isAnalyzing = false;
@@ -34,22 +42,22 @@ class AiRepair extends Page
     {
         return [
             Action::make('runRepair')
-                ->label('Run AI Repair')
+                ->label(__('Run AI Repair'))
                 ->icon('heroicon-o-wrench-screwdriver')
                 ->color('warning')
                 ->requiresConfirmation()
-                ->modalHeading('Run AI Database Repair')
-                ->modalDescription('This will analyze and repair database issues using AI. Continue?')
+                ->modalHeading(__('Run AI Database Repair'))
+                ->modalDescription(__('This will analyze and repair database issues using AI. Continue?'))
                 ->action(fn () => $this->runAiRepair()),
             
             Action::make('optimizeTables')
-                ->label('Optimize Tables')
+                ->label(__('Optimize Tables'))
                 ->icon('heroicon-o-arrow-path')
                 ->color('success')
                 ->action(fn () => $this->optimizeTables()),
             
             Action::make('analyzeAgain')
-                ->label('Re-analyze')
+                ->label(__('Re-analyze'))
                 ->icon('heroicon-o-magnifying-glass')
                 ->color('info')
                 ->action(fn () => $this->analyzeDatabase()),
@@ -81,22 +89,22 @@ class AiRepair extends Page
             if (empty($issues)) {
                 $this->repairLog .= "\n✅ No issues found! Database is healthy.";
                 Notification::make()
-                    ->title('Analysis Complete')
-                    ->body('No issues found. Database is healthy!')
+                    ->title(__('Analysis Complete'))
+                    ->body(__('No issues found. Database is healthy!'))
                     ->success()
                     ->send();
             } else {
                 $this->repairLog .= "\n⚠️ Found " . count($issues) . " issue(s) that need attention.";
                 Notification::make()
-                    ->title('Issues Found')
-                    ->body('Found ' . count($issues) . ' issue(s). Review and repair.')
+                    ->title(__('Issues Found'))
+                    ->body(__('Found :count issue(s). Review and repair.', ['count' => count($issues)]))
                     ->warning()
                     ->send();
             }
         } catch (\Exception $e) {
             $this->repairLog .= "\n❌ Error during analysis: " . $e->getMessage();
             Notification::make()
-                ->title('Analysis Error')
+                ->title(__('Analysis Error'))
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
@@ -228,8 +236,8 @@ class AiRepair extends Page
             $this->repairLog .= "\n✅ Optimized {$count} table(s) successfully!\n";
 
             Notification::make()
-                ->title('Optimization Complete')
-                ->body("Successfully optimized {$count} tables")
+                ->title(__('Optimization Complete'))
+                ->body(__('Successfully optimized :count table(s)', ['count' => $count]))
                 ->success()
                 ->send();
 
@@ -237,7 +245,7 @@ class AiRepair extends Page
             $this->repairLog .= "\n❌ Optimization error: " . $e->getMessage() . "\n";
             
             Notification::make()
-                ->title('Optimization Error')
+                ->title(__('Optimization Error'))
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
@@ -276,8 +284,8 @@ class AiRepair extends Page
             }
 
             Notification::make()
-                ->title('AI Repair Complete')
-                ->body('AI analysis complete. Check the log for recommendations.')
+                ->title(__('AI Repair Complete'))
+                ->body(__('AI analysis complete. Check the log for recommendations.'))
                 ->success()
                 ->send();
 
@@ -285,7 +293,7 @@ class AiRepair extends Page
             $this->repairLog .= "\n❌ AI Repair error: " . $e->getMessage() . "\n";
             
             Notification::make()
-                ->title('AI Repair Error')
+                ->title(__('AI Repair Error'))
                 ->body($e->getMessage())
                 ->danger()
                 ->send();

@@ -4,7 +4,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <!-- About Column -->
             <div>
-                <img src="/images/carpathian-logo-dark.svg" alt="{{ __("messages.carpathian") }} CMS" style="width: 350px; height: auto;" class="mb-4">
+                <img src="/images/carphatian-logo-transparent.png" alt="{{ __("messages.carpathian") }} CMS" style="width: 350px; height: auto;" class="mb-4">
                 <p class="text-gray-400 mb-4">
                     {{ __('messages.professional_solutions') }}
                 </p>
@@ -68,8 +68,24 @@
             </div>
         </div>
         
-        <div class="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p class="text-gray-400">© {{ date('Y') }} {{ __('messages.carpathian') }}. {{ __('messages.all_rights_reserved') }}</p>
+        <div class="border-t border-gray-800 mt-8 pt-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <!-- Company Info -->
+                <div class="text-center md:text-left">
+                    <p class="text-gray-400">© {{ date('Y') }} <strong>Aziz Ride Sharing S.R.L.</strong> - By Carphatian</p>
+                    <p class="text-gray-500 text-sm mt-1">{{ __('messages.all_rights_reserved') }}</p>
+                </div>
+                
+                <!-- ANPC Link -->
+                <div class="flex items-center gap-3">
+                    <a href="https://anpc.ro/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity" title="ANPC - Protecția Consumatorilor">
+                        <img src="/images/anpc-logo.svg" alt="ANPC - Protecția Consumatorilor" class="h-10 w-auto">
+                    </a>
+                    <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity" title="SOL - Soluționarea Online a Litigiilor">
+                        <img src="/images/anpc-sol.svg" alt="SOL - Soluționarea Online a Litigiilor" class="h-10 w-auto">
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </footer>

@@ -12,10 +12,20 @@ use Filament\Tables\Table;
 
 class LanguageResource extends Resource
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Settings');
+    }
+
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Limbi');
+    }
     protected static ?string $model = Language::class;
+    protected static ?string $navigationGroup = 'Settings';
     protected static ?string $navigationIcon = 'heroicon-o-language';
-    protected static ?string $navigationGroup = 'Setări';
-    protected static ?string $navigationLabel = 'Limbi';
+        
     protected static ?string $pluralModelLabel = 'Limbi';
 
     public static function form(Form $form): Form
@@ -25,12 +35,14 @@ class LanguageResource extends Resource
                 Forms\Components\Section::make('Informații Limbă')
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                                               ->label(__('Name'))
                             ->label('Nume')
                             ->required()
                             ->maxLength(255)
                             ->placeholder('Ex: Română, English'),
                         
                         Forms\Components\TextInput::make('code')
+                                               ->label(__('Code'))
                             ->label('Cod Limbă')
                             ->required()
                             ->maxLength(10)
@@ -39,6 +51,7 @@ class LanguageResource extends Resource
                             ->helperText('Codul ISO 639-1 al limbii (2 caractere)'),
                         
                         Forms\Components\TextInput::make('locale')
+                                               ->label(__('Locale'))
                             ->label('Locale')
                             ->required()
                             ->maxLength(10)
@@ -46,6 +59,7 @@ class LanguageResource extends Resource
                             ->helperText('Codul locale complet (ex: ro_RO, en_US)'),
                         
                         Forms\Components\Select::make('direction')
+                                               ->label(__('Direction'))
                             ->label('Direcție Text')
                             ->options([
                                 'ltr' => 'Stânga-Dreapta (LTR)',
@@ -71,6 +85,7 @@ class LanguageResource extends Resource
                             }),
                         
                         Forms\Components\Toggle::make('is_active')
+                                               ->label(__('Active'))
                             ->label('Activă')
                             ->helperText('Doar limbile active sunt disponibile pe site')
                             ->default(true),
@@ -84,22 +99,26 @@ class LanguageResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                                       ->label(__('Name'))
                     ->label('Nume')
                     ->searchable()
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('code')
+                                       ->label(__('Code'))
                     ->label('Cod')
                     ->badge()
                     ->color('primary')
                     ->searchable(),
                 
                 Tables\Columns\TextColumn::make('locale')
+                                       ->label(__('Locale'))
                     ->label('Locale')
                     ->badge()
                     ->color('gray'),
                 
                 Tables\Columns\TextColumn::make('direction')
+                                       ->label(__('Direction'))
                     ->label('Direcție')
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => strtoupper($state))
@@ -114,6 +133,7 @@ class LanguageResource extends Resource
                     ->falseColor('gray'),
                 
                 Tables\Columns\IconColumn::make('is_active')
+                                       ->label(__('Active'))
                     ->label('Activă')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
@@ -122,6 +142,7 @@ class LanguageResource extends Resource
                     ->falseColor('danger'),
                 
                 Tables\Columns\TextColumn::make('created_at')
+                                       ->label(__('Created At'))
                     ->label('Creată la')
                     ->dateTime('d M Y, H:i')
                     ->sortable()
@@ -135,6 +156,12 @@ class LanguageResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('edit_translations')
+                    ->label('Editează Traduceri')
+                    ->icon('heroicon-o-language')
+                    ->color('success')
+                    ->url(fn () => LanguageResource::getUrl('translations'))
+                    ->tooltip('Editează fișierele de traducere'),
                 Tables\Actions\Action::make('set_default')
                     ->label('Setează Implicită')
                     ->icon('heroicon-o-star')
@@ -171,6 +198,7 @@ class LanguageResource extends Resource
             'index' => Pages\ListLanguages::route('/'),
             'create' => Pages\CreateLanguage::route('/create'),
             'edit' => Pages\EditLanguage::route('/{record}/edit'),
+            'translations' => Pages\ManageTranslations::route('/translations'),
         ];
     }
 }

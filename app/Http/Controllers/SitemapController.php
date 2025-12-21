@@ -25,6 +25,28 @@ class SitemapController extends Controller
                 ->setPriority(1.0)
         );
         
+        // Add static important pages
+        $sitemap->add(
+            Url::create('/portfolios')
+                ->setLastModificationDate(now())
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                ->setPriority(0.9)
+        );
+        
+        $sitemap->add(
+            Url::create('/blog')
+                ->setLastModificationDate(now())
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                ->setPriority(0.9)
+        );
+        
+        $sitemap->add(
+            Url::create('/contact')
+                ->setLastModificationDate(now())
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                ->setPriority(0.8)
+        );
+        
         // Add published pages
         if (Schema::hasTable('pages')) {
             Page::where('status', 'published')
@@ -107,6 +129,28 @@ class SitemapController extends Controller
                 ->setLastModificationDate(now())
                 ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
                 ->setPriority(1.0)
+        );
+        
+        // Add static important pages
+        $sitemap->add(
+            Url::create('/portfolios')
+                ->setLastModificationDate(now())
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                ->setPriority(0.9)
+        );
+        
+        $sitemap->add(
+            Url::create('/blog')
+                ->setLastModificationDate(now())
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                ->setPriority(0.9)
+        );
+        
+        $sitemap->add(
+            Url::create('/contact')
+                ->setLastModificationDate(now())
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                ->setPriority(0.8)
         );
         
         if (Schema::hasTable('pages')) {

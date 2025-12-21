@@ -35,4 +35,20 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | SEO & Analytics Services
+    |--------------------------------------------------------------------------
+    */
+
+    'google' => [
+        'analytics_id' => env('GOOGLE_ANALYTICS_ID'),
+        'search_console_verification' => env('GOOGLE_SEARCH_CONSOLE_VERIFICATION'),
+        'tag_manager_id' => env('GOOGLE_TAG_MANAGER_ID'),
+    ],
+
+    'bing' => [
+        'verification' => env('BING_WEBMASTER_VERIFICATION'),
+    ],
+
 ];

@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('messages.shop') }} - {{ config('app.name') }}</title>
+    @php
+        $categoryName = isset($category) ? $category->getTranslation('name', app()->getLocale()) : __('messages.shop');
+    @endphp
+    @include('partials.seo-head', [
+        'title' => $categoryName . ' - ' . __('messages.shop') . ' | Carphatian CMS',
+        'description' => __('messages.shop_seo_description'),
+        'keywords' => $categoryName . ', servicii web, dezvoltare web, Carphatian CMS',
+        'breadcrumbs' => [
+            ['name' => __('messages.home'), 'url' => url('/')],
+            ['name' => __('messages.shop'), 'url' => url('/shop')],
+            ['name' => $categoryName, 'url' => url()->current()]
+        ]
+    ])
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,7 +25,7 @@
         <!-- Breadcrumb -->
         <nav class="text-sm mb-6">
             <ol class="flex items-center space-x-2 text-gray-600">
-                <li><a href="/" class="hover:text-blue-600">Acasă</a></li>
+                <li><a href="/" class="hover:text-blue-600">{{ __('messages.home') }}</a></li>
                 <li><i class="fas fa-chevron-right text-xs"></i></li>
                 <li class="text-blue-600 font-medium">Shop</li>
             </ol>
@@ -27,7 +37,7 @@
                 <!-- Mobile Toggle -->
                 <button @click="mobileMenuOpen = !mobileMenuOpen" 
                         class="lg:hidden w-full bg-white px-4 py-3 rounded-lg shadow mb-4 flex items-center justify-between">
-                    <span class="font-semibold"><i class="fas fa-filter mr-2"></i> Filtre & Categorii</span>
+                    <span class="font-semibold"><i class="fas fa-filter mr-2"></i> {{ __('messages.filters_and_categories') }}</span>
                     <i class="fas fa-chevron-down" :class="{ 'rotate-180': mobileMenuOpen }"></i>
                 </button>
 
@@ -36,13 +46,13 @@
                     <div class="bg-white rounded-lg shadow p-6">
                         <h3 class="font-bold text-lg mb-4 flex items-center">
                             <i class="fas fa-th-large mr-2 text-blue-600"></i>
-                            Categorii
+                            {{ __('messages.categories') }}
                         </h3>
                         <ul class="space-y-2">
                             <li>
                                 <a href="{{ route('shop.index') }}" 
                                    class="block py-2 px-3 rounded {{ !request('category') ? 'bg-blue-50 text-blue-600 font-semibold' : 'hover:bg-gray-50' }}">
-                                    <i class="fas fa-border-all mr-2"></i> Toate Serviciile
+                                    <i class="fas fa-border-all mr-2"></i> {{ __('messages.all_services') }}
                                 </a>
                             </li>
                             @foreach($categories->whereNull('parent_id') as $parentCategory)
@@ -78,22 +88,22 @@
                     <div class="bg-white rounded-lg shadow p-6">
                         <h3 class="font-bold text-lg mb-4 flex items-center">
                             <i class="fas fa-tags mr-2 text-green-600"></i>
-                            Preț
+                            {{ __('messages.price') }}
                         </h3>
                         <form method="GET" action="{{ route('shop.index') }}" class="space-y-3">
                             <input type="hidden" name="category" value="{{ request('category') }}">
                             <div>
-                                <label class="text-sm text-gray-600">De la (RON)</label>
+                                <label class="text-sm text-gray-600">{{ __('messages.from') }} (RON)</label>
                                 <input type="number" name="min_price" value="{{ request('min_price') }}" 
                                        class="w-full border rounded px-3 py-2 mt-1">
                             </div>
                             <div>
-                                <label class="text-sm text-gray-600">Până la (RON)</label>
+                                <label class="text-sm text-gray-600">{{ __('messages.up_to') }} (RON)</label>
                                 <input type="number" name="max_price" value="{{ request('max_price') }}" 
                                        class="w-full border rounded px-3 py-2 mt-1">
                             </div>
                             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-                                <i class="fas fa-filter mr-2"></i> Aplică Filtru
+                                <i class="fas fa-filter mr-2"></i> {{ __('messages.apply_filters') }}
                             </button>
                         </form>
                     </div>
@@ -103,8 +113,8 @@
                         <div class="flex items-start">
                             <i class="fas fa-star text-yellow-500 text-2xl mr-3"></i>
                             <div>
-                                <h4 class="font-semibold text-gray-800 mb-1">Servicii Recomandate</h4>
-                                <p class="text-sm text-gray-600">Cele mai populare servicii pentru afacerea ta</p>
+                                <h4 class="font-semibold text-gray-800 mb-1">{{ __('messages.recommended_services') }}</h4>
+                                <p class="text-sm text-gray-600">{{ __('messages.most_popular_services') }}</p>
                             </div>
                         </div>
                     </div>
@@ -123,21 +133,21 @@
                                 @endphp
                                 {{ $currentCat ? $currentCat->getTranslation('name', app()->getLocale()) : 'Shop' }}
                             @else
-                                Servicii Web Design
+                                {{ __('messages.web_design_services') }}
                             @endif
                         </h1>
-                        <p class="text-gray-600 mt-1">{{ $products->total() }} servicii disponibile</p>
+                        <p class="text-gray-600 mt-1">{{ $products->total() }} {{ __('messages.services_available') }}</p>
                     </div>
 
                     <!-- Sort -->
                     <form method="GET" class="flex items-center gap-2">
                         <input type="hidden" name="category" value="{{ request('category') }}">
-                        <label class="text-sm text-gray-600">Sortează:</label>
+                        <label class="text-sm text-gray-600">{{ __('messages.sort_by') }}:</label>
                         <select name="sort" onchange="this.form.submit()" 
                                 class="border rounded px-3 py-2 text-sm">
-                            <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Nume (A-Z)</option>
-                            <option value="price" {{ request('sort') == 'price' ? 'selected' : '' }}>Preț (Crescător)</option>
-                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Cele mai noi</option>
+                            <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>{{ __('messages.name') }} (A-Z)</option>
+                            <option value="price" {{ request('sort') == 'price' ? 'selected' : '' }}>{{ __('messages.price') }} ({{ __('messages.ascending') }})</option>
+                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>{{ __('messages.newest') }}</option>
                         </select>
                     </form>
                 </div>
@@ -150,7 +160,7 @@
                                 <!-- Image -->
                                 <div class="relative overflow-hidden h-56">
                                     @php
-                                        $productImages = $product->images ? json_decode($product->images, true) : [];
+                                        $productImages = is_string($product->images) ? json_decode($product->images, true) : ($product->images ?? []);
                                         $firstImage = !empty($productImages) ? $productImages[0] : null;
                                     @endphp
                                     @if($firstImage)
@@ -190,7 +200,7 @@
                                     </h3>
                                     
                                     <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                                        {{ Str::limit($product->getTranslation('description', app()->getLocale()), 120) }}
+                                        {{ Str::limit(strip_tags($product->getTranslation('description', app()->getLocale())), 120) }}
                                     </p>
                                     
                                     <!-- Price -->
@@ -220,10 +230,10 @@
                     <!-- Empty State -->
                     <div class="bg-white rounded-lg shadow text-center py-16 px-6">
                         <i class="fas fa-search text-gray-300 text-6xl mb-4"></i>
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Nu am găsit servicii</h3>
-                        <p class="text-gray-600 mb-6">Încearcă să modifici filtrele sau caută în alte categorii</p>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">{{ __('messages.no_services_found') }}</h3>
+                        <p class="text-gray-600 mb-6">{{ __('messages.try_adjust_filters_or_browse') }}</p>
                         <a href="{{ route('shop.index') }}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                            <i class="fas fa-redo mr-2"></i> Resetează Filtrele
+                            <i class="fas fa-redo mr-2"></i> {{ __('messages.reset_filters') }}
                         </a>
                     </div>
                 @endif

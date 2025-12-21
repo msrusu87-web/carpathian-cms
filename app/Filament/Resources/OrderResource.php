@@ -14,12 +14,23 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderResource extends Resource
+
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Shop');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Orders');
+    }
+
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationGroup = 'Shop';
 
-    protected static ?string $navigationGroup = 'E-commerce';
-
+    
     protected static ?int $navigationSort = 4;
     protected static ?string $model = Order::class;
 
@@ -31,6 +42,7 @@ class OrderResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('user_id')
+                                        ->label(__('User'))
                     ->relationship('user', 'name'),
                 Forms\Components\TextInput::make('customer_name')
                     ->required()
@@ -85,6 +97,7 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('order_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
+                                        ->label(__('Author'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('customer_name')
@@ -112,10 +125,12 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('order_status')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                                        ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                                        ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -141,10 +156,6 @@ class OrderResource extends Resource
         ];
     }
 
-    public static function getNavigationGroup(): ?string
-    {
-        return __('messages.shop');
-    }
 
     public static function shouldRegisterNavigation(): bool
     {

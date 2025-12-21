@@ -13,13 +13,18 @@ use Filament\Tables\Table;
 class ContactSettingResource extends Resource
 {
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Contact Settings');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
 
-    protected static ?string $navigationGroup = 'Global Settings';
-
+    
     protected static ?int $navigationSort = 2;
     protected static ?string $model = ContactSetting::class;
-    protected static ?string $navigationLabel = 'Contact Settings';
+    protected static ?string $navigationGroup = 'Settings';
+    
 
     public static function form(Form $form): Form
     {
@@ -32,10 +37,12 @@ class ContactSettingResource extends Resource
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('email')
+                                                ->label(__('Email'))
                             ->email()
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('phone')
+                                                ->label(__('Phone'))
                             ->tel()
                             ->maxLength(255),
                     ])->columns(3),
@@ -102,15 +109,18 @@ class ContactSettingResource extends Resource
                     ->label('Company')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                                        ->label(__('Email'))
                     ->searchable()
                     ->copyable(),
                 Tables\Columns\TextColumn::make('phone')
+                                        ->label(__('Phone'))
                     ->searchable()
                     ->copyable(),
                 Tables\Columns\IconColumn::make('receive_emails')
                     ->label('Emails')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('updated_at')
+                                       ->label(__('Updated At'))
                     ->label('Last Updated')
                     ->dateTime()
                     ->sortable(),

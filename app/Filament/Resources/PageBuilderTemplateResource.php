@@ -12,10 +12,19 @@ use Filament\Tables\Table;
 
 class PageBuilderTemplateResource extends Resource
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Design');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Page Builder Templates');
+    }
+
     protected static ?string $model = PageBuilderTemplate::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Design';
-
+    
     public static function form(Form $form): Form
     {
         return $form

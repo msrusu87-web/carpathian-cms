@@ -23,24 +23,42 @@ class CartController extends Controller
     {
         $product = Product::findOrFail($id);
         $quantity = $request->input('quantity', 1);
+        $buyNow = $request->input('buy_now', false);
         
         $cart = session()->get('cart', []);
         
         if (isset($cart[$id])) {
             $cart[$id]['quantity'] += $quantity;
         } else {
+            // Get first image from images array
+            $images = is_string($product->images) ? json_decode($product->images, true) : ($product->images ?? []);
+            $firstImage = !empty($images) ? $images[0] : null;
+            
             $cart[$id] = [
                 'name' => $product->name,
+                'sku' => $product->sku ?? 'N/A',
                 'price' => $product->sale_price ?? $product->price,
                 'quantity' => $quantity,
-                'image' => $product->featured_image,
+                'image' => $firstImage,
                 'slug' => $product->slug
             ];
         }
         
         session()->put('cart', $cart);
+        session()->save(); // Ensure session is saved
         
-        return back()->with('success', 'Product added to cart!');
+        // Calculate total count for notification
+        $totalCount = 0;
+        foreach ($cart as $item) {
+            $totalCount += $item['quantity'];
+        }
+        
+        // If "Buy Now", redirect to checkout, otherwise to cart
+        if ($buyNow) {
+            return redirect()->route('checkout.index')->with('success', "Proceeding to checkout with {$totalCount} item(s)");
+        }
+        
+        return redirect()->route('cart.index')->with('success', "Product added! Cart has {$totalCount} item(s)");
     }
 
     public function update(Request $request, $id)

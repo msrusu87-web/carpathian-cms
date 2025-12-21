@@ -12,10 +12,19 @@ use Filament\Tables\Table;
 
 class ProductVariantResource extends Resource
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Shop');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Product Variants');
+    }
+
     protected static ?string $model = ProductVariant::class;
     protected static ?string $navigationIcon = 'heroicon-o-squares-plus';
-    protected static ?string $navigationGroup = 'E-commerce';
-
+    
     public static function form(Form $form): Form
     {
         return $form

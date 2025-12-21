@@ -1,6 +1,6 @@
 @php
     $content = is_string($widget->content) ? json_decode($widget->content, true) : $widget->content;
-    $heading = $content['heading'] ?? 'Ultimele Articole';
+    $heading = $content['heading'] ?? __('messages.latest_blog_articles');
     $subheading = $content['subheading'] ?? 'Rămâi la curent cu cele mai noi articole';
     $limit = $content['limit'] ?? 3;
     $posts = \App\Models\Post::where('status', 'published')->latest()->take($limit)->get();
@@ -92,7 +92,7 @@
                             <!-- Read More Button -->
                             <a href="{{ route('post.show', $post->slug) }}" 
                                class="inline-flex items-center text-blue-600 hover:text-blue-700 font-bold group/link">
-                                Citește Mai Mult
+                                {{ __('messages.read_more') }}
                                 <i class="fas fa-arrow-right ml-2 transform group-hover/link:translate-x-2 transition-transform"></i>
                             </a>
                         </div>
@@ -125,7 +125,7 @@
             <div class="text-center" data-aos="fade-up" data-aos-delay="400">
                 <a href="{{ route('blog') }}" 
                    class="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-5 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 group">
-                    Vezi Toate Articolele
+                    {{ __('messages.view_all_articles') }}
                     <i class="fas fa-arrow-right ml-3 transform group-hover:translate-x-2 transition-transform"></i>
                 </a>
             </div>

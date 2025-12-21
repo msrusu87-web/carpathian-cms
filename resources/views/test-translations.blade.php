@@ -27,8 +27,8 @@
                     <p class="font-bold text-lg">{{ __('messages.home') }}</p>
                 </div>
                 <div class="border rounded p-4">
-                    <p class="text-sm text-gray-600">about_us</p>
-                    <p class="font-bold text-lg">{{ __('messages.about_us') }}</p>
+                    <p class="text-sm text-gray-600">about</p>
+                    <p class="font-bold text-lg">{{ __('messages.about') }}</p>
                 </div>
                 <div class="border rounded p-4">
                     <p class="text-sm text-gray-600">services</p>

@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class Widget extends Model
 {
+    use HasTranslations;
+
+    public $translatable = ['title', 'content'];
+
     protected $fillable = [
         'title',
         'type',
@@ -17,7 +22,11 @@ class Widget extends Model
 
     protected $casts = [
         'settings' => 'array',
-        'order' => 'integer'
+        'order' => 'integer',
+        // Historically this has existed as either an enum ('active'/'inactive')
+        // or a boolean/integer in some deployments. Keep it as a string to avoid
+        // silently coercing values.
+        'status' => 'string',
     ];
 
     public static function getTypes(): array
@@ -35,6 +44,15 @@ class Widget extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('status', 'active')->orderBy('order');
+        return $query
+            ->where(function ($q) {
+                // Support enum-based status
+                $q->where('status', 'active')
+                  // Support boolean/integer-based status
+                  ->orWhere('status', 1)
+                  ->orWhere('status', '1')
+                  ->orWhere('status', true);
+            })
+            ->orderBy('order');
     }
 }

@@ -20,8 +20,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Set locale from session or default to Romanian
-        $locale = session('locale', config('app.locale', 'ro'));
-        App::setLocale($locale);
+        // Set locale from session, cookie, or default to Romanian
+        $locale = session('locale') 
+            ?? request()->cookie('locale') 
+            ?? config('app.locale', 'ro');
+            
+        // Validate locale is supported
+        if (in_array($locale, ['en', 'ro', 'es', 'it', 'de', 'fr'])) {
+            App::setLocale($locale);
+            if (!session()->has('locale')) {
+                session(['locale' => $locale]);
+            }
+        } else {
+            App::setLocale('ro');
+            session(['locale' => 'ro']);
+        }
     }
 }

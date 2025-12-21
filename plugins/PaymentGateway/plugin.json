@@ -1,0 +1,43 @@
+{
+  "name": "Payment Gateway",
+  "slug": "payment-gateway",
+  "version": "1.0.0",
+  "author": "Carphatian CMS",
+  "description": "Sistem complet de gateway-uri de plată: Stripe, PayPal, EuPlatesc, Netopia, Transfer Bancar. Suport pentru plăți rapide prin link și plăți normale pentru produse.",
+  "requires": {
+    "php": ">=8.1",
+    "laravel": ">=11.0"
+  },
+  "features": [
+    "Gateway-uri multiple (Stripe, PayPal, EuPlatesc, Netopia, Transfer Bancar)",
+    "Plăți rapide prin link",
+    "Plăți normale pentru produse",
+    "Configurare credențiale securizată",
+    "Management comisioane",
+    "Transfer bancar cu IBAN/SWIFT",
+    "Validare IBAN și SWIFT/BIC"
+  ],
+  "config": {
+    "admin_navigation": {
+      "group": "Shop",
+      "label": "Gateway-uri de plată",
+      "icon": "heroicon-o-credit-card",
+      "sort": 10
+    },
+    "payment_types": [
+      "quick_link",
+      "product_checkout",
+      "bank_transfer"
+    ],
+    "supported_providers": [
+      "stripe",
+      "paypal",
+      "euplatesc",
+      "netopia",
+      "bank_transfer",
+      "mollie",
+      "razorpay",
+      "custom"
+    ]
+  }
+}

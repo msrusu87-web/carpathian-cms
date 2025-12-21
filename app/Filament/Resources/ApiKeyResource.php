@@ -13,10 +13,19 @@ use Illuminate\Support\Str;
 
 class ApiKeyResource extends Resource
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Settings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Api Keys');
+    }
+
     protected static ?string $model = ApiKey::class;
     protected static ?string $navigationIcon = 'heroicon-o-key';
-    protected static ?string $navigationGroup = 'Setări';
-    protected static ?int $navigationSort = 1;
+        protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -24,10 +33,12 @@ class ApiKeyResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->schema([
                     Forms\Components\TextInput::make('name')
+                                            ->label(__('Name'))
                         ->required()
                         ->maxLength(255),
                     
                     Forms\Components\TextInput::make('key')
+                                            ->label(__('Key'))
                         ->default(fn () => 'ak_' . Str::random(32))
                         ->required()
                         ->maxLength(255)
@@ -44,6 +55,7 @@ class ApiKeyResource extends Resource
                         ->suggestions(['read', 'write', 'delete', 'admin']),
                     
                     Forms\Components\Toggle::make('is_active')
+                                            ->label(__('Active'))
                         ->default(true),
                     
                     Forms\Components\DateTimePicker::make('expires_at'),

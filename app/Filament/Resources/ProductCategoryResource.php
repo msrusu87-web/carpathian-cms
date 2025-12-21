@@ -15,11 +15,16 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductCategoryResource extends Resource
 {
+    public static function getNavigationLabel(): string
+    {
+        return __('Product Categories');
+    }
+
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $navigationGroup = 'Shop';
 
-    protected static ?string $navigationGroup = 'E-commerce';
-
+    
     protected static ?int $navigationSort = 2;
     protected static ?string $model = ProductCategory::class;
 
@@ -28,22 +33,28 @@ class ProductCategoryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                                        ->label(__('Name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('slug')
+                                        ->label(__('Slug'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
+                                        ->label(__('Description'))
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image')
                     ->image(),
                 Forms\Components\Select::make('parent_id')
+                                        ->label(__('Parent'))
                     ->relationship('parent', 'name'),
                 Forms\Components\TextInput::make('order')
+                                        ->label(__('Order'))
                     ->required()
                     ->numeric()
                     ->default(0),
                 Forms\Components\Toggle::make('is_active')
+                                        ->label(__('Active'))
                     ->required(),
             ]);
     }
@@ -53,23 +64,30 @@ class ProductCategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                                        ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                                        ->label(__('Slug'))
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('parent.name')
+                                        ->label(__('Parent Category'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order')
+                                        ->label(__('Order'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
+                                        ->label(__('Active'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                                        ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                                        ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

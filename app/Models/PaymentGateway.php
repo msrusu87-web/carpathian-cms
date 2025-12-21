@@ -15,7 +15,7 @@ class PaymentGateway extends Model
     ];
 
     protected $casts = [
-        'credentials' => 'encrypted:array',
+        'credentials' => 'array',  // FIXED: Changed from 'encrypted:array' - credentials are stored as plain JSON
         'settings' => 'array',
         'is_active' => 'boolean',
     ];

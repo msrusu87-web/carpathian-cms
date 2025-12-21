@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Final Login Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .log {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .log.error {
+            border-left-color: #f44336;
+        }
+
+        .log.warning {
+            border-left-color: #ff9800;
+        }
+
+        .log.success {
+            border-left-color: #00ff00;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .status.success {
+            background: #4CAF50;
+        }
+
+        .status.fail {
+            background: #f44336;
+        }
+
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #logs {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔐 CARPHATIAN CMS - LOGIN TESTER</h1>
+
+        <div class="panel">
+            <h2>Quick Status Check</h2>
+            <p>Current Auth: <span id="authStatus">Checking...</span></p>
+            <p>Session ID: <span id="sessionId">-</span></p>
+            <div class="controls">
+                <button onclick="checkStatus()">🔄 Refresh Status</button>
+                <button onclick="clearLogs()">🗑️ Clear Logs</button>
+                <button onclick="clearAllCookies()">🍪 Delete All Cookies</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Login Form</h2>
+            <input type="email" id="email" value="msrusu87@gmail.com" placeholder="Email">
+            <input type="password" id="password" value="Maria1940!!!" placeholder="Password">
+            <div class="controls">
+                <button onclick="performLogin()">🚀 LOGIN NOW</button>
+                <button onclick="testAdmin()">🎛️ Test Admin Access</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Activity Log</h2>
+            <div id="logs"></div>
+        </div>
+    </div>
+
+    <script>
+        function log(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.className = 'log ' + type;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${msg}`;
+            document.getElementById('logs').appendChild(div);
+            document.getElementById('logs').scrollTop = document.getElementById('logs').scrollHeight;
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+        }
+
+        async function checkStatus() {
+            log('Checking authentication status...');
+            try {
+                const resp = await fetch('/auth-test');
+                const data = await resp.json();
+
+                const authSpan = document.getElementById('authStatus');
+                const sessSpan = document.getElementById('sessionId');
+
+                if (data.authenticated) {
+                    authSpan.innerHTML = `<span class="status success">✅ LOGGED IN as ${data.email}</span>`;
+                    sessSpan.textContent = data.session_id.substring(0, 20) + '...';
+                    log(`✅ Authenticated as: ${data.email} (User ID: ${data.user_id})`, 'success');
+                    log(`   Roles: ${data.roles.join(', ')}`, 'success');
+                    log(`   Can access admin: ${data.canAccessAdmin ? 'YES' : 'NO'}`, 'success');
+                } else {
+                    authSpan.innerHTML = '<span class="status fail">❌ NOT LOGGED IN</span>';
+                    sessSpan.textContent = data.session_id ? data.session_id.substring(0, 20) + '...' : 'none';
+                    log('❌ Not authenticated', 'error');
+                }
+            } catch (e) {
+                log('❌ ERROR: ' + e.message, 'error');
+            }
+        }
+
+        async function performLogin() {
+            log('═══════════════════════════════════════', 'warning');
+            log('🚀 STARTING LOGIN PROCESS', 'warning');
+
+            // Step 1: Get CSRF token
+            log('📝 Step 1: Fetching CSRF token from /login...');
+            try {
+                const resp1 = await fetch('/login', { credentials: 'include' });
+                const html = await resp1.text();
+                const match = html.match(/name="_token"\s+value="([^"]+)"/);
+
+                if (!match) {
+                    log('❌ FAILED: No CSRF token found in login page!', 'error');
+                    return;
+                }
+
+                const token = match[1];
+                log(`✅ Got CSRF token: ${token.substring(0, 25)}...`, 'success');
+
+                // Step 2: Submit login
+                log('📤 Step 2: Submitting login credentials...');
+                const formData = new FormData();
+                formData.append('_token', token);
+                formData.append('email', document.getElementById('email').value);
+                formData.append('password', document.getElementById('password').value);
+                formData.append('remember', '1');
+
+                const resp2 = await fetch('/login', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include',
+                    redirect: 'manual'
+                });
+
+                log(`📊 Response: ${resp2.status} ${resp2.statusText}`);
+
+                // Step 3: Check result
+                if (resp2.status === 0) {
+                    // Opaque response (redirected)
+                    log('🔄 Login succeeded - browser redirected', 'success');
+                    log('⏳ Waiting 2 seconds...', 'warning');
+                    setTimeout(() => {
+                        log('🔍 Checking auth status after login...', 'warning');
+                        checkStatus();
+                    }, 2000);
+                } else if (resp2.status >= 300 && resp2.status < 400) {
+                    const location = resp2.headers.get('location');
+                    log(`✅ Login successful! Redirecting to: ${location}`, 'success');
+                    setTimeout(() => window.location = location, 1000);
+                } else {
+                    const text = await resp2.text();
+                    if (text.includes('419')) {
+                        log('❌ 419 CSRF TOKEN EXPIRED!', 'error');
+                        log('💡 Try refreshing the page first', 'warning');
+                    } else if (text.includes('invalid') || text.includes('credentials')) {
+                        log('❌ Invalid credentials', 'error');
+                    } else {
+                        log('❌ Login failed with unknown error', 'error');
+                        console.log('Response:', text.substring(0, 500));
+                    }
+                }
+            } catch (e) {
+                log('❌ EXCEPTION: ' + e.message, 'error');
+            }
+        }
+
+        async function testAdmin() {
+            log('🎛️ Testing admin panel access...');
+            try {
+                const resp = await fetch('/admin', { credentials: 'include', redirect: 'manual' });
+                if (resp.status === 0 || resp.status === 200) {
+                    log('✅ Admin panel accessible! Opening...', 'success');
+                    setTimeout(() => window.location = '/admin', 500);
+                } else if (resp.status >= 300 && resp.status < 400) {
+                    const loc = resp.headers.get('location');
+                    log(`🔄 Redirected to: ${loc}`, 'warning');
+                    if (loc && loc.includes('login')) {
+                        log('❌ Not logged in - need to login first', 'error');
+                    }
+                } else {
+                    log(`❌ Admin access denied: HTTP ${resp.status}`, 'error');
+                }
+            } catch (e) {
+                log('❌ ERROR: ' + e.message, 'error');
+            }
+        }
+
+        function clearAllCookies() {
+            if (confirm('This will delete ALL cookies and you will be logged out. Continue?')) {
+                log('🍪 Deleting all cookies...', 'warning');
+                document.cookie.split(";").forEach(c => {
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                });
+                log('✅ Cookies cleared! Refreshing page...', 'success');
+                setTimeout(() => location.reload(), 1000);
+            }
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            log('🔧 Login Tester loaded', 'success');
+            checkStatus();
+        });
+    </script>
+</body>
+
+</html>

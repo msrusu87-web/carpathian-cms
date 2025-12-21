@@ -1,7 +1,7 @@
 @php
     $content = is_string($widget->content) ? json_decode($widget->content, true) : $widget->content;
-    $heading = $content['heading'] ?? 'Products Showcase';
-    $subheading = $content['subheading'] ?? 'Descoperă soluțiile noastre';
+    $heading = __('messages.products_showcase');
+    $subheading = __('messages.products_subtitle');
     $limit = $content['limit'] ?? 6;
     
     // Get actual shop products with images
@@ -29,7 +29,7 @@
                         <!-- Product Image -->
                         <div class="relative h-56 overflow-hidden group">
                             @php
-                                $productImages = $product->images ? json_decode($product->images, true) : [];
+                                $productImages = is_string($product->images) ? json_decode($product->images, true) : ($product->images ?? []);
                                 $firstImage = !empty($productImages) ? $productImages[0] : null;
                             @endphp
                             
@@ -73,8 +73,8 @@
                             
                             @if($product->getTranslation('description', app()->getLocale()))
                             <p class="text-gray-600 mb-4 text-sm line-clamp-2">
-                                {{ Str::limit($product->getTranslation('description', app()->getLocale()), 80) }}
-                            </p>
+                                {{ Str::limit(strip_tags($product->getTranslation('description', app()->getLocale())), 80) }}
+                                </p>
                             @endif
                             
                             <!-- Price -->
@@ -99,7 +99,7 @@
                             <a href="{{ route('shop.show', $product->slug) }}" 
                                class="block w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-center py-3 px-6 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-xl">
                                 <i class="fas fa-eye mr-2"></i>
-                                Vezi Detalii
+                                {{ __('messages.view_details') }}
                             </a>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                 <a href="{{ route('shop.index') }}" 
                    class="inline-flex items-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                     <i class="fas fa-shopping-bag mr-3"></i>
-                    Vezi Toate Produsele
+                    {{ __('messages.view_all_products') }}
                     <i class="fas fa-arrow-right ml-3"></i>
                 </a>
             </div>
@@ -119,7 +119,7 @@
                 <div class="inline-flex items-center justify-center w-24 h-24 bg-gray-200 rounded-full mb-6">
                     <i class="fas fa-box-open text-4xl text-gray-400"></i>
                 </div>
-                <p class="text-gray-500 text-lg">Nu există produse disponibile încă.</p>
+                <p class="text-gray-500 text-lg">{{ __('messages.no_products_available') }}</p>
             </div>
         @endif
     </div>

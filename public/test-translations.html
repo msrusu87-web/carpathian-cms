@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Tester - Carpathian CMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .result-box { 
+            border: 2px solid #e5e7eb; 
+            padding: 1rem; 
+            margin: 0.5rem 0; 
+            border-radius: 0.5rem;
+            background: #f9fafb;
+        }
+        .lang-btn { 
+            transition: all 0.3s; 
+        }
+        .lang-btn:hover { 
+            transform: scale(1.05); 
+        }
+        .lang-btn.active {
+            background: linear-gradient(to right, #2563eb, #7c3aed);
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🌍 Translation Tester</h1>
+            <p class="text-gray-600 mb-8">Test Features Section translations across all languages</p>
+
+            <!-- Language Buttons -->
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-8">
+                <button onclick="testLanguage('ro')" class="lang-btn bg-blue-100 text-blue-800 px-4 py-3 rounded-lg font-semibold hover:bg-blue-200">
+                    🇷🇴 Română
+                </button>
+                <button onclick="testLanguage('en')" class="lang-btn bg-blue-100 text-blue-800 px-4 py-3 rounded-lg font-semibold hover:bg-blue-200">
+                    🇬🇧 English
+                </button>
+                <button onclick="testLanguage('de')" class="lang-btn bg-blue-100 text-blue-800 px-4 py-3 rounded-lg font-semibold hover:bg-blue-200">
+                    🇩🇪 Deutsch
+                </button>
+                <button onclick="testLanguage('fr')" class="lang-btn bg-blue-100 text-blue-800 px-4 py-3 rounded-lg font-semibold hover:bg-blue-200">
+                    🇫🇷 Français
+                </button>
+                <button onclick="testLanguage('it')" class="lang-btn bg-blue-100 text-blue-800 px-4 py-3 rounded-lg font-semibold hover:bg-blue-200">
+                    🇮🇹 Italiano
+                </button>
+                <button onclick="testLanguage('es')" class="lang-btn bg-blue-100 text-blue-800 px-4 py-3 rounded-lg font-semibold hover:bg-blue-200">
+                    🇪🇸 Español
+                </button>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="space-y-4">
+                <div class="text-center text-gray-400 py-8">
+                    <p class="text-lg">👆 Click a language button to test translations</p>
+                </div>
+            </div>
+
+            <!-- Homepage Preview -->
+            <div class="mt-8 pt-8 border-t">
+                <h2 class="text-2xl font-bold mb-4">🏠 Current Homepage Preview</h2>
+                <iframe id="homepage-frame" src="/" class="w-full h-96 border-2 rounded-lg"></iframe>
+                <div class="mt-4 flex gap-2">
+                    <button onclick="updateFrame('ro')" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">RO</button>
+                    <button onclick="updateFrame('en')" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">EN</button>
+                    <button onclick="updateFrame('de')" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">DE</button>
+                    <button onclick="updateFrame('fr')" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">FR</button>
+                    <button onclick="updateFrame('it')" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">IT</button>
+                    <button onclick="updateFrame('es')" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">ES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'ro';
+
+        function updateFrame(lang) {
+            document.getElementById('homepage-frame').src = '/?locale=' + lang + '&t=' + Date.now();
+        }
+
+        async function testLanguage(lang) {
+            currentLang = lang;
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="text-center py-4"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-gray-600">Loading...</p></div>';
+
+            try {
+                // Test homepage
+                const response = await fetch('/?locale=' + lang);
+                const html = await response.text();
+                
+                // Parse HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Extract features section text
+                const featuresSection = doc.querySelector('section');
+                
+                let results = `
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg mb-4">
+                        <h3 class="text-2xl font-bold mb-2">Testing: ${getLangName(lang)}</h3>
+                        <p class="text-sm opacity-90">URL: https://carphatian.ro/?locale=${lang}</p>
+                    </div>
+                `;
+                
+                // Check for specific Romanian texts
+                const checks = [
+                    {
+                        search: 'Funcționalități Puternice',
+                        expected: getExpectedTranslation(lang, 'features_title'),
+                        context: 'Features Title'
+                    },
+                    {
+                        search: 'Descoperă funcționalitățile care fac platforma',
+                        expected: getExpectedTranslation(lang, 'features_discover'),
+                        context: 'Features Subtitle'
+                    },
+                    {
+                        search: 'Design Modern',
+                        expected: getExpectedTranslation(lang, 'modern_design'),
+                        context: 'Modern Design'
+                    },
+                    {
+                        search: 'Interfață intuitivă și atrăgătoare',
+                        expected: getExpectedTranslation(lang, 'modern_design_desc'),
+                        context: 'Modern Design Description'
+                    },
+                    {
+                        search: 'Performanță Ridicată',
+                        expected: getExpectedTranslation(lang, 'high_performance'),
+                        context: 'High Performance'
+                    },
+                    {
+                        search: 'Integrare AI',
+                        expected: getExpectedTranslation(lang, 'ai_integration'),
+                        context: 'AI Integration'
+                    },
+                    {
+                        search: 'Din Blog',
+                        expected: getExpectedTranslation(lang, 'from_blog'),
+                        context: 'From Blog'
+                    }
+                ];
+                
+                checks.forEach(check => {
+                    const found = html.includes(check.search);
+                    const translatedFound = html.includes(check.expected);
+                    
+                    if (lang === 'ro' && found) {
+                        results += `
+                            <div class="result-box border-green-300 bg-green-50">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl">✅</span>
+                                    <div class="flex-1">
+                                        <p class="font-bold text-green-800">${check.context}</p>
+                                        <p class="text-sm text-green-600">Romanian text found (correct for RO)</p>
+                                        <code class="block mt-1 text-xs bg-white p-2 rounded">${check.search}</code>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else if (lang !== 'ro' && found) {
+                        results += `
+                            <div class="result-box border-red-300 bg-red-50">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl">❌</span>
+                                    <div class="flex-1">
+                                        <p class="font-bold text-red-800">${check.context} - NOT TRANSLATED</p>
+                                        <p class="text-sm text-red-600">Romanian text found (should be translated)</p>
+                                        <code class="block mt-1 text-xs bg-white p-2 rounded">Found: ${check.search}</code>
+                                        <code class="block mt-1 text-xs bg-yellow-100 p-2 rounded">Expected: ${check.expected}</code>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else if (lang !== 'ro' && translatedFound) {
+                        results += `
+                            <div class="result-box border-green-300 bg-green-50">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl">✅</span>
+                                    <div class="flex-1">
+                                        <p class="font-bold text-green-800">${check.context} - TRANSLATED</p>
+                                        <p class="text-sm text-green-600">Correct translation found</p>
+                                        <code class="block mt-1 text-xs bg-white p-2 rounded">${check.expected}</code>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                
+                // Summary
+                const romanianCount = checks.filter(c => html.includes(c.search)).length;
+                const translatedCount = checks.filter(c => html.includes(c.expected)).length;
+                
+                results += `
+                    <div class="mt-6 p-6 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-lg">
+                        <h4 class="text-xl font-bold mb-3">📊 Summary</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm opacity-75">Romanian texts found:</p>
+                                <p class="text-3xl font-bold">${romanianCount}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm opacity-75">Translated texts found:</p>
+                                <p class="text-3xl font-bold">${translatedCount}</p>
+                            </div>
+                        </div>
+                        ${romanianCount > 0 && lang !== 'ro' ? 
+                            '<p class="mt-4 p-3 bg-red-500 rounded text-sm">⚠️ Translation issue detected! Romanian texts still present.</p>' : 
+                            '<p class="mt-4 p-3 bg-green-500 rounded text-sm">✅ Translations working correctly!</p        `;
+                
+                resultsDiv.innerHTML = results;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="result-box border-red-300 bg-red-50">
+                        <p class="font-bold text-red-800">❌ Error testing translation</p>
+                        <p class="text-sm text-red-600">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function getLangName(lang) {
+            const names = {
+                'ro': '🇷🇴 Română',
+                'en': '🇬🇧 English',
+                'de': '🇩🇪 Deutsch',
+                'fr': '🇫🇷 Français',
+                'it': '🇮🇹 Italiano',
+                'es': '🇪🇸 Español'
+            };
+            return names[lang] || lang;
+        }
+
+        function getExpectedTranslation(lang, key) {
+            const translations = {
+                'en': {
+                    'features_title': 'Powerful Features',
+                    'features_discover': 'Discover the features that make our platform',
+                    'modern_design': 'Modern Design',
+                    'modern_design_desc': 'Intuitive interface and responsive design',
+                    'high_performance': 'High Performance',
+                    'ai_integration': 'AI Integration',
+                    'from_blog': 'From Blog'
+                },
+                'de': {
+                    'features_title': 'Leistungsstarke Funktionen',
+                    'features_discover': 'Entdecken Sie die Funktionen',
+                    'modern_design': 'Modernes Design',
+                    'modern_design_desc': 'Intuitive Oberfläche und responsives',
+                    'high_performance': 'Hohe Leistung',
+                    'ai_integration': 'KI-Integration',
+                    'from_blog': 'Aus dem Blog'
+                },
+                'fr': {
+                    'features_title': 'Fonctionnalités Puissantes',
+                    'features_discover': 'Découvrez les fonctionnalités',
+                    'modern_design': 'Design Moderne',
+                    'modern_design_desc': 'Interface intuitive et design responsive',
+                    'high_performance': 'Haute Performance',
+                    'ai_integration': 'Intégration IA',
+                    'from_blog': 'Du Blog'
+                },
+                'it': {
+                    'features_title': 'Funzionalità Potenti',
+                    'features_discover': 'Scopri le funzionalità',
+                    'modern_design': 'Design Moderno',
+                    'modern_design_desc': 'Interfaccia intuitiva e design responsiv',
+                    'high_performance': 'Alte Prestazioni',
+                    'ai_integration': 'Integrazione AI',
+                    'from_blog': 'Dal Blog'
+                },
+                'es': {
+                    'features_title': 'Características Potentes',
+                    'features_discover': 'Descubre las características',
+                    'modern_design': 'Diseño Moderno',
+                    'modern_design_desc': 'Interfaz intuitiva y diseño responsive',
+                    'high_performance': 'Alto Rendimiento',
+                    'ai_integration': 'Integración de IA',
+                    'from_blog': 'Del Blog'
+                },
+                'ro': {
+                    'features_title': 'Funcționalități Puternice',
+                    'features_discover': 'Descoperă funcționalitățile',
+                    'modern_design': 'Design Modern',
+                    'modern_design_desc': 'Interfață intuitivă și atrăgătoare',
+                    'high_performance': 'Performanță Ridicată',
+                    'ai_integration': 'Integrare AI',
+                    'from_blog': 'Din Blog'
+                }
+            };
+            
+            return translations[lang]?.[key] || '';
+        }
+
+        // Auto-test Romanian on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.lang-btn').click();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

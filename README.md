@@ -271,3 +271,89 @@ Built with:
 ---
 
 Made with ❤️ for the Carpathian region
+
+## 🤖 AI Content Generator
+
+The CMS now includes powerful AI-powered content generation capabilities using Groq AI (Llama 3.3 70B).
+
+### Features
+- **Integrated in all major sections**: Products, Pages, Blog Posts, Widgets
+- **Multi-field generation**: Generate multiple fields simultaneously
+- **Multilingual support**: Works with all 6 languages (ro, en, de, fr, es, it)
+- **Smart context awareness**: Use existing content as context for regeneration
+- **Customizable tone & length**: Professional, persuasive, friendly, technical, casual
+- **HTML formatting**: Automatic HTML generation for rich content fields
+- **SEO optimization**: Generate SEO-friendly titles, descriptions, and keywords
+
+### Quick Start
+
+1. **Setup Groq API Key**
+
+Add to your `.env` file:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+
+Get your free API key at: https://console.groq.com
+
+2. **Access AI Generator**
+
+**Option A - Standalone Page**:
+- Navigate to: `Admin → AI → AI Content Writer`
+- URL: https://yourdomain.com/admin/ai-content-writer
+- Generate complete blog posts, pages, or product descriptions
+
+**Option B - Integrated in Edit Pages**:
+- Go to any Product/Page/Post/Widget edit screen
+- Look for the ✨ **"Generate with AI"** button in the header
+- Select fields to generate, add instructions, and click Generate
+
+3. **Generate Content**
+
+Example workflow for a product:
+1. Edit product → Click "Generate with AI"
+2. Select fields: `Description`, `SEO Title`, `SEO Keywords`
+3. Instructions: "Write compelling description for project management software"
+4. Tone: `Persuasive`
+5. Length: `Medium`
+6. Click "Generate"
+7. Content will be generated and saved automatically
+
+### Documentation
+
+- **User Guide**: [AI_CONTENT_GENERATOR_GUIDE.md](AI_CONTENT_GENERATOR_GUIDE.md)
+- **Technical Documentation**: [AI_CONTENT_GENERATOR_TECHNICAL.md](AI_CONTENT_GENERATOR_TECHNICAL.md)
+
+### Supported Fields
+
+#### Products
+- Name, Description, Full Content
+- SEO Title, SEO Description, SEO Keywords
+
+#### Pages
+- Title, Content
+- SEO Title, SEO Description, SEO Keywords
+
+#### Blog Posts
+- Title, Excerpt, Content
+- SEO Title, SEO Description, SEO Keywords
+
+#### Widgets
+- Title, Content
+- Button 1 Text, Button 2 Text
+
+### Benefits
+
+✅ **Save Time**: Generate content in seconds instead of hours  
+✅ **SEO Optimized**: AI follows SEO best practices  
+✅ **Consistent Quality**: Professional tone across all content  
+✅ **Multilingual**: Generate in 6 languages instantly  
+✅ **Cost Effective**: Groq AI offers generous free tier  
+✅ **No Vendor Lock-in**: Easy to switch AI providers if needed
+
+### Requirements
+
+- Groq API key (free at https://console.groq.com)
+- Internet connection for API calls
+- PHP 8.1+ with GuzzleHTTP
+

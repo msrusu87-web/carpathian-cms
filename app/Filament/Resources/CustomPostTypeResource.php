@@ -12,10 +12,19 @@ use Filament\Tables\Table;
 
 class CustomPostTypeResource extends Resource
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Content');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Custom Post Types');
+    }
+
     protected static ?string $model = CustomPostType::class;
     protected static ?string $navigationIcon = 'heroicon-o-cube';
-    protected static ?string $navigationGroup = 'Conținut';
-
+    
     public static function form(Form $form): Form
     {
         return $form
