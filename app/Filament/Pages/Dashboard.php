@@ -15,6 +15,16 @@ class Dashboard extends BaseDashboard
         return __('messages.dashboard');
     }
     
+    public static function getNavigationGroup(): ?string
+    {
+        return null;
+    }
+    
+    public function getTitle(): string
+    {
+        return __('messages.dashboard');
+    }
+    
     public function getWidgets(): array
     {
         return [
