@@ -1,9 +1,33 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('messages.shop') }} - {{ config('app.name') }}</title>
+    @include('partials.seo-head', [
+        'title' => __('messages.shop_seo_title'),
+        'description' => __('messages.shop_seo_description'),
+        'keywords' => __('messages.shop_seo_keywords'),
+        'type' => 'website',
+        'breadcrumbs' => [
+            ['name' => __('messages.home'), 'url' => url('/')],
+            ['name' => __('messages.shop'), 'url' => url('/shop')]
+        ]
+    ])
+    
+    {{-- Product List Structured Data --}}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "{{ __('messages.shop_seo_title') }}",
+        "description": "{{ __('messages.shop_seo_description') }}",
+        "url": "{{ url('/shop') }}",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "Carphatian CMS",
+            "url": "{{ url('/') }}"
+        }
+    }
+    </script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -146,6 +170,15 @@
                     <!-- Products Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                         @foreach($products as $product)
+            @php
+                $locale = app()->getLocale();
+                $name = $product->getTranslation('name', $locale, false)
+                    ?? $product->getTranslation('name', 'ro', false)
+                    ?? ($product->name ?? 'Produs');
+                $description = $product->getTranslation('description', $locale, false)
+                    ?? $product->getTranslation('description', 'ro', false)
+                    ?? ($product->description ?? '');
+            @endphp
                             <div class="bg-white rounded-xl shadow hover:shadow-2xl transition-all duration-300 overflow-hidden group">
                                 <!-- Image -->
                                 <div class="relative overflow-hidden h-56">
@@ -155,7 +188,7 @@
                                     @endphp
                                     @if($firstImage)
                                         <img src="{{ asset($firstImage) }}"
-                                             alt="{{ $product->getTranslation('name', app()->getLocale()) }}"
+                                             alt="{{ $name }}"
                                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                                     @else
                                         <div class="w-full h-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center">
@@ -181,16 +214,16 @@
                                     <!-- Category Badge -->
                                     @if($product->category)
                                         <span class="inline-block bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full mb-3">
-                                            <i class="fas fa-tag"></i> {{ $product->category->getTranslation('name', app()->getLocale()) }}
+                                            <i class="fas fa-tag"></i> {{ $product->category->getTranslation('name', $locale, false) ?? $product->category->getTranslation('name', 'ro', false) ?? $product->category->name }}
                                         </span>
                                     @endif
 
                                     <h3 class="font-bold text-xl mb-3 text-gray-800 group-hover:text-blue-600 transition">
-                                        {{ $product->getTranslation('name', app()->getLocale()) }}
+                                        {{ $name }}
                                     </h3>
                                     
                                     <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                                        {{ Str::limit($product->getTranslation('description', app()->getLocale()), 120) }}
+                                        {{ Str::limit($description, 120) }}
                                     </p>
                                     
                                     <!-- Price -->

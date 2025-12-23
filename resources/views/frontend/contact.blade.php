@@ -3,7 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('messages.contact_us') }} - {{ config('app.name') }}</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>{{ __('messages.contact_seo_title') }} | Carphatian CMS</title>
+    <meta name="title" content="{{ __('messages.contact_seo_title') }}">
+    <meta name="description" content="{{ __('messages.contact_seo_description') }}">
+    <meta name="keywords" content="contact carphatian cms, web development quote, software development consultation, hire developers, custom software request, get project estimate, web development services, it consulting, digital agency contact, free quote, project inquiry">
+    <meta name="author" content="Carphatian CMS">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ url('/contact') }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('/contact') }}">
+    <meta property="og:title" content="{{ __('messages.contact_seo_title') }}">
+    <meta property="og:description" content="{{ __('messages.contact_seo_description') }}">
+    <meta property="og:image" content="{{ asset('images/carpathian-og-image.jpg') }}">
+    <meta property="og:locale" content="{{ app()->getLocale() }}">
+    <meta property="og:site_name" content="Carphatian CMS">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url('/contact') }}">
+    <meta name="twitter:title" content="{{ __('messages.contact_seo_title') }}">
+    <meta name="twitter:description" content="{{ __('messages.contact_seo_description') }}">
+    <meta name="twitter:image" content="{{ asset('images/carpathian-og-image.jpg') }}">
+    
+    <!-- Additional SEO -->
+    <meta name="geo.region" content="RO">
+    <meta name="geo.placename" content="Romania">
+    <meta name="language" content="{{ app()->getLocale() }}">
+    <meta name="rating" content="general">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
@@ -77,6 +107,12 @@
                 <div>
                     <div class="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-6 md:mb-8">
                         <h2 class="text-2xl md:text-3xl font-bold mb-6">{{ __('messages.contact_information') }}</h2>
+                        
+                        <!-- Company Name -->
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-6 border-l-4 border-blue-600">
+                            <h3 class="font-bold text-gray-900 text-lg">Aziz Ride Sharing S.R.L.</h3>
+                            <p class="text-gray-600 text-sm mt-1">{{ __('messages.registered_company') }}</p>
+                        </div>
                         
                         @if($settings)
                             <div class="space-y-4">
@@ -179,7 +215,10 @@
     </section>
 
     @php
-        $footerWidget = \App\Models\Widget::where('type', 'footer')->where('status', 'active')->first();
+        $footerWidget = \App\Models\Widget::query()->where('type', 'footer')->active()->first();
+        if (!$footerWidget) {
+            $footerWidget = \App\Models\Widget::query()->where('type', 'footer')->first();
+        }
     @endphp
     @if($footerWidget)
         @include('widgets.footer', ['widget' => $footerWidget])

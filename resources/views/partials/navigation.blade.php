@@ -1,4 +1,6 @@
 @php
+    use Illuminate\Support\Str;
+
     // Get all active menus from header location
     $menus = \App\Models\Menu::where('location', 'header')
         ->where('is_active', true)
@@ -6,15 +8,47 @@
             $query->where('is_active', true)->orderBy('order')->with('page');
         }])
         ->get();
+
+    // Normalize menu labels for translation mapping (lowercase, trim, strip diacritics)
+    $normalizeLabel = function (?string $value): string {
+        return (string) Str::of((string) $value)
+            ->lower()
+            ->trim()
+            ->ascii()
+            ->replace(['_', '-', '/', '&'], ' ')
+            ->squish();
+    };
     
-    // Translation map for menu items
+    // Translation map for common menu items.
+    // NOTE: Menu/Item titles are stored in DB and are not translatable by default.
+    // We map common labels (including RO variants) to translation keys so switching locale
+    // changes the visible navigation without changing design.
     $translations = [
         'home' => __('messages.home'),
-        'about us' => __('messages.about_us'),
+        'acasa' => __('messages.home'),
+
+        'about us' => __('messages.about'),
+        'about' => __('messages.about'),
+        'despre' => __('messages.about'),
+        'despre noi' => __('messages.about'),
+
         'services' => __('messages.services'),
+        'servicii' => __('messages.services'),
+        'serviciile' => __('messages.services'),
+
         'blog' => __('messages.blog'),
+
         'shop' => __('messages.shop'),
+        'magazin' => __('messages.shop'),
+        'servicii web design' => __('messages.shop'),
+        'toate serviciile' => __('messages.shop'),
+
+        'portfolios' => __('messages.portfolio'),
+        'portofolii' => __('messages.portfolio'),
+        'portofoliu' => __('messages.portfolio'),
+
         'contact' => __('messages.contact'),
+        'contacteaza-ne' => __('messages.contact'),
     ];
 @endphp
 
@@ -38,8 +72,12 @@
                 <!-- Plugin Dropdown Menus -->
                 @foreach($menus as $menu)
                     <div class="relative group">
+                        @php
+                            $menuNameKey = $normalizeLabel($menu->name);
+                            $displayMenuName = $translations[$menuNameKey] ?? $menu->name;
+                        @endphp
                         <button class="text-sm lg:text-base text-gray-700 hover:text-purple-600 transition whitespace-nowrap flex items-center gap-1">
-                            {{ $menu->name }}
+                            {{ $displayMenuName }}
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -54,10 +92,29 @@
                                             ? ($item->page->is_homepage ? '/' : '/' . $item->page->slug)
                                             : $item->url;
                                         $isActive = request()->is(ltrim($itemUrl, '/'));
-                                        
-                                        // Get translated title
-                                        $titleKey = strtolower(trim($item->title));
-                                        $displayTitle = $translations[$titleKey] ?? $item->title;
+
+                                        // Prefer the linked page translation when available.
+                                        // Important: avoid Spatie fallback here so we don't always show RO text when EN/DE/... is missing.
+                                        if ($item->type === 'page' && $item->page) {
+                                            $pageTitle = $item->page->getTranslation('title', app()->getLocale(), false);
+                                            if (!empty($pageTitle)) {
+                                                $displayTitle = $pageTitle;
+                                            } else {
+                                                $rawTitle = trim((string) ($item->title ?: $item->page->title));
+                                                $titleKey = $normalizeLabel($rawTitle);
+                                                $displayTitle = $translations[$titleKey] ?? ($item->title ?: $item->page->title);
+                                            }
+                                        } else {
+                                            $rawTitle = trim((string) $item->title);
+
+                                            // Allow storing translation keys directly in DB titles (e.g. "messages.blog").
+                                            if ($rawTitle !== '' && preg_match('/^[a-z0-9_]+\.[a-z0-9_\.:-]+$/i', $rawTitle)) {
+                                                $displayTitle = __($rawTitle);
+                                            } else {
+                                                $titleKey = $normalizeLabel($rawTitle);
+                                                $displayTitle = $translations[$titleKey] ?? $item->title;
+                                            }
+                                        }
                                     @endphp
                                     
                                     <a href="{{ $itemUrl }}" 
@@ -73,6 +130,11 @@
                         </div>
                     </div>
                 @endforeach
+                
+                <!-- Portfolio Link -->
+                <a href="/portfolios" class="text-sm lg:text-base text-gray-700 hover:text-purple-600 transition whitespace-nowrap {{ request()->is('portfolios*') ? 'font-semibold text-purple-600' : '' }}">
+                    {{ __('messages.portfolio') }}
+                </a>
                 
                 <!-- Default Links -->
                 <a href="/blog" class="text-sm lg:text-base text-gray-700 hover:text-purple-600 transition whitespace-nowrap {{ request()->is('blog*') ? 'font-semibold text-purple-600' : '' }}">
@@ -120,7 +182,11 @@
             @foreach($menus as $menu)
                 <div class="border-t border-gray-200">
                     <div class="px-4 py-2 text-sm font-semibold text-gray-900 bg-gray-50">
-                        {{ $menu->name }}
+                        @php
+                            $menuNameKey = $normalizeLabel($menu->name);
+                            $displayMenuName = $translations[$menuNameKey] ?? $menu->name;
+                        @endphp
+                        {{ $displayMenuName }}
                     </div>
                     @foreach($menu->items as $item)
                         @php
@@ -128,9 +194,28 @@
                                 ? ($item->page->is_homepage ? '/' : '/' . $item->page->slug)
                                 : $item->url;
                             
-                            // Get translated title
-                            $titleKey = strtolower(trim($item->title));
-                            $displayTitle = $translations[$titleKey] ?? $item->title;
+                            // Prefer the linked page translation when available.
+                            // Important: avoid Spatie fallback here so we don't always show RO text when EN/DE/... is missing.
+                            if ($item->type === 'page' && $item->page) {
+                                $pageTitle = $item->page->getTranslation('title', app()->getLocale(), false);
+                                if (!empty($pageTitle)) {
+                                    $displayTitle = $pageTitle;
+                                } else {
+                                    $rawTitle = trim((string) ($item->title ?: $item->page->title));
+                                    $titleKey = $normalizeLabel($rawTitle);
+                                    $displayTitle = $translations[$titleKey] ?? ($item->title ?: $item->page->title);
+                                }
+                            } else {
+                                $rawTitle = trim((string) $item->title);
+
+                                // Allow storing translation keys directly in DB titles (e.g. "messages.blog").
+                                if ($rawTitle !== '' && preg_match('/^[a-z0-9_]+\.[a-z0-9_\.:-]+$/i', $rawTitle)) {
+                                    $displayTitle = __($rawTitle);
+                                } else {
+                                    $titleKey = $normalizeLabel($rawTitle);
+                                    $displayTitle = $translations[$titleKey] ?? $item->title;
+                                }
+                            }
                         @endphp
                         
                         <a href="{{ $itemUrl }}" 
@@ -142,6 +227,9 @@
                 </div>
             @endforeach
             
+            <a href="/portfolios" class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 {{ request()->is('portfolios*') ? 'font-semibold text-purple-600 bg-purple-50' : '' }}">
+                {{ __('messages.portfolio') }}
+            </a>
             <a href="/blog" class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                 {{ __('messages.blog') }}
             </a>

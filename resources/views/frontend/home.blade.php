@@ -1,9 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name') }} - Home</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>{{ __('messages.home_seo_title') }}</title>
+    <meta name="title" content="{{ __('messages.home_seo_title') }}">
+    <meta name="description" content="{{ __('messages.home_seo_description') }}">
+    <meta name="keywords" content="carphatian cms, web development on demand, custom software development, website builder, cms platform, ecommerce development, laravel cms, professional web design, scalable applications, enterprise software, full stack development, php development, modern web applications, business automation, digital transformation">
+    <meta name="author" content="Carphatian CMS">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ url('/') }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('/') }}">
+    <meta property="og:title" content="{{ __('messages.home_seo_title') }}">
+    <meta property="og:description" content="{{ __('messages.home_seo_description') }}">
+    <meta property="og:image" content="{{ asset('images/carpathian-og-image.jpg') }}">
+    <meta property="og:locale" content="{{ app()->getLocale() }}">
+    <meta property="og:site_name" content="Carphatian CMS">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url('/') }}">
+    <meta name="twitter:title" content="{{ __('messages.home_seo_title') }}">
+    <meta name="twitter:description" content="{{ __('messages.home_seo_description') }}">
+    <meta name="twitter:image" content="{{ asset('images/carpathian-og-image.jpg') }}">
+    
+    <!-- Additional SEO -->
+    <meta name="geo.region" content="RO">
+    <meta name="geo.placename" content="Romania">
+    <meta name="language" content="{{ app()->getLocale() }}">
+    <meta name="rating" content="general">
+    
+    <!-- Structured Data (JSON-LD) for Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Carphatian CMS",
+        "url": "{{ url('/') }}",
+        "description": "{{ __('messages.home_seo_description') }}",
+        "inLanguage": ["ro", "en", "es", "it", "de", "fr"]
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Carphatian CMS",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('images/carpathian-logo.svg') }}",
+        "description": "{{ __('messages.home_seo_description') }}",
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "RO"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "Customer Service",
+            "availableLanguage": ["Romanian", "English", "Spanish", "Italian", "German", "French"]
+        }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Carphatian CMS",
+        "applicationCategory": "WebApplication",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR"
+        },
+        "operatingSystem": "Web-based"
+    }
+    </script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -63,7 +141,9 @@
             @elseif($widget->type === 'products')
                 @include('widgets.products', ['widget' => $widget])
             @elseif($widget->type === 'blog')
-                @include('widgets.blog', ['widget' => $widget])
+                {{-- Show portfolio showcase instead of blog --}}
+                @include('widgets.portfolio-showcase')
+                {{-- @include('widgets.blog', ['widget' => $widget]) --}}
             @elseif($widget->type === 'documentation')
                 @include('widgets.documentation', ['widget' => $widget])
             @elseif($widget->type !== 'footer')
@@ -74,7 +154,10 @@
 
     <!-- Footer -->
     @php
-        $footerWidget = \App\Models\Widget::where('type', 'footer')->where('status', 'active')->first();
+        $footerWidget = \App\Models\Widget::query()->where('type', 'footer')->active()->first();
+        if (!$footerWidget) {
+            $footerWidget = \App\Models\Widget::query()->where('type', 'footer')->first();
+        }
     @endphp
     @if($footerWidget)
         @include('widgets.footer', ['widget' => $footerWidget])

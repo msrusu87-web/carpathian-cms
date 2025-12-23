@@ -13,12 +13,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Tabs;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use AmidEsfahani\FilamentTinyEditor\TinyEditor;
+use App\Filament\Forms\Components\AiContentGenerator;
+use Filament\Resources\Concerns\Translatable;
 
 class PostResource extends Resource
 {
+    use Translatable;
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
 
@@ -32,121 +36,139 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Post Content')
-                    ->schema([
-                        Grid::make(2)->schema([
-                            Forms\Components\TextInput::make('title')
-                                ->required()
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Str::slug($state)))
-                                ->maxLength(255),
-                            
-                            Forms\Components\TextInput::make('slug')
-                                ->required()
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(255),
-                        ]),
-                        
-                        TinyEditor::make('content')
-                            ->required()
-                            ->columnSpanFull()
-                            ->fileAttachmentsDisk('public')
-                            ->fileAttachmentsDirectory('uploads')
-                            ->profile('full'),
-                        
-                        Forms\Components\Textarea::make('excerpt')
-                            ->rows(3)
-                            ->maxLength(500)
-                            ->columnSpanFull()
-                            ->helperText('Brief summary of the post (optional)'),
-                    ]),
+                Tabs::make('Post Management')
+                    ->tabs([
+                        Tabs\Tab::make('Content')
 
-                Section::make('Media')
-                    ->schema([
-                        Forms\Components\FileUpload::make('featured_image')
-                            ->image()
-                            ->directory('posts')
-                            ->maxSize(2048)
-                            ->helperText('Recommended size: 1200x630px'),
-                    ])
-                    ->collapsible(),
+                            ->icon('heroicon-o-document-text')
+                            ->schema([
+                                Forms\Components\TextInput::make('slug')
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
+                                    ->maxLength(255)
+                                    ->helperText('URL-friendly identifier'),
 
-                Section::make('Publishing')
-                    ->schema([
-                        Grid::make(3)->schema([
-                            Forms\Components\Select::make('status')
-                                ->options([
-                                    'draft' => 'Draft',
-                                    'published' => 'Published',
-                                    'scheduled' => 'Scheduled',
-                                ])
-                                ->default('draft')
-                                ->required(),
-                            
-                            Forms\Components\Toggle::make('is_featured')
-                                ->label('Featured Post')
-                                ->helperText('Show in featured sections'),
-                            
-                            Forms\Components\Toggle::make('allow_comments')
-                                ->label('Allow Comments')
-                                ->default(true),
-                        ]),
-                        
-                        Forms\Components\DateTimePicker::make('published_at')
-                            ->label('Publish Date')
-                            ->default(now())
-                            ->helperText('Leave empty to publish immediately'),
-                    ]),
+                                Forms\Components\TextInput::make('title')
+                                    ->label('Post Title')
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                        if (empty($get('slug'))) {
+                                            $set('slug', \Str::slug($state));
+                                        }
+                                    })
+                                    ->maxLength(255),
+                                
+                                Forms\Components\Textarea::make('excerpt')
+                                    ->label('Post Excerpt')
+                                    ->rows(3)
+                                    ->maxLength(500)
+                                    ->helperText('Brief summary of the post'),
+                                
+                                TinyEditor::make('content')
+                                    ->label('Post Content')
+                                    ->required()
+                                    ->fileAttachmentsDisk('public')
+                                    ->fileAttachmentsDirectory('uploads')
+                                    ->profile('full')
+                                    ->columnSpanFull(),
+                            ]),
 
-                Section::make('Organization')
-                    ->schema([
-                        Grid::make(2)->schema([
-                            Forms\Components\Select::make('category_id')
-                                ->relationship('category', 'name')
-                                ->searchable()
-                                ->preload()
-                                ->createOptionForm([
-                                    Forms\Components\TextInput::make('name')->required(),
-                                    Forms\Components\TextInput::make('slug')->required(),
-                                    Forms\Components\Textarea::make('description'),
+                        Tabs\Tab::make('Media & Publishing')
+                            ->icon('heroicon-o-photo')
+                            ->schema([
+                                Forms\Components\FileUpload::make('featured_image')
+                                    ->image()
+                                    ->directory('posts')
+                                    ->maxSize(2048)
+                                    ->helperText('Recommended size: 1200x630px')
+                                    ->columnSpanFull(),
+
+                                Grid::make(3)->schema([
+                                    Forms\Components\Select::make('status')
+                                        ->options([
+                                            'draft' => 'Draft',
+                                            'published' => 'Published',
+                                            'scheduled' => 'Scheduled',
+                                        ])
+                                        ->default('draft')
+                                        ->required()
+                                        ->helperText('Post publication status'),
+                                    
+                                    Forms\Components\Toggle::make('is_featured')
+                                        ->label('Featured Post')
+                                        ->helperText('Show in featured sections'),
+                                    
+                                    Forms\Components\Toggle::make('allow_comments')
+                                        ->label('Allow Comments')
+                                        ->default(true)
+                                        ->helperText('Enable comments for this post'),
                                 ]),
+                                
+                                Forms\Components\DateTimePicker::make('published_at')
+                                    ->label('Publish Date')
+                                    ->default(now())
+                                    ->helperText('Leave empty to publish immediately'),
+                            ]),
+
+                        Tabs\Tab::make('Categories & Tags')
+                            ->icon('heroicon-o-tag')
+                            ->schema([
+                                Forms\Components\Select::make('category_id')
+                                    ->relationship('category', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->helperText('Select post category')
+                                    ->createOptionForm([
+                                        Forms\Components\TextInput::make('name')->required(),
+                                        Forms\Components\TextInput::make('slug')->required(),
+                                        Forms\Components\Textarea::make('description'),
+                                    ])
+                                    ->columnSpanFull(),
                             
-                            Forms\Components\Select::make('user_id')
-                                ->relationship('user', 'name')
-                                ->default(auth()->id())
-                                ->required()
-                                ->label('Author'),
-                        ]),
-                        
-                        Forms\Components\Select::make('tags')
-                            ->relationship('tags', 'name')
-                            ->multiple()
-                            ->searchable()
-                            ->preload()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('name')->required(),
-                                Forms\Components\TextInput::make('slug')->required(),
+                                Forms\Components\Select::make('user_id')
+                                    ->relationship('user', 'name')
+                                    ->default(auth()->id())
+                                    ->required()
+                                    ->label('Author')
+                                    ->helperText('Post author')
+                                    ->columnSpanFull(),
+                                
+                                Forms\Components\Select::make('tags')
+                                    ->relationship('tags', 'name')
+                                    ->multiple()
+                                    ->searchable()
+                                    ->preload()
+                                    ->helperText('Select or create tags for this post')
+                                    ->createOptionForm([
+                                        Forms\Components\TextInput::make('name')->required(),
+                                        Forms\Components\TextInput::make('slug')->required(),
+                                    ])
+                                    ->columnSpanFull(),
+                            ]),
+
+                        Tabs\Tab::make('SEO')
+                            ->icon('heroicon-o-magnifying-glass')
+                            ->schema([
+                                Forms\Components\TextInput::make('meta_title')
+                                    ->maxLength(60)
+                                    ->helperText('Recommended: 50-60 characters for optimal display')
+                                    ->columnSpanFull(),
+                                
+                                Forms\Components\Textarea::make('meta_description')
+                                    ->rows(3)
+                                    ->maxLength(160)
+                                    ->helperText('Recommended: 150-160 characters for optimal display')
+                                    ->columnSpanFull(),
+                                
+                                Forms\Components\Textarea::make('meta_keywords')
+                                    ->rows(2)
+                                    ->helperText('Comma-separated keywords for search engines')
+                                    ->columnSpanFull(),
                             ]),
                     ])
-                    ->collapsible(),
-
-                Section::make('SEO')
-                    ->schema([
-                        Forms\Components\TextInput::make('meta_title')
-                            ->maxLength(60)
-                            ->helperText('Recommended: 50-60 characters'),
-                        
-                        Forms\Components\Textarea::make('meta_description')
-                            ->rows(3)
-                            ->maxLength(160)
-                            ->helperText('Recommended: 150-160 characters'),
-                        
-                        Forms\Components\Textarea::make('meta_keywords')
-                            ->rows(2)
-                            ->helperText('Comma-separated keywords'),
-                    ])
-                    ->collapsible()
-                    ->collapsed(),
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -155,114 +177,93 @@ class PostResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('featured_image')
-                    ->label('Image')
-                    ->circular(),
-                
+                    ->label('')
+                    ->circular()
+                    ->size(40)
+                    ->defaultImageUrl(url('/images/placeholder-post.png')),
                 Tables\Columns\TextColumn::make('title')
+                    ->label('Post Title')
                     ->searchable()
                     ->sortable()
-                    ->limit(50)
-                    ->weight('bold'),
-                
-                Tables\Columns\BadgeColumn::make('status')
-                    ->colors([
-                        'secondary' => 'draft',
-                        'success' => 'published',
-                        'warning' => 'scheduled',
-                    ])
-                    ->icons([
-                        'heroicon-o-pencil' => 'draft',
-                        'heroicon-o-check-circle' => 'published',
-                        'heroicon-o-clock' => 'scheduled',
-                    ]),
-                
-                Tables\Columns\TextColumn::make('category.name')
-                    ->sortable()
-                    ->searchable()
-                    ->badge()
-                    ->color('info'),
-                
-                Tables\Columns\TextColumn::make('user.name')
+                    ->limit(40)
+                    ->description(fn ($record) => $record->category?->name)
+                    ->formatStateUsing(fn ($state) => is_array($state) ? ($state[app()->getLocale()] ?? reset($state)) : $state)
+                    ->wrap(),
+                Tables\Columns\TextColumn::make('author.name')
                     ->label('Author')
                     ->sortable()
                     ->searchable(),
-                
-                Tables\Columns\IconColumn::make('is_featured')
-                    ->label('Featured')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-star')
-                    ->falseIcon('heroicon-o-star')
-                    ->trueColor('warning')
-                    ->falseColor('gray'),
-                
-                Tables\Columns\TextColumn::make('views')
-                    ->numeric()
-                    ->sortable()
-                    ->alignEnd(),
-                
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn ($state) => match($state) {
+                        'published' => 'success',
+                        'draft' => 'warning',
+                        'scheduled' => 'info',
+                        default => 'gray'
+                    }),
                 Tables\Columns\TextColumn::make('published_at')
-                    ->dateTime('M d, Y')
-                    ->sortable()
-                    ->toggleable(),
-                
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Published')
+                    ->dateTime('d M Y')
+                    ->sortable(),
             ])
-            ->defaultSort('created_at', 'desc')
             ->filters([
-                SelectFilter::make('status')
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->relationship('category', 'name')
+                    ->label('Category')
+                    ->preload(),
+                Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'draft' => 'Draft',
                         'published' => 'Published',
                         'scheduled' => 'Scheduled',
                     ]),
-                
-                SelectFilter::make('category')
-                    ->relationship('category', 'name'),
-                
-                TernaryFilter::make('is_featured')
-                    ->label('Featured Posts'),
-                
-                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\Action::make('view_post')
-                    ->label('View on Site')
-                    ->icon('heroicon-o-eye')
-                    ->url(fn (Post $record): string => url('/posts/' . $record->slug))
-                    ->openUrlInNewTab(),
+                Tables\Actions\EditAction::make()
+                    ->label('Edit')
+                    ->button()
+                    ->color('primary'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
-                    
                     Tables\Actions\BulkAction::make('publish')
-                        ->label('Publish Selected')
+                        ->label('Publish')
                         ->icon('heroicon-o-check-circle')
-                        ->requiresConfirmation()
-                        ->action(fn ($records) => $records->each->update(['status' => 'published', 'published_at' => now()])),
-                    
+                        ->color('success')
+                        ->action(function ($records) {
+                            $records->each->update(['status' => 'published', 'published_at' => now()]);
+                            \Filament\Notifications\Notification::make()
+                                ->title('Posts published')
+                                ->success()
+                                ->send();
+                        }),
                     Tables\Actions\BulkAction::make('draft')
-                        ->label('Move to Draft')
-                        ->icon('heroicon-o-pencil')
-                        ->requiresConfirmation()
-                        ->action(fn ($records) => $records->each->update(['status' => 'draft'])),
-                    
-                    Tables\Actions\BulkAction::make('feature')
-                        ->label('Mark as Featured')
-                        ->icon('heroicon-o-star')
-                        ->requiresConfirmation()
-                        ->action(fn ($records) => $records->each->update(['is_featured' => true])),
+                        ->label('Set as Draft')
+                        ->icon('heroicon-o-document')
+                        ->color('warning')
+                        ->action(function ($records) {
+                            $records->each->update(['status' => 'draft']);
+                            \Filament\Notifications\Notification::make()
+                                ->title('Posts set as draft')
+                                ->success()
+                                ->send();
+                        }),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->striped()
+            ->defaultSort('id', 'desc')
+            ->paginationPageOptions([10, 25, 50])
+            ->defaultPaginationPageOption(25)
+            ->extremePaginationLinks()
+            ->persistFiltersInSession()
+            ->persistSearchInSession();
     }
+
+
 
     public static function getRelations(): array
     {
@@ -291,5 +292,10 @@ class PostResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::where('status', 'draft')->count();
+    }
+
+    public static function getTranslatableLocales(): array
+    {
+        return ['en', 'ro', 'de', 'fr', 'es', 'it'];
     }
 }

@@ -20,8 +20,10 @@ return new class extends Migration
                 $table->integer('order')->default(0);
                 $table->boolean('is_visible')->default(true);
                 $table->timestamps();
-                
-                $table->index(['blockable_type', 'blockable_id']);
+
+                // NOTE: morphs('blockable') already creates an index on
+                // (blockable_type, blockable_id) named
+                // page_builder_blocks_blockable_type_blockable_id_index.
                 $table->index('order');
             });
         }

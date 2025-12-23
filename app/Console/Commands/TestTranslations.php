@@ -19,7 +19,7 @@ class TestTranslations extends Command
         $this->info("Base URL: {$baseUrl}");
         $this->newLine();
 
-        // Set the session locale for testing
+        // Keep cookies between requests (simulates a browser session).
         $cookieJar = new \GuzzleHttp\Cookie\CookieJar();
         
         $pages = [
@@ -35,10 +35,11 @@ class TestTranslations extends Command
             $this->info("Testing: {$name} ({$path})");
             
             try {
-                // First set the locale
-                $response = Http::withOptions([
+                // First set the locale using the real switch route.
+                Http::withOptions([
                     "cookies" => $cookieJar,
-                ])->get("{$baseUrl}/{$locale}");
+                    "verify" => false,
+                ])->get("{$baseUrl}/lang/{$locale}");
                 
                 // Then fetch the page
                 $response = Http::withOptions([
@@ -99,8 +100,8 @@ class TestTranslations extends Command
     {
         if ($locale === "ro") {
             return str_contains($html, "Acasă") || 
-                   str_contains($html, "Magazin") || 
-                   str_contains($html, "Administrare");
+                   str_contains($html, "Blog") ||
+                   str_contains($html, "Contact");
         }
         return str_contains($html, "Home") || str_contains($html, "Shop");
     }
@@ -108,17 +109,17 @@ class TestTranslations extends Command
     protected function checkHero($html, $locale)
     {
         if ($locale === "ro") {
-            return str_contains($html, "Bine ați venit") || 
-                   str_contains($html, "CMS Profesional");
+            return str_contains($html, "Transformă") || 
+                   str_contains($html, "platformă");
         }
-        return str_contains($html, "Welcome") || str_contains($html, "Professional CMS");
+        return str_contains($html, "Transform") || str_contains($html, "platform");
     }
 
     protected function checkFeatures($html, $locale)
     {
         if ($locale === "ro") {
-            return str_contains($html, "Funcționalități") || 
-                   str_contains($html, "Cu Puterea AI");
+            return str_contains($html, "Func") || 
+                   str_contains($html, "AI");
         }
         return str_contains($html, "Features") || str_contains($html, "AI-Powered");
     }

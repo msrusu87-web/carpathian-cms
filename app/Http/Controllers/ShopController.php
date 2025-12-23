@@ -123,4 +123,32 @@ class ShopController extends Controller
         
         return view('shop.category', compact('category', 'products', 'categories'));
     }
+
+    /**
+     * Display pre-sale form for a product
+     */
+    public function preSaleForm($productId)
+    {
+        $product = Product::findOrFail($productId);
+        return view('shop.pre-sale', compact('product'));
+    }
+
+    /**
+     * Handle pre-sale form submission
+     */
+    public function preSaleSubmit(Request $request, $productId)
+    {
+        $product = Product::findOrFail($productId);
+        
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:50',
+            'message' => 'nullable|string|max:1000',
+        ]);
+        
+        // Store pre-sale interest (you can customize this to send email or save to DB)
+        // For now, just redirect back with success
+        return redirect()->back()->with('success', __('messages.pre_sale_submitted'));
+    }
 }

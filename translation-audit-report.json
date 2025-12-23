@@ -1,0 +1,79 @@
+{
+    "audit_date": "2025-12-21 05:29:29",
+    "statistics": {
+        "total_keys": 409,
+        "languages_checked": 6,
+        "issues_found": 244
+    },
+    "issues": [
+        {
+            "language": "de",
+            "type": "MISSING_KEYS",
+            "count": 61,
+            "keys": [
+                "about_us",
+                "ai_platform",
+                "ai_powered",
+                "all_articles",
+                "articles",
+                "articles_available",
+                "blockchain",
+                "blog_seo_description",
+                "blog_seo_title",
+                "browse_services"
+            ]
+        },
+        {
+            "language": "es",
+            "type": "MISSING_KEYS",
+            "count": 61,
+            "keys": [
+                "about_us",
+                "ai_platform",
+                "ai_powered",
+                "all_articles",
+                "articles",
+                "articles_available",
+                "blockchain",
+                "blog_seo_description",
+                "blog_seo_title",
+                "browse_services"
+            ]
+        },
+        {
+            "language": "fr",
+            "type": "MISSING_KEYS",
+            "count": 61,
+            "keys": [
+                "about_us",
+                "ai_platform",
+                "ai_powered",
+                "all_articles",
+                "articles",
+                "articles_available",
+                "blockchain",
+                "blog_seo_description",
+                "blog_seo_title",
+                "browse_services"
+            ]
+        },
+        {
+            "language": "it",
+            "type": "MISSING_KEYS",
+            "count": 61,
+            "keys": [
+                "about_us",
+                "ai_platform",
+                "ai_powered",
+                "all_articles",
+                "articles",
+                "articles_available",
+                "blockchain",
+                "blog_seo_description",
+                "blog_seo_title",
+                "browse_services"
+            ]
+        }
+    ],
+    "status": "NEEDS_ATTENTION"
+}

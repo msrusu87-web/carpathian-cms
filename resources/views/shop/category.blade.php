@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('messages.shop') }} - {{ config('app.name') }}</title>
+    @php
+        $categoryName = isset($category) ? $category->getTranslation('name', app()->getLocale()) : __('messages.shop');
+    @endphp
+    @include('partials.seo-head', [
+        'title' => $categoryName . ' - Magazin | Carphatian CMS',
+        'description' => __('messages.shop_seo_description'),
+        'keywords' => $categoryName . ', servicii web, dezvoltare web, Carphatian CMS',
+        'breadcrumbs' => [
+            ['name' => __('messages.home'), 'url' => url('/')],
+            ['name' => __('messages.shop'), 'url' => url('/shop')],
+            ['name' => $categoryName, 'url' => url()->current()]
+        ]
+    ])
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

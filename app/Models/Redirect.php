@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Cache;
 
 class Redirect extends Model
@@ -43,6 +44,10 @@ class Redirect extends Model
 
     public static function findByUrl(string $url): ?self
     {
+        if (!Schema::hasTable('redirects')) {
+            return null;
+        }
+
         $redirects = Cache::remember('active_redirects', 3600, function () {
             return self::where('is_active', true)->get();
         });

@@ -1,4 +1,56 @@
+# Carphatian CMS - Robots.txt
+# https://carphatian.ro
+
 User-agent: *
 Allow: /
 
-Sitemap: https://cms.carphatian.ro/sitemap.xml
+# Allow all search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Allow AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Anthropic-ai
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Block sensitive areas
+Disallow: /admin
+Disallow: /filament
+Disallow: /storage/
+Disallow: /api/
+Disallow: /checkout
+Disallow: /cart
+Disallow: /*.json$
+Disallow: /*?*
+
+# Sitemap location
+Sitemap: https://carphatian.ro/sitemap.xml
+
+# Crawl delay for politeness
+Crawl-delay: 1

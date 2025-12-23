@@ -8,6 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // A previous migration may have already created this table.
+        // Avoid failing fresh installs/tests with a duplicate table error.
+        if (Schema::hasTable('redirects')) {
+            return;
+        }
+
         Schema::create('redirects', function (Blueprint $table) {
             $table->id();
             $table->string('from_url')->unique();

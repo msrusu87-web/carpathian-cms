@@ -18,6 +18,16 @@
         </div>
     </header>
 
+    <!-- Success Notification -->
+    @if(session('success'))
+    <div class="max-w-7xl mx-auto px-4 mt-4">
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Success!</strong>
+            <span class="block sm:inline">{{ session('success') }}</span>
+        </div>
+    </div>
+    @endif
+
     <!-- Cart Content -->
     <main class="max-w-7xl mx-auto px-4 py-12">
         @if(session('success'))
@@ -108,9 +118,9 @@
                         <span class="text-blue-600">${{ number_format($total, 2) }}</span>
                     </div>
                     
-                    <button class="w-full bg-green-600 text-white px-6 py-4 rounded-lg hover:bg-green-700 text-lg font-semibold mb-3">
+                    <a href="{{ route('checkout.index') }}" class="block w-full bg-green-600 text-white px-6 py-4 rounded-lg hover:bg-green-700 text-lg font-semibold mb-3 text-center">
                         Proceed to Checkout
-                    </button>
+                    </a>
                     
                     <a href="/shop" class="block w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 text-center font-semibold">
                         Continue Shopping

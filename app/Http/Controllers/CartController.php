@@ -31,6 +31,7 @@ class CartController extends Controller
         } else {
             $cart[$id] = [
                 'name' => $product->name,
+                'sku' => $product->sku ?? 'N/A',
                 'price' => $product->sale_price ?? $product->price,
                 'quantity' => $quantity,
                 'image' => $product->featured_image,
@@ -39,8 +40,15 @@ class CartController extends Controller
         }
         
         session()->put('cart', $cart);
+        session()->save(); // Ensure session is saved
         
-        return back()->with('success', 'Product added to cart!');
+        // Calculate total count for notification
+        $totalCount = 0;
+        foreach ($cart as $item) {
+            $totalCount += $item['quantity'];
+        }
+        
+        return redirect()->route('cart.index')->with('success', "Product added! Cart has {$totalCount} item(s)");
     }
 
     public function update(Request $request, $id)

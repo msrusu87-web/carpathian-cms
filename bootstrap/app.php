@@ -14,13 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // Web middleware
         $middleware->web(append: [
+            \App\Http\Middleware\RequestId::class,
             \App\Http\Middleware\SetLocale::class,
             \App\Http\Middleware\RedirectMiddleware::class,
             \App\Http\Middleware\LoadActiveTemplate::class,
         ]);
 
         // Throttle API requests - 60 requests per minute
-        $middleware->throttleApi('60:1');
+        $middleware->throttleApi();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

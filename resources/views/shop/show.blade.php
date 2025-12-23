@@ -1,9 +1,49 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $product->getTranslation('name', app()->getLocale()) }} - {{ __('messages.shop') }}</title>
+    @php
+        $productName = $product->getTranslation('name', app()->getLocale());
+        $productDesc = $product->getTranslation('description', app()->getLocale()) ?? $productName;
+        $productImage = $product->image ? asset('storage/' . $product->image) : asset('images/carpathian-og-image.jpg');
+    @endphp
+    @include('partials.seo-head', [
+        'title' => $productName . ' - Carphatian CMS',
+        'description' => Str::limit(strip_tags($productDesc), 160),
+        'keywords' => 'servicii web, ' . $productName . ', dezvoltare web, Carphatian CMS',
+        'type' => 'product',
+        'image' => $productImage,
+        'breadcrumbs' => [
+            ['name' => __('messages.home'), 'url' => url('/')],
+            ['name' => __('messages.shop'), 'url' => url('/shop')],
+            ['name' => $productName, 'url' => url()->current()]
+        ]
+    ])
+    
+    {{-- Product Structured Data --}}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "{{ $productName }}",
+        "description": "{{ Str::limit(strip_tags($productDesc), 200) }}",
+        "image": "{{ $productImage }}",
+        "url": "{{ url()->current() }}",
+        "brand": {
+            "@type": "Brand",
+            "name": "Carphatian CMS"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "{{ $product->price }}",
+            "priceCurrency": "RON",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+                "@type": "Organization",
+                "name": "Aziz Ride Sharing S.R.L."
+            }
+        }
+    }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

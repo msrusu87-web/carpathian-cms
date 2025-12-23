@@ -16,7 +16,7 @@ class Page extends Model
     protected $fillable = [
         'title', 'slug', 'content', 'excerpt', 'featured_image',
         'status', 'user_id', 'template_id', 'meta_title',
-        'meta_description', 'meta_keywords', 'order',
+        'meta_description', 'meta_keywords', 'canonical_url', 'robots_meta', 'order',
         'is_homepage', 'show_in_menu', 'custom_fields', 'published_at', 'menu_locations'
     ];
 

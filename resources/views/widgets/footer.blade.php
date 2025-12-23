@@ -68,8 +68,25 @@
             </div>
         </div>
         
-        <div class="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p class="text-gray-400">© {{ date('Y') }} {{ __('messages.carpathian') }}. {{ __('messages.all_rights_reserved') }}</p>
+        <div class="border-t border-gray-800 mt-8 pt-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <!-- Company Info -->
+                <div class="text-center md:text-left">
+                    <p class="text-gray-400">© {{ date('Y') }} <strong>Aziz Ride Sharing S.R.L.</strong> - By Carphatian</p>
+                    <p class="text-gray-500 text-sm mt-1">{{ __('messages.all_rights_reserved') }}</p>
+                </div>
+                
+                <!-- ANPC Links -->
+                <div class="flex flex-col sm:flex-row items-center gap-4">
+                    <a href="https://anpc.ro/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors" title="ANPC - Autoritatea Națională pentru Protecția Consumatorilor">
+                        <img src="/images/anpc-logo.svg" alt="ANPC" class="h-10 w-auto">
+                        <span class="text-xs">Protecția<br>Consumatorilor</span>
+                    </a>
+                    <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors" title="SOL - Soluționarea Online a Litigiilor">
+                        <img src="/images/anpc-sol.svg" alt="SOL" class="h-10 w-auto">
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </footer>

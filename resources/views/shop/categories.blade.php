@@ -30,34 +30,48 @@
         @if($categories->count() > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($categories->whereNull('parent_id') as $category)
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300">
-                        <div class="relative h-48 overflow-hidden">
-                            @if($category->image)
-                                <img src="{{ asset($category->image) }}" 
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group">
+                        <div class="relative h-64 overflow-hidden">
+                            @if($category->icon)
+                                <img src="{{ asset(str_replace('/categories/', '/categories/thumbs/', $category->icon)) }}" 
                                      alt="{{ $category->getTranslation('name', app()->getLocale()) }}" 
-                                     class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
-                                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
+                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-6">
+                                    <h2 class="text-2xl font-bold text-white drop-shadow-lg">
+                                        {{ $category->getTranslation('name', app()->getLocale()) }}
+                                    </h2>
+                                </div>
+                            @elseif($category->image)
+                                <img src="{{ asset(str_replace('/product-categories/', '/product-categories/thumbs/', $category->image)) }}" 
+                                     alt="{{ $category->getTranslation('name', app()->getLocale()) }}" 
+                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-6">
+                                    <h2 class="text-2xl font-bold text-white drop-shadow-lg">
+                                        {{ $category->getTranslation('name', app()->getLocale()) }}
+                                    </h2>
+                                </div>
                             @else
-                                <div class="bg-gradient-to-br from-blue-500 to-purple-600 h-full flex items-center justify-center">
-                                    <i class="fas fa-folder-open text-white text-5xl opacity-75"></i>
+                                <div class="bg-gradient-to-br from-blue-500 to-purple-600 h-full flex flex-col items-center justify-center">
+                                    <i class="fas fa-folder-open text-white text-5xl opacity-75 mb-4"></i>
+                                    <h2 class="text-2xl font-bold text-white px-6 text-center">
+                                        {{ $category->getTranslation('name', app()->getLocale()) }}
+                                    </h2>
                                 </div>
                             @endif
                         </div>
                         
                         <div class="p-6">
-                            <h2 class="text-2xl font-bold text-gray-800 mb-3">
-                                {{ $category->getTranslation('name', app()->getLocale()) }}
-                            </h2>
-                            
                             @if($category->description)
-                                <p class="text-gray-600 mb-4">
+                                <p class="text-gray-600 mb-4 line-clamp-2">
                                     {{ $category->getTranslation('description', app()->getLocale()) }}
                                 </p>
                             @endif
                             
-                            <div class="mb-4">
-                                <span class="text-sm text-gray-500">
-                                    <i class="fas fa-box mr-1"></i> {{ $category->products_count }} servicii
+                            <div class="mb-4 flex items-center justify-between">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                    <i class="fas fa-box mr-2"></i> {{ $category->products_count }} {{ $category->products_count == 1 ? 'serviciu' : 'servicii' }}
                                 </span>
                             </div>
 
@@ -77,8 +91,8 @@
                             @endif
 
                             <a href="{{ route('shop.category', $category->slug) }}" 
-                               class="block bg-gradient-to-r from-blue-600 to-blue-700 text-white text-center px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition font-semibold">
-                                <i class="fas fa-eye mr-2"></i> Vezi Servicii
+                               class="block bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                                <i class="fas fa-arrow-right mr-2"></i> Explorează Serviciile
                             </a>
                         </div>
                     </div>

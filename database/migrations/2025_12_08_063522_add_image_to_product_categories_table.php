@@ -8,6 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (!Schema::hasTable('product_categories')) {
+            return;
+        }
+
+        if (Schema::hasColumn('product_categories', 'image')) {
+            return;
+        }
+
         Schema::table('product_categories', function (Blueprint $table) {
             $table->string('image')->nullable()->after('slug');
         });
@@ -15,6 +23,14 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (!Schema::hasTable('product_categories')) {
+            return;
+        }
+
+        if (!Schema::hasColumn('product_categories', 'image')) {
+            return;
+        }
+
         Schema::table('product_categories', function (Blueprint $table) {
             $table->dropColumn('image');
         });

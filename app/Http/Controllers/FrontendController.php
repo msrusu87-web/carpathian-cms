@@ -24,12 +24,29 @@ class FrontendController extends Controller
 
     public function index()
     {
-        // Get widgets for homepage
-        $widgets = Widget::where('status', 'active')->orderBy('order')->get();
+        // Prefer an explicitly configured homepage page (common on production).
+        // Note: we intentionally do NOT require published_at here because some
+        // installs publish pages without setting that field.
+        $homepage = Page::where('is_homepage', true)
+            ->where('status', 'published')
+            ->first();
+
+        if ($homepage && $homepage->template_id) {
+            return response($this->renderer->renderPage($homepage));
+        }
+
+        // Widget-based homepage (fallback)
+        // Fail-safe: if there are no "active" widgets (common when production DB stores
+        // status as boolean/integer or data is inconsistent), fall back to showing all widgets
+        // rather than rendering an empty homepage.
+        $widgets = Widget::active()->get();
+        if ($widgets->isEmpty()) {
+            $widgets = Widget::query()->orderBy('order')->get();
+        }
         $products = Product::where('is_active', true)->take(6)->get();
         $posts = Post::where('status', 'published')->latest()->take(3)->get();
-        
-        return view('frontend.home', compact('widgets', 'products', 'posts'));
+
+        return view('frontend.home', compact('widgets', 'products', 'posts', 'homepage'));
     }
 
     public function page(string $slug)

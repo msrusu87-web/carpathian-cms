@@ -13,6 +13,8 @@ use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Filament\SpatieLaravelTranslatablePlugin;
 use Filament\View\PanelsRenderHook;
+use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationItem;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -41,6 +43,73 @@ class AdminPanelProvider extends PanelProvider
                 PanelsRenderHook::BODY_START,
                 fn () => view('filament.widgets.language-switcher')
             )
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn () => '<style>' . file_get_contents(resource_path('css/admin-enhancements.css')) . '</style>'
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn () => '<script>
+                    // Auto-save indicator
+                    document.addEventListener("livewire:init", () => {
+                        Livewire.hook("commit", ({ component, commit, respond }) => {
+                            const indicator = document.createElement("div");
+                            indicator.className = "auto-save-indicator";
+                            indicator.textContent = "✓ Saved";
+                            document.body.appendChild(indicator);
+                            setTimeout(() => indicator.remove(), 2000);
+                        });
+                    });
+                    
+                    // Smooth scroll to validation errors
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const observer = new MutationObserver(() => {
+                            const error = document.querySelector(".fi-fo-field-wrp-error");
+                            if (error) {
+                                error.scrollIntoView({ behavior: "smooth", block: "center" });
+                            }
+                        });
+                        observer.observe(document.body, { childList: true, subtree: true });
+                    });
+                </script>'
+            )
+            ->unsavedChangesAlerts()
+            ->databaseNotifications()
+            ->databaseNotificationsPolling("30s")
+            ->navigationItems([
+                NavigationItem::make('GitHub Repository')
+                    ->url('https://github.com/msrusu87-web/carpathian-cms', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-code-bracket')
+                    ->group('External Links')
+                    ->sort(999),
+                NavigationItem::make('Documentation')
+                    ->url('https://github.com/msrusu87-web/carpathian-cms/tree/main/docs', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-book-open')
+                    ->group('External Links')
+                    ->sort(1000),
+                NavigationItem::make('Live Website')
+                    ->url('https://carphatian.ro', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-globe-alt')
+                    ->group('External Links')
+                    ->sort(1001),
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('GitHub Repository')
+                    ->url('https://github.com/msrusu87-web/carpathian-cms')
+                    ->icon('heroicon-o-code-bracket')
+                    ->openUrlInNewTab(),
+                MenuItem::make()
+                    ->label('Documentation')
+                    ->url('https://github.com/msrusu87-web/carpathian-cms/tree/main/docs')
+                    ->icon('heroicon-o-book-open')
+                    ->openUrlInNewTab(),
+                MenuItem::make()
+                    ->label('Live Website')
+                    ->url('https://carphatian.ro')
+                    ->icon('heroicon-o-globe-alt')
+                    ->openUrlInNewTab(),
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
