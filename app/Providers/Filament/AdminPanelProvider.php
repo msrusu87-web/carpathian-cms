@@ -36,10 +36,9 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->brandName('Carpathian CMS')
-            ->brandLogo(fn () => view('filament.brand-logo'))
+            ->brandLogo(asset('images/carphatian-logo-transparent.png'))
             ->brandLogoHeight('2.5rem')
-            ->darkModeBrandLogo(fn () => view('filament.brand-logo'))
-            ->favicon('/favicon.ico')
+            ->favicon(asset('favicon.ico'))
             ->plugin(
                 SpatieLaravelTranslatablePlugin::make()
                     ->defaultLocales(['en', 'ro'])
