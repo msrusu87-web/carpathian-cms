@@ -115,11 +115,19 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
+            ->brandName('Carpathian CMS')
+            ->brandLogo(asset('images/logopngcorrect.png'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('favicon.ico'))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Removed FilamentInfoWidget to hide v3.3.45 branding
             ])
+            ->renderHook(
+                PanelsRenderHook::FOOTER,
+                fn () => view('filament.footer')
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
