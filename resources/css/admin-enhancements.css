@@ -89,3 +89,77 @@
 .fi-fo-section-content {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Mobile-responsive tabs */
+@media (max-width: 768px) {
+    /* Make tabs scrollable horizontally on mobile */
+    .fi-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    
+    .fi-tabs-nav {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        display: flex;
+        flex-wrap: nowrap !important;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+    }
+    
+    .fi-tabs-nav::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .fi-tabs-nav::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .fi-tabs-nav::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 2px;
+    }
+    
+    .fi-tabs-item {
+        flex-shrink: 0;
+        white-space: nowrap;
+        min-width: auto;
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    /* Ensure tab labels don't wrap */
+    .fi-tabs-item-label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Make icons smaller on mobile */
+    .fi-tabs-item-icon {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+@media (max-width: 640px) {
+    /* Further optimize for smaller screens */
+    .fi-tabs-item {
+        font-size: 0.8125rem;
+        padding: 0.4rem 0.875rem;
+    }
+    
+    /* Stack form sections better on mobile */
+    .fi-fo-section {
+        margin-bottom: 1rem;
+    }
+    
+    /* Reduce padding on mobile */
+    .fi-fo-section-header {
+        padding: 0.75rem 0.5rem 0.75rem 0.875rem !important;
+    }
+}
