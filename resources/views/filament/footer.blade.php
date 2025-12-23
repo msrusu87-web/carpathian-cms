@@ -6,7 +6,7 @@
             rel="noopener noreferrer"
             class="flex items-center gap-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition"
         >
-            <img src="{{ asset('images/logopngcorrect.png') }}" alt="Carpathian CMS" class="h-6 w-auto">
+            <img src="{{ asset('images/carphatian-logo-transparent.png') }}" alt="Carpathian CMS" class="h-8 w-auto">
             <span class="font-semibold">Carpathian CMS</span>
         </a>
         

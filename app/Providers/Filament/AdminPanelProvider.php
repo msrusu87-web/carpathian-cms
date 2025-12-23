@@ -35,6 +35,11 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->brandName('Carpathian CMS')
+            ->brandLogo(fn () => view('filament.brand-logo'))
+            ->brandLogoHeight('2.5rem')
+            ->darkModeBrandLogo(fn () => view('filament.brand-logo'))
+            ->favicon('/favicon.ico')
             ->plugin(
                 SpatieLaravelTranslatablePlugin::make()
                     ->defaultLocales(['en', 'ro'])
@@ -94,21 +99,8 @@ class AdminPanelProvider extends PanelProvider
                     ->sort(1001),
             ])
             ->userMenuItems([
-                MenuItem::make()
-                    ->label('GitHub Repository')
-                    ->url('https://github.com/msrusu87-web/carpathian-cms')
-                    ->icon('heroicon-o-code-bracket')
-                    ->openUrlInNewTab(),
-                MenuItem::make()
-                    ->label('Documentation')
-                    ->url('https://github.com/msrusu87-web/carpathian-cms/tree/main/docs')
-                    ->icon('heroicon-o-book-open')
-                    ->openUrlInNewTab(),
-                MenuItem::make()
-                    ->label('Live Website')
-                    ->url('https://carphatian.ro')
-                    ->icon('heroicon-o-globe-alt')
-                    ->openUrlInNewTab(),
+                'profile' => MenuItem::make()->label('Profil'),
+                'logout' => MenuItem::make()->label('Deconectare'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -116,7 +108,7 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->brandName('Carpathian CMS')
-            ->brandLogo(asset('images/logopngcorrect.png'))
+            ->brandLogo(asset('images/carphatian-logo-transparent.png'))
             ->brandLogoHeight('2.5rem')
             ->favicon(asset('favicon.ico'))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
