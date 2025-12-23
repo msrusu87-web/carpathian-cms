@@ -11,6 +11,6 @@ class Shop extends Cluster
     
     public static function getNavigationLabel(): string
     {
-        return __('shop');
+        return __('messages.shop');
     }
 }

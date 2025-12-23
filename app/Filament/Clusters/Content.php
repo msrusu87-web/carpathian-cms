@@ -11,6 +11,6 @@ class Content extends Cluster
     
     public static function getNavigationLabel(): string
     {
-        return __('content');
+        return __('messages.content');
     }
 }

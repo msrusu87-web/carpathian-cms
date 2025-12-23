@@ -3,14 +3,18 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Dashboard as BaseDashboard;
-use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class Dashboard extends BaseDashboard
 {
     protected static ?string $navigationIcon = 'heroicon-o-home';
-
+    
     protected static string $view = 'filament.pages.dashboard';
-
+    
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.dashboard');
+    }
+    
     public function getWidgets(): array
     {
         return [

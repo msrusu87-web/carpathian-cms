@@ -12,9 +12,9 @@ class SecuritySuite extends Page
     
     protected static string $view = 'filament.pages.security-suite';
     
-    public static function getNavigationLabel(): string { return __('security_suite'); }
+    public static function getNavigationLabel(): string { return __('messages.security_suite'); }
     
-    public function getTitle(): string { return __('security_suite'); }
+    public function getTitle(): string { return __('messages.security_suite'); }
     
     protected static ?int $navigationSort = 1;
     

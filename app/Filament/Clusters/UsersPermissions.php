@@ -11,6 +11,6 @@ class UsersPermissions extends Cluster
     
     public static function getNavigationLabel(): string
     {
-        return __('users_permissions');
+        return __('messages.users_permissions');
     }
 }

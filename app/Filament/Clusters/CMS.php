@@ -11,6 +11,6 @@ class CMS extends Cluster
     
     public static function getNavigationLabel(): string
     {
-        return __('cms');
+        return __('messages.cms');
     }
 }

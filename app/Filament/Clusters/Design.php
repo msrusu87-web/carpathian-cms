@@ -11,6 +11,6 @@ class Design extends Cluster
     
     public static function getNavigationLabel(): string
     {
-        return __('design');
+        return __('messages.design');
     }
 }

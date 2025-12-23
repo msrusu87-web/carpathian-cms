@@ -11,6 +11,6 @@ class Blog extends Cluster
     
     public static function getNavigationLabel(): string
     {
-        return __('blog');
+        return __('messages.blog');
     }
 }

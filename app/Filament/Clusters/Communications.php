@@ -11,6 +11,6 @@ class Communications extends Cluster
     
     public static function getNavigationLabel(): string
     {
-        return __('communications');
+        return __('messages.communications');
     }
 }

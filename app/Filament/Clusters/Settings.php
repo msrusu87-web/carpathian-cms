@@ -11,6 +11,6 @@ class Settings extends Cluster
     
     public static function getNavigationLabel(): string
     {
-        return __('settings');
+        return __('messages.settings');
     }
 }

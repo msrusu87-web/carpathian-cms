@@ -11,6 +11,6 @@ class AI extends Cluster
     
     public static function getNavigationLabel(): string
     {
-        return __('ai_tools');
+        return __('messages.ai_tools');
     }
 }
