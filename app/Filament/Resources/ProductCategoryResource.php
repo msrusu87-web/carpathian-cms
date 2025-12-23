@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Shop;
 
 use App\Filament\Resources\ProductCategoryResource\Pages;
 use App\Filament\Resources\ProductCategoryResource\RelationManagers;
@@ -22,7 +23,7 @@ class ProductCategoryResource extends Resource
 
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    protected static ?string $navigationGroup = 'Shop';
+    protected static ?string $cluster = Shop::class;
 
     
     protected static ?int $navigationSort = 2;

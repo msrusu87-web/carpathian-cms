@@ -91,15 +91,16 @@ Route::post('/pre-sale/{product}', [ShopController::class, 'preSaleSubmit'])->na
 
 // Sitemap & SEO Routes (MUST BE BEFORE DYNAMIC PAGES)
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.xml');
+Route::get('/sitemap-news.xml', [\App\Http\Controllers\NewsSitemapController::class, 'index'])->name('sitemap.news');
 Route::get('/generate-sitemap', [SitemapController::class, 'generate'])->name('sitemap.generate');
+Route::get('/generate-news-sitemap', [\App\Http\Controllers\NewsSitemapController::class, 'generate'])->name('sitemap.news.generate');
 Route::get('/robots.txt', function () {
-    $content = "User-agent: *\nAllow: /\nSitemap: " . url('/sitemap.xml');
-    return response($content, 200)->header('Content-Type', 'text/plain');
+    return response()->file(public_path('robots.txt'), ['Content-Type' => 'text/plain']);
 })->name('robots.txt');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return redirect()->route('client.dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -146,4 +147,10 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
     Route::get('/chat/{id}', [\App\Http\Controllers\ClientController::class, 'supportChat'])->name('chat.show');
     Route::post('/chat/new', [\App\Http\Controllers\ClientController::class, 'newConversation'])->name('chat.new');
     Route::post('/chat/{id}/send', [\App\Http\Controllers\ClientController::class, 'sendMessage'])->name('chat.send');
+    Route::get('/invoices', [\App\Http\Controllers\Client\InvoiceController::class, 'index'])->name('invoices');
+    Route::get('/profile', [\App\Http\Controllers\Client\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [\App\Http\Controllers\Client\ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/invoices/{invoice}', [\App\Http\Controllers\Client\InvoiceController::class, 'show'])->name('invoices.show');
+    Route::get('/invoices/{invoice}/download', [\App\Http\Controllers\Client\InvoiceController::class, 'download'])->name('invoices.download');
+    Route::get('/invoices/{invoice}/preview', [\App\Http\Controllers\Client\InvoiceController::class, 'preview'])->name('invoices.preview');
 });

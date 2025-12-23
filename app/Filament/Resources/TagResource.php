@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Blog;
 
 use App\Filament\Resources\TagResource\Pages;
 use App\Filament\Resources\TagResource\RelationManagers;
@@ -28,7 +29,7 @@ class TagResource extends Resource
 
 
     protected static ?string $navigationIcon = 'heroicon-o-bookmark';
-    protected static ?string $navigationGroup = 'Blog';
+    protected static ?string $cluster = Blog::class;
 
     
     protected static ?int $navigationSort = 5;

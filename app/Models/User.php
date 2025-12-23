@@ -23,6 +23,15 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'email',
         'password',
         'phone',
+        'first_name',
+        'last_name',
+        'company_name',
+        'company_reg_number',
+        'vat_number',
+        'billing_address',
+        'billing_city',
+        'billing_postal_code',
+        'billing_country',
     ];
 
     protected $hidden = [
@@ -75,6 +84,14 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    /**
+     * User's invoices
+     */
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Pages;
+use App\Filament\Clusters\AI;
 
 use Filament\Pages\Page;
 use Filament\Forms\Components\Textarea;
@@ -18,16 +19,14 @@ use Illuminate\Support\Str;
 
 class AiContentWriter extends Page implements HasForms
 {
+    protected static ?string $cluster = AI::class;
+
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
     protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.pages.ai-content-writer';
 
-    public static function getNavigationGroup(): ?string
-    {
-        return __('AI');
-    }
 
     public static function getNavigationLabel(): string
     {

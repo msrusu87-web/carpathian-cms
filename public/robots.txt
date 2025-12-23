@@ -1,56 +1,183 @@
 # Carphatian CMS - Robots.txt
 # https://carphatian.ro
+# Last Updated: 2025-12-23
+# Optimized for Google, Bing, and AI Search Engines
 
+# ==========================================
+# General Crawlers (High Priority)
+# ==========================================
 User-agent: *
 Allow: /
-
-# Allow all search engines
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Yandex
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-# Allow AI crawlers
-User-agent: GPTBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Claude-Web
-Allow: /
-
-User-agent: Anthropic-ai
-Allow: /
-
-User-agent: CCBot
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-# Block sensitive areas
 Disallow: /admin
 Disallow: /filament
 Disallow: /storage/
 Disallow: /api/
 Disallow: /checkout
 Disallow: /cart
+Disallow: /client/
 Disallow: /*.json$
-Disallow: /*?*
+Disallow: /*?*page=
+Disallow: /auth-test
+Disallow: /generate-sitemap
 
-# Sitemap location
-Sitemap: https://carphatian.ro/sitemap.xml
+# ==========================================
+# Search Engine Crawlers
+# ==========================================
 
-# Crawl delay for politeness
+# Google Bot - Full Access
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /filament
+Disallow: /client/
+Crawl-delay: 0
+
+# Google Image Bot
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /storage/images/
+Disallow: /admin
+Disallow: /filament
+
+# Bing Bot
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /filament
+Crawl-delay: 0
+
+# Yandex
+User-agent: Yandex
+Allow: /
+Disallow: /admin
+Disallow: /filament
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /admin
+Disallow: /filament
+
+# Baidu
+User-agent: Baiduspider
+Allow: /
+Disallow: /admin
+Disallow: /filament
+
+# ==========================================
+# AI Search Engine Crawlers (Priority)
+# ==========================================
+
+# OpenAI GPT (ChatGPT Search)
+User-agent: GPTBot
+Allow: /
+Allow: /blog/
+Allow: /shop/
+Allow: /portfolio/
+Allow: /en/
+Allow: /de/
+Allow: /es/
+Allow: /fr/
+Allow: /it/
+Disallow: /admin
+Disallow: /filament
+Disallow: /client/
 Crawl-delay: 1
+
+# OpenAI ChatGPT User Agent
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin
+Disallow: /filament
+
+# Anthropic Claude (Claude AI)
+User-agent: Claude-Web
+Allow: /
+Allow: /blog/
+Allow: /shop/
+Allow: /portfolio/
+Disallow: /admin
+Disallow: /filament
+Crawl-delay: 1
+
+User-agent: Anthropic-ai
+Allow: /
+Disallow: /admin
+Disallow: /filament
+
+# Common Crawl (AI Training)
+User-agent: CCBot
+Allow: /
+Disallow: /admin
+Disallow: /filament
+
+# Google Extended (Bard/Gemini)
+User-agent: Google-Extended
+Allow: /
+Allow: /blog/
+Allow: /shop/
+Allow: /portfolio/
+Disallow: /admin
+Disallow: /filament
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+Allow: /blog/
+Allow: /shop/
+Allow: /portfolio/
+Disallow: /admin
+Disallow: /filament
+Crawl-delay: 1
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+Disallow: /admin
+Disallow: /filament
+
+# Cohere AI
+User-agent: cohere-ai
+Allow: /
+Disallow: /admin
+Disallow: /filament
+
+# You.com AI Search
+User-agent: YouBot
+Allow: /
+Disallow: /admin
+Disallow: /filament
+
+# ==========================================
+# Social Media Crawlers
+# ==========================================
+
+# Twitter/X Bot
+User-agent: Twitterbot
+Allow: /
+Disallow: /admin
+
+# LinkedIn Bot
+User-agent: LinkedInBot
+Allow: /
+Disallow: /admin
+
+# Pinterest Bot
+User-agent: Pinterestbot
+Allow: /images/
+Disallow: /admin
+
+# ==========================================
+# Sitemap Locations
+# ==========================================
+Sitemap: https://carphatian.ro/sitemap.xml
+Sitemap: https://carphatian.ro/sitemap-news.xml
+
+# ==========================================
+# Crawl Settings
+# ==========================================
+# Default crawl delay (seconds)
+Crawl-delay: 1
+
+# Host preference (helps with www/non-www canonicalization)
+Host: https://carphatian.ro

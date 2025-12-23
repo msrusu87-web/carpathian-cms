@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Pages;
+use App\Filament\Clusters\AI;
 
 use Filament\Pages\Page;
 use Filament\Notifications\Notification;
@@ -11,14 +12,12 @@ use Filament\Actions\Action;
 
 class AiRepair extends Page
 {
+    protected static ?string $cluster = AI::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?int $navigationSort = 3;
     protected static string $view = 'filament.pages.ai-repair';
 
-    public static function getNavigationGroup(): ?string
-    {
-        return __('AI');
-    }
 
     public static function getNavigationLabel(): string
     {

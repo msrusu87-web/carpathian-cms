@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Communications;
 
 use App\Filament\Resources\NotificationTemplateResource\Pages;
 use App\Models\NotificationTemplate;
@@ -14,7 +15,7 @@ class NotificationTemplateResource extends Resource
 {
     protected static ?string $model = NotificationTemplate::class;
     protected static ?string $navigationIcon = 'heroicon-o-bell-alert';
-    protected static ?string $navigationGroup = 'Communications';
+    protected static ?string $cluster = Communications::class;
     protected static ?int $navigationSort = 4;
 
     public static function getNavigationLabel(): string

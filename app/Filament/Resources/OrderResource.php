@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Shop;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
@@ -28,7 +29,7 @@ class OrderResource extends Resource
 
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
-    protected static ?string $navigationGroup = 'Shop';
+    protected static ?string $cluster = Shop::class;
 
     
     protected static ?int $navigationSort = 4;

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\CMS;
 
 use App\Filament\Resources\MenuItemResource\Pages;
 use App\Models\MenuItem;
@@ -30,6 +31,7 @@ class MenuItemResource extends Resource
     
     protected static ?int $navigationSort = 3;
     protected static ?string $model = MenuItem::class;
+    protected static ?string $cluster = CMS::class;
 
     public static function form(Form $form): Form
     {

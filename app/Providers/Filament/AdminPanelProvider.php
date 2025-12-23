@@ -13,7 +13,7 @@ use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Filament\SpatieLaravelTranslatablePlugin;
 use Filament\View\PanelsRenderHook;
-use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationItem;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -21,7 +21,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Models\ChatConversation;
+use Illuminate\Support\Facades\Blade;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -31,119 +31,95 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->authGuard('web')
-            ->authMiddleware([\App\Http\Middleware\FilamentAuthenticate::class])
-            
-            ->brandName('Carphatian CMS')
-            ->brandLogo(asset('images/carphatian-logo-transparent.png'))
-            ->brandLogoHeight('3rem')
-            ->favicon(asset('images/carphatian-logo-transparent.png'))
+            ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->brandName('Carpathian CMS')
+            ->brandLogo(asset('images/carphatian-logo-transparent.png'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('favicon.ico'))
             ->plugin(
                 SpatieLaravelTranslatablePlugin::make()
                     ->defaultLocales(['en', 'ro'])
             )
-            ->navigationGroups([
-                // Quick Access
-                NavigationGroup::make('Quick Links')
-                    ->label(__('Quick Links'))
-                    ->icon('heroicon-o-bolt')
-                    ->collapsed(false),
-                
-                // Content Management
-                NavigationGroup::make('CMS')
-                    ->label(__('CMS'))
-                    ->icon('heroicon-o-document-text')
-                    ->collapsed(),
-                NavigationGroup::make('Blog')
-                    ->label(__('Blog'))
-                    ->icon('heroicon-o-newspaper')
-                    ->collapsed(),
-                
-                // E-commerce
-                NavigationGroup::make('Shop')
-                    ->label(__('Shop'))
-                    ->icon('heroicon-o-shopping-bag')
-                    ->collapsed(),
-                
-                // Design & Media
-                NavigationGroup::make('Design')
-                    ->label(__('Design'))
-                    ->icon('heroicon-o-paint-brush')
-                    ->collapsed(),
-                NavigationGroup::make('Content')
-                    ->label(__('Content'))
-                    ->icon('heroicon-o-photo')
-                    ->collapsed(),
-                
-                // Communications
-                NavigationGroup::make('Communications')
-                    ->label(__('Communications'))
-                    ->icon('heroicon-o-envelope')
-                    ->collapsed(),
-                
-                // AI Tools
-                NavigationGroup::make('AI')
-                    ->label(__('AI'))
-                    ->icon('heroicon-o-sparkles')
-                    ->collapsed(),
-                
-                // SEO
-                NavigationGroup::make('SEO')
-                    ->label(__('SEO'))
-                    ->icon('heroicon-o-magnifying-glass')
-                    ->collapsed(),
-                
-                // Users & Permissions
-                NavigationGroup::make('Users & Permissions')
-                    ->label(__('Users & Permissions'))
-                    ->icon('heroicon-o-users')
-                    ->collapsed(),
-                
-                // Settings
-                NavigationGroup::make('Settings')
-                    ->label(__('Settings'))
-                    ->icon('heroicon-o-cog-6-tooth')
-                    ->collapsed(),
-            ])
-            ->navigationItems([
-                NavigationItem::make('View Website')
-                    ->url('/', shouldOpenInNewTab: true)
-                    ->icon('heroicon-o-globe-alt')
-                    ->group('Quick Links')
-                    ->sort(1),
-                NavigationItem::make('Support Chat')
-                    ->url('/admin-chat')
-                    ->icon('heroicon-o-chat-bubble-left-right')
-                    ->group('Communications')
-                    ->sort(10)
-                    ->badge(function () {
-                        try {
-                            $count = ChatConversation::whereHas('messages', function ($q) {
-                                $q->where('is_admin', false)->where('is_read', false);
-                            })->count();
-                            return $count ?: null;
-                        } catch (\Exception $e) {
-                            return null;
-                        }
-                    }),
-            ])
-            ->sidebarCollapsibleOnDesktop()
+            ->renderHook(
+                PanelsRenderHook::BODY_START,
+                fn () => view('filament.widgets.language-switcher')
+            )
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn () => '<style>' . file_get_contents(resource_path('css/admin-enhancements.css')) . '</style>'
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn () => '<script>
+                    // Auto-save indicator
+                    document.addEventListener("livewire:init", () => {
+                        Livewire.hook("commit", ({ component, commit, respond }) => {
+                            const indicator = document.createElement("div");
+                            indicator.className = "auto-save-indicator";
+                            indicator.textContent = "✓ Saved";
+                            document.body.appendChild(indicator);
+                            setTimeout(() => indicator.remove(), 2000);
+                        });
+                    });
+                    
+                    // Smooth scroll to validation errors
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const observer = new MutationObserver(() => {
+                            const error = document.querySelector(".fi-fo-field-wrp-error");
+                            if (error) {
+                                error.scrollIntoView({ behavior: "smooth", block: "center" });
+                            }
+                        });
+                        observer.observe(document.body, { childList: true, subtree: true });
+                    });
+                </script>'
+            )
             ->unsavedChangesAlerts()
             ->databaseNotifications()
             ->databaseNotificationsPolling("30s")
+            ->navigationItems([
+                NavigationItem::make(__('messages.github_repository'))
+                    ->url('https://github.com/msrusu87-web/carpathian-cms', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-code-bracket')
+                    ->group(__('messages.external_links'))
+                    ->sort(999),
+                NavigationItem::make(__('messages.documentation'))
+                    ->url('https://github.com/msrusu87-web/carpathian-cms/tree/main/docs', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-book-open')
+                    ->group(__('messages.external_links'))
+                    ->sort(1000),
+                NavigationItem::make(__('messages.live_website'))
+                    ->url('https://carphatian.ro', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-globe-alt')
+                    ->group(__('messages.external_links'))
+                    ->sort(1001),
+            ])
+            ->userMenuItems([
+                'profile' => MenuItem::make()->label('Profil'),
+                'logout' => MenuItem::make()->label('Deconectare'),
+            ])
+            ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
+            ->brandName('Carpathian CMS')
+            ->brandLogo(asset('images/carphatian-logo-transparent.png'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('favicon.ico'))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Removed FilamentInfoWidget to hide v3.3.45 branding
             ])
+            ->renderHook(
+                PanelsRenderHook::FOOTER,
+                fn () => view('filament.footer')
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

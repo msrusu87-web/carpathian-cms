@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Filament\Widgets;
+
+use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\Auth;
+
+class AdminProfileWidget extends Widget
+{
+    protected static string $view = 'filament.widgets.admin-profile';
+    
+    protected int | string | array $columnSpan = 1;
+    
+    protected static ?int $sort = 1;
+    
+    public function getAdminData(): array
+    {
+        $user = Auth::user();
+        
+        return [
+            'name' => $user->name ?? 'Admin User',
+            'email' => $user->email ?? 'admin@carphatian.ro',
+            'avatar' => $user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name ?? 'Admin') . '&background=6366f1&color=fff',
+            'role' => $user->roles->first()?->name ?? 'Administrator',
+            'member_since' => $user->created_at->format('M Y'),
+            'last_login' => $user->last_login_at?->diffForHumans() ?? 'Just now',
+        ];
+    }
+}

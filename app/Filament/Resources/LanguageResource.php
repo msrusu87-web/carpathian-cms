@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\LanguageResource\Pages;
 use App\Models\Language;
@@ -23,7 +24,7 @@ class LanguageResource extends Resource
         return __('Limbi');
     }
     protected static ?string $model = Language::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
     protected static ?string $navigationIcon = 'heroicon-o-language';
         
     protected static ?string $pluralModelLabel = 'Limbi';

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\UsersPermissions;
 
 use App\Filament\Resources\RoleResource\Pages;
 use Filament\Forms;
@@ -15,7 +16,7 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
-    protected static ?string $navigationGroup = 'Users & Permissions';
+    protected static ?string $cluster = UsersPermissions::class;
     protected static ?int $navigationSort = 1;
 
     public static function getNavigationLabel(): string

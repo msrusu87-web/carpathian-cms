@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Blog;
 
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Models\Category;
@@ -21,7 +22,7 @@ class CategoryResource extends Resource
 
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
-    protected static ?string $navigationGroup = 'Blog';
+    protected static ?string $cluster = Blog::class;
 
     
     protected static ?int $navigationSort = 2;

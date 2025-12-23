@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\ContactSettingResource\Pages;
 use App\Models\ContactSetting;
@@ -23,7 +24,7 @@ class ContactSettingResource extends Resource
     
     protected static ?int $navigationSort = 2;
     protected static ?string $model = ContactSetting::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
     
 
     public static function form(Form $form): Form

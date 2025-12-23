@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\UsersPermissions;
 
 use App\Filament\Resources\UserGroupResource\Pages;
 use App\Models\UserGroup;
@@ -14,7 +15,7 @@ class UserGroupResource extends Resource
 {
     protected static ?string $model = UserGroup::class;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'Users & Permissions';
+    protected static ?string $cluster = UsersPermissions::class;
     protected static ?int $navigationSort = 1;
 
     public static function getNavigationLabel(): string

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\RedirectResource\Pages;
 use App\Models\Redirect;
@@ -12,22 +13,12 @@ use Filament\Tables\Table;
 
 class RedirectResource extends Resource
 {
-    public static function getNavigationGroup(): ?string
-    {
-        return __('SEO');
-    }
-
-    public static function getNavigationLabel(): string
-    {
-        return __('Redirects');
-    }
-
     protected static ?string $model = Redirect::class;
-    protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-path';
     
-        
+    protected static ?string $cluster = Settings::class;
+    
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -37,7 +28,6 @@ class RedirectResource extends Resource
                 Forms\Components\Section::make('Redirect Details')
                     ->schema([
                         Forms\Components\TextInput::make('from_url')
-                                               ->label(__('From URL'))
                             ->label('From URL')
                             ->required()
                             ->placeholder('/old-page')
@@ -47,7 +37,6 @@ class RedirectResource extends Resource
                             ->columnSpanFull(),
                         
                         Forms\Components\TextInput::make('to_url')
-                                               ->label(__('To URL'))
                             ->label('To URL')
                             ->required()
                             ->placeholder('/new-page')
@@ -56,7 +45,6 @@ class RedirectResource extends Resource
                             ->columnSpanFull(),
                         
                         Forms\Components\Select::make('status_code')
-                                               ->label(__('Status Code'))
                             ->label('Redirect Type')
                             ->required()
                             ->options([
@@ -69,7 +57,6 @@ class RedirectResource extends Resource
                             ->helperText('301 for permanent, 302 for temporary redirects'),
                         
                         Forms\Components\Toggle::make('is_active')
-                                               ->label(__('Active'))
                             ->label('Active')
                             ->default(true)
                             ->helperText('Enable or disable this redirect'),
@@ -101,7 +88,6 @@ class RedirectResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('from_url')
-                                       ->label(__('From URL'))
                     ->label('From URL')
                     ->searchable()
                     ->sortable()
@@ -109,14 +95,12 @@ class RedirectResource extends Resource
                     ->limit(50),
                 
                 Tables\Columns\TextColumn::make('to_url')
-                                       ->label(__('To URL'))
                     ->label('To URL')
                     ->searchable()
                     ->limit(50)
                     ->copyable(),
                 
                 Tables\Columns\BadgeColumn::make('status_code')
-                                       ->label(__('Status Code'))
                     ->label('Type')
                     ->colors([
                         'success' => 301,
@@ -125,7 +109,6 @@ class RedirectResource extends Resource
                     ]),
                 
                 Tables\Columns\IconColumn::make('is_active')
-                                       ->label(__('Active'))
                     ->label('Active')
                     ->boolean()
                     ->sortable(),
@@ -142,7 +125,6 @@ class RedirectResource extends Resource
                     ->since(),
                 
                 Tables\Columns\TextColumn::make('created_at')
-                                       ->label(__('Created At'))
                     ->label('Created')
                     ->dateTime()
                     ->sortable()

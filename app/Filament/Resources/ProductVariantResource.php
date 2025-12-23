@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Shop;
 
 use App\Filament\Resources\ProductVariantResource\Pages;
 use App\Models\ProductVariant;
@@ -12,10 +13,6 @@ use Filament\Tables\Table;
 
 class ProductVariantResource extends Resource
 {
-    public static function getNavigationGroup(): ?string
-    {
-        return __('Shop');
-    }
 
     public static function getNavigationLabel(): string
     {
@@ -23,6 +20,7 @@ class ProductVariantResource extends Resource
     }
 
     protected static ?string $model = ProductVariant::class;
+    protected static ?string $cluster = Shop::class;
     protected static ?string $navigationIcon = 'heroicon-o-squares-plus';
     
     public static function form(Form $form): Form

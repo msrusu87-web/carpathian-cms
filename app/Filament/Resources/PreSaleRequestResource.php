@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Shop;
 
 use App\Filament\Resources\PreSaleRequestResource\Pages;
 use App\Models\PreSaleRequest;
@@ -17,7 +18,7 @@ class PreSaleRequestResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     
-    protected static ?string $navigationGroup = 'Magazin';
+    protected static ?string $cluster = Shop::class;
     
     protected static ?string $navigationLabel = 'Cereri Pre-Comandă';
     

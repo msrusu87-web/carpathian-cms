@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Content;
 
 use App\Filament\Resources\PortfolioResource\Pages;
 use App\Models\Portfolio;
@@ -17,7 +18,7 @@ class PortfolioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
     
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?string $cluster = Content::class;
     
     protected static ?int $navigationSort = 3;
 

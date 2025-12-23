@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Design;
 
 use App\Filament\Resources\WidgetResource\Pages;
 use App\Models\Widget;
@@ -18,7 +19,7 @@ class WidgetResource extends Resource
     use Translatable;
     
     protected static ?string $model = Widget::class;
-    protected static ?string $navigationGroup = 'Design';
+    protected static ?string $cluster = Design::class;
     
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
     

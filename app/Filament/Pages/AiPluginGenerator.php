@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Pages;
+use App\Filament\Clusters\AI;
 
 use Filament\Pages\Page;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -17,16 +18,14 @@ use Illuminate\Support\Facades\Storage;
 
 class AiPluginGenerator extends Page implements HasForms
 {
+    protected static ?string $cluster = AI::class;
+
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-code-bracket';
     protected static string $view = 'filament.pages.ai-plugin-generator';
     protected static ?int $navigationSort = 2;
 
-    public static function getNavigationGroup(): ?string
-    {
-        return __('AI');
-    }
 
     public static function getNavigationLabel(): string
     {

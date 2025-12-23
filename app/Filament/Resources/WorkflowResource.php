@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\WorkflowResource\Pages;
 use App\Models\Workflow;
@@ -12,19 +13,10 @@ use Filament\Tables\Table;
 
 class WorkflowResource extends Resource
 {
-    public static function getNavigationGroup(): ?string
-    {
-        return __('Settings');
-    }
-
-    public static function getNavigationLabel(): string
-    {
-        return __('Workflows');
-    }
-
     protected static ?string $model = Workflow::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-path';
-    
+    protected static ?string $cluster = Settings::class;
+
     public static function form(Form $form): Form
     {
         return $form

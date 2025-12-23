@@ -15,13 +15,8 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(Request $request): View
     {
-        // Support returning users to checkout (or any safe internal URL)
-        // when they arrive on /register?redirect=/checkout
         $redirect = $request->query('redirect');
         if (is_string($redirect) && $redirect !== '') {
             $safe = $this->safeInternalRedirect($redirect);
@@ -33,23 +28,37 @@ class RegisteredUserController extends Controller
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'company_name' => ['nullable', 'string', 'max:255'],
+            'company_reg_number' => ['nullable', 'string', 'max:100'],
+            'vat_number' => ['nullable', 'string', 'max:100'],
+            'billing_address' => ['required', 'string', 'max:255'],
+            'billing_city' => ['required', 'string', 'max:100'],
+            'billing_postal_code' => ['required', 'string', 'max:20'],
+            'billing_country' => ['required', 'string', 'max:100'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'phone' => $request->phone,
+            'company_name' => $request->company_name,
+            'company_reg_number' => $request->company_reg_number,
+            'vat_number' => $request->vat_number,
+            'billing_address' => $request->billing_address,
+            'billing_city' => $request->billing_city,
+            'billing_postal_code' => $request->billing_postal_code,
+            'billing_country' => $request->billing_country,
         ]);
 
         // Assign Client role to newly registered users
@@ -59,7 +68,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // Redirect clients to client dashboard
         return redirect()->intended(route('client.dashboard', absolute: false));
     }
 
@@ -70,17 +78,14 @@ class RegisteredUserController extends Controller
             return null;
         }
 
-        // Disallow protocol-relative redirects (//evil.com)
         if (Str::startsWith($value, '//')) {
             return null;
         }
 
-        // Relative internal path
         if (Str::startsWith($value, '/')) {
             return $value;
         }
 
-        // Absolute URL must match APP_URL host
         if (filter_var($value, FILTER_VALIDATE_URL)) {
             $appHost = parse_url(config('app.url'), PHP_URL_HOST);
             $valueHost = parse_url($value, PHP_URL_HOST);

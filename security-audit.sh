@@ -1,28 +1,45 @@
 #!/bin/bash
-echo "═══════════════════════════════════════════════"
-echo "    CMS SECURITY AUDIT - $(date)"
-echo "═══════════════════════════════════════════════"
+# Security Audit Script for Carpathian CMS
+
+echo "=== Carpathian CMS Security Audit ==="
+echo "Date: $(date)"
 echo ""
-PASSED=0; WARNINGS=0; FAILED=0
-echo "🔍 Checking Security Packages..."
-composer show 2>/dev/null | grep -q "laravel/sanctum" && echo "  ✓ Laravel Sanctum" && ((PASSED++)) || echo "  ✗ Sanctum missing" && ((FAILED++))
-composer show 2>/dev/null | grep -q "spatie/laravel-permission" && echo "  ✓ Spatie Permission" && ((PASSED++)) || echo "  ✗ Permission missing" && ((FAILED++))
-composer show 2>/dev/null | grep -q "laravel/fortify" && echo "  ✓ Laravel Fortify" && ((PASSED++)) || echo "  ⚠ Fortify missing" && ((WARNINGS++))
+
+# Check for suspicious files
+echo "1. Checking for suspicious files..."
+find /var/www/carphatian.ro/html -name "*.php" -type f -mtime -1 | while read file; do
+    echo "   Modified in last 24h: $file"
+done
+
+# Check for shell scripts in web directory
 echo ""
-echo "🔍 Checking Middleware..."
-[ -f "app/Http/Middleware/SecurityHeaders.php" ] && echo "  ✓ SecurityHeaders" && ((PASSED++)) || echo "  ✗ SecurityHeaders missing" && ((FAILED++))
-[ -f "app/Http/Middleware/ValidateInput.php" ] && echo "  ✓ ValidateInput" && ((PASSED++)) || echo "  ⚠ ValidateInput missing" && ((WARNINGS++))
-[ -f "app/Http/Middleware/ApiRateLimiter.php" ] && echo "  ✓ ApiRateLimiter" && ((PASSED++)) || echo "  ⚠ ApiRateLimiter missing" && ((WARNINGS++))
-[ -f "app/Http/Middleware/LogActivity.php" ] && echo "  ✓ LogActivity" && ((PASSED++)) || echo "  ⚠ LogActivity missing" && ((WARNINGS++))
+echo "2. Checking for unauthorized shell scripts..."
+find /var/www/carphatian.ro/html/public -name "*.sh" -o -name "*.bash"
+
+# Check file permissions
 echo ""
-echo "🔍 Checking Services..."
-[ -f "app/Services/FileSecurityService.php" ] && echo "  ✓ FileSecurityService" && ((PASSED++)) || echo "  ⚠ FileSecurityService missing" && ((WARNINGS++))
+echo "3. Checking for world-writable files..."
+find /var/www/carphatian.ro/html -type f -perm -002 2>/dev/null
+
+# Check for large files (possible uploads)
 echo ""
-echo "🔍 Checking Permissions..."
-[ -w "storage" ] && echo "  ✓ storage/ writable" && ((PASSED++)) || echo "  ✗ storage/ not writable" && ((FAILED++))
-[ -w "bootstrap/cache" ] && echo "  ✓ bootstrap/cache/ writable" && ((PASSED++)) || echo "  ✗ bootstrap/cache/ not writable" && ((FAILED++))
+echo "4. Checking for large files (>10MB)..."
+find /var/www/carphatian.ro/html/public -type f -size +10M
+
+# Check fail2ban status
 echo ""
-echo "═══════════════════════════════════════════════"
-echo "  ✓ Passed: $PASSED  ⚠ Warnings: $WARNINGS  ✗ Failed: $FAILED"
-echo "═══════════════════════════════════════════════"
-[ $FAILED -eq 0 ] && echo "✅ Security audit complete!" || echo "❌ Fix critical issues!"
+echo "5. Fail2Ban status:"
+sudo fail2ban-client status 2>/dev/null || echo "   Fail2Ban not running"
+
+# Check nginx error log for attacks
+echo ""
+echo "6. Recent nginx errors (last 50):"
+sudo tail -50 /var/log/nginx/error.log | grep -E "attack|exploit|injection" || echo "   No attacks detected"
+
+# Check for malicious IP connections
+echo ""
+echo "7. Top IP addresses in last hour:"
+sudo tail -1000 /var/log/nginx/access.log | awk '{print $1}' | sort | uniq -c | sort -rn | head -10
+
+echo ""
+echo "Audit complete!"

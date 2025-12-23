@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Pages;
+use App\Filament\Clusters\Communications;
 
 use App\Models\EmailSetting;
 use Filament\Forms;
@@ -16,7 +17,7 @@ class EmailSettings extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
-    protected static ?string $navigationGroup = 'Communications';
+    protected static ?string $cluster = Communications::class;
     protected static ?int $navigationSort = 3;
     protected static string $view = 'filament.pages.email-settings';
 

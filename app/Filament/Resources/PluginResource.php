@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\PluginResource\Pages;
 use App\Models\Plugin;
@@ -25,7 +26,7 @@ class PluginResource extends Resource
         return __('Plugin-uri');
     }
     protected static ?string $model = Plugin::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
     protected static ?string $navigationIcon = 'heroicon-o-puzzle-piece';
         protected static ?int $navigationSort = 10;
     

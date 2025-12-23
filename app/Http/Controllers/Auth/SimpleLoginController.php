@@ -17,7 +17,7 @@ class SimpleLoginController extends Controller
             if ($user->canAccessAdmin()) {
                 return redirect('/admin');
             }
-            return redirect('/dashboard');
+            return redirect()->route('client.dashboard');
         }
         return view('auth.login');
     }
@@ -35,8 +35,6 @@ class SimpleLoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
-            // Session regeneration is handled automatically by Laravel's StartSession middleware
-            
             $user = Auth::user();
             
             Log::info('Login successful', [
@@ -45,11 +43,26 @@ class SimpleLoginController extends Controller
                 'is_admin' => $user->canAccessAdmin()
             ]);
             
+            // Get the intended URL before we potentially modify it
+            $intendedUrl = $request->session()->get('url.intended');
+            
+            // Admin users
             if ($user->canAccessAdmin()) {
+                // Allow admin to access any intended URL
                 return redirect()->intended('/admin');
             }
             
-            return redirect()->intended('/dashboard');
+            // Regular customers
+            // If intended URL is an admin route, clear it and redirect to client dashboard
+            if ($intendedUrl && str_starts_with($intendedUrl, url('/admin'))) {
+                $request->session()->forget('url.intended');
+                Log::info('Cleared admin intended URL for customer', [
+                    'user_id' => $user->id,
+                    'intended_url' => $intendedUrl
+                ]);
+            }
+            
+            return redirect()->intended(route('client.dashboard'));
         }
 
         Log::warning('Login failed', ['email' => $request->email]);

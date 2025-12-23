@@ -3,6 +3,10 @@
 @section('content')
 <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ __('Welcome') }}, {{ Auth::user()->name }}!</h1>
+    <a href="{{ route('client.profile.edit') }}" class="mt-3 inline-flex items-center text-purple-600 hover:text-purple-700 font-semibold hover:underline">
+        <i class="fas fa-user-edit mr-2"></i>
+        Editează Profilul Meu
+    </a>
     <p class="text-gray-600 dark:text-gray-400 mt-2">{{ __('Manage your orders and get support from here.') }}</p>
 </div>
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Shop;
 
 use App\Filament\Resources\CouponResource\Pages;
 use App\Filament\Resources\CouponResource\RelationManagers;
@@ -26,7 +27,7 @@ class CouponResource extends Resource
     }
 
     protected static ?string $model = Coupon::class;
-    protected static ?string $navigationGroup = 'Shop';
+    protected static ?string $cluster = Shop::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

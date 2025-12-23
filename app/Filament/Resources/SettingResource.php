@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\SettingResource\Pages;
 use App\Filament\Resources\SettingResource\RelationManagers;
@@ -22,7 +23,7 @@ class SettingResource extends Resource
 
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-8-tooth';
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
 
     
     protected static ?int $navigationSort = 1;

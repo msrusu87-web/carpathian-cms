@@ -36,7 +36,7 @@ class VerifyEmailController extends Controller
             if (!Auth::check()) {
                 Auth::login($user);
             }
-            return redirect()->route('dashboard')
+            return redirect()->route('client.dashboard')
                 ->with('success', __('messages.email_already_verified'));
         }
         
@@ -50,7 +50,7 @@ class VerifyEmailController extends Controller
             Auth::login($user);
         }
         
-        return redirect()->route('dashboard')
+        return redirect()->route('client.dashboard')
             ->with('success', __('messages.email_verified_successfully'));
     }
 }

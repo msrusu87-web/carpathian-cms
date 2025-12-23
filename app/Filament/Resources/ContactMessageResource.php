@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Communications;
 
 use App\Filament\Resources\ContactMessageResource\Pages;
 use App\Models\ContactMessage;
@@ -14,7 +15,7 @@ class ContactMessageResource extends Resource
 {
     protected static ?string $model = ContactMessage::class;
     protected static ?string $navigationIcon = 'heroicon-o-inbox';
-    protected static ?string $navigationGroup = 'Communications';
+    protected static ?string $cluster = Communications::class;
     protected static ?int $navigationSort = 2;
 
     public static function getNavigationLabel(): string

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Communications;
 
 use App\Filament\Resources\EmailTemplateResource\Pages;
 use App\Models\EmailTemplate;
@@ -14,7 +15,7 @@ class EmailTemplateResource extends Resource
 {
     protected static ?string $model = EmailTemplate::class;
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
-    protected static ?string $navigationGroup = 'Communications';
+    protected static ?string $cluster = Communications::class;
     protected static ?int $navigationSort = 1;
 
     public static function getNavigationLabel(): string

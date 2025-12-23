@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Pages;
+use App\Filament\Clusters\Settings as SettingsCluster;
 
 use App\Models\Setting;
 use Filament\Actions\Action;
@@ -18,16 +19,14 @@ use Illuminate\Support\Facades\Storage;
 
 class Settings extends Page
 {
+    protected static ?string $cluster = SettingsCluster::class;
+
     protected static ?string $navigationIcon = "heroicon-o-cog-6-tooth";
 
     protected static string $view = "filament.pages.settings";
     protected static ?string $slug = "site-settings";
 
 
-    public static function getNavigationGroup(): ?string
-    {
-        return __('Settings');
-    }
 
     public static function getNavigationLabel(): string
     {
