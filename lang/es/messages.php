@@ -1064,4 +1064,12 @@ return [
     '📤 Încarcă Plugin' => '📤 Încarcă Plugin',
     '📤 Încarcă Template' => '📤 Încarcă Șablon',
     'back_to_blog' => 'Volver al Blog',
+    'server_error' => 'Error del Servidor',
+    'server_error_desc' => 'Lo sentimos, hubo un error en el servidor. Por favor, inténtelo de nuevo más tarde.',
+    'under_maintenance' => 'Sitio en mantenimiento',
+    'possible_causes' => 'Posibles causas',
+    'cause_maintenance' => 'El sitio se está actualizando',
+    'cause_overload' => 'El servidor está temporalmente sobrecargado',
+    'cause_temporary' => 'Problema técnico temporal',
+    'try_again' => 'Intentar de nuevo',
 ];
