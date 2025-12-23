@@ -1,7 +1,5 @@
 <?php
 
-/** RO Translation */
-
 return array (
   '$/Oră' => '$/Oră',
   '.env not found' => '.env nu a fost găsit',
@@ -423,6 +421,7 @@ return array (
   'demo' => 'Demo',
   'description' => 'Descriere',
   'deselect_all' => 'Deselectați Tot',
+  'design' => 'Design',
   'details' => 'Detalii',
   'discount' => 'Reducere',
   'discover_platform' => 'Descoperă platforma noastră și începe să creezi astăzi',
@@ -691,6 +690,7 @@ return array (
   'services' => 'Servicii',
   'services_available' => 'servicii disponibile',
   'services_provided' => 'Servicii Oferite',
+  'settings' => 'Setări',
   'share' => 'Distribuie',
   'share_article' => 'Distribuie Articolul',
   'shares' => 'Distribuiri',

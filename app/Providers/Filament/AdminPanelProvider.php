@@ -81,20 +81,20 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling("30s")
             ->navigationItems([
-                NavigationItem::make('GitHub Repository')
+                NavigationItem::make(__('github_repository'))
                     ->url('https://github.com/msrusu87-web/carpathian-cms', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-code-bracket')
-                    ->group('External Links')
+                    ->group(__('external_links'))
                     ->sort(999),
-                NavigationItem::make('Documentation')
+                NavigationItem::make(__('documentation'))
                     ->url('https://github.com/msrusu87-web/carpathian-cms/tree/main/docs', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-book-open')
-                    ->group('External Links')
+                    ->group(__('external_links'))
                     ->sort(1000),
-                NavigationItem::make('Live Website')
+                NavigationItem::make(__('live_website'))
                     ->url('https://carphatian.ro', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-globe-alt')
-                    ->group('External Links')
+                    ->group(__('external_links'))
                     ->sort(1001),
             ])
             ->userMenuItems([
