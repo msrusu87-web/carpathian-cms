@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'google_places' => [
+        'api_key' => env('GOOGLE_PLACES_API_KEY'),
+    ],
+
+    'brevo' => [
+        'api_key' => env('BREVO_API_KEY'),
+        'webhook_secret' => env('BREVO_WEBHOOK_SECRET'),
+        'use_api' => env('BREVO_USE_API', false),
+    ],
+
 ];

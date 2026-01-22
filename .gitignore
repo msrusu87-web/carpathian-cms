@@ -31,6 +31,16 @@ yarn-error.log
 *.sql.gz
 *.sql.bak
 database_backup.sql
+database_sample.sql
+database_sample_full.sql
+failed-contacts*.csv
+
+# Debug & Test Scripts
+debug*.sh
+test-*.sh
+test-*.php
+browser_simulation.sh
+security-audit.sh
 
 # Build
 /public/build

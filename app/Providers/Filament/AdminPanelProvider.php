@@ -103,7 +103,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverResources(in: base_path('plugins/marketing/src/Filament/Resources'), for: 'Plugins\\Marketing\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverPages(in: base_path('plugins/marketing/src/Filament/Pages'), for: 'Plugins\\Marketing\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])

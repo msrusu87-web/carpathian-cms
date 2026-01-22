@@ -1,0 +1,35 @@
+{
+  "name": "Marketing Automation",
+  "slug": "marketing",
+  "version": "1.0.0",
+  "author": "Carphatian CMS",
+  "description": "Complete marketing automation suite: Web scraper for contacts (email, phone, company info), contact list management, bulk email campaigns with anti-spam protection, campaign analytics and export functionality.",
+  "requires": {
+    "php": ">=8.2",
+    "laravel": ">=11.0"
+  },
+  "features": [
+    "Web scraping for business contacts",
+    "Email discovery from websites",
+    "Contact list management with tags",
+    "Bulk email campaigns",
+    "Anti-spam protection (rate limiting, unsubscribe)",
+    "Campaign analytics and tracking",
+    "CSV/Excel export",
+    "Email template builder",
+    "GDPR compliance tools"
+  ],
+  "config": {
+    "rate_limits": {
+      "scrape_per_minute": 10,
+      "emails_per_hour": 50,
+      "emails_per_day": 200
+    },
+    "anti_spam": {
+      "require_unsubscribe_link": true,
+      "min_delay_between_emails_seconds": 30,
+      "max_emails_per_contact_per_day": 1,
+      "blacklist_domains": ["gov.ro", "edu.ro", "mil.ro"]
+    }
+  }
+}

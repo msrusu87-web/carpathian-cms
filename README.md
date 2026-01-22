@@ -1,437 +1,437 @@
 # 🏔️ Carpathian CMS
 
-<div align="center">
+**A modern, AI-powered Laravel 11 Content Management System with built-in e-commerce, marketing automation, and multilingual support.**
 
-![Carpathian CMS](https://carphatian.ro/assets/logo.svg)
-
-**A Modern, Multilingual CMS with AI Integration, E-Commerce & Freelance Marketplace**
-
-[![Live Demo](https://img.shields.io/badge/demo-carphatian.ro-blue?style=for-the-badge&logo=laravel)](https://carphatian.ro)
-[![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-8.4+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
-
-[🌐 Live Demo](https://carphatian.ro) • [📚 Documentation](docs/INSTALLATION.md) • [🚀 Quick Start](#-quick-start) • [💬 Support](#-support)
-
-</div>
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=flat-square&logo=laravel)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php)](https://php.net)
+[![Filament](https://img.shields.io/badge/Filament-3.x-FDAE4B?style=flat-square)](https://filamentphp.com)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 
 ---
 
-## ✨ Features at a Glance
+## ✨ Key Features
 
-<table>
-  <tr>
-    <td align="center" width="25%">
-      <h3>🤖 AI-Powered</h3>
-      ✓ AI Content Generator<br/>
-      ✓ Smart SEO Optimization<br/>
-      ✓ Intelligent Chat Support<br/>
-      ✓ Auto-translations
-    </td>
-    <td align="center" width="25%">
-      <h3>🌍 Multilingual</h3>
-      ✓ 3 Languages (EN, RO, ES)<br/>
-      ✓ RTL Support Ready<br/>
-      ✓ SEO per Language<br/>
-      ✓ Translation Manager
-    </td>
-    <td align="center" width="25%">
-      <h3>🛒 E-Commerce</h3>
-      ✓ Product Management<br/>
-      ✓ Order Processing<br/>
-      ✓ Payment Gateways<br/>
-      ✓ Inventory Tracking
-    </td>
-    <td align="center" width="25%">
-      <h3>💼 Freelance Marketplace</h3>
-      ✓ Gig Management<br/>
-      ✓ Order System<br/>
-      ✓ Earnings Dashboard<br/>
-      ✓ Profile Management
-    </td>
-  </tr>
-</table>
+### 🤖 AI-Powered Content Generation
+- **Groq AI Integration** (Llama 3.3 70B) - Generate SEO-optimized content for products, blog posts, and pages
+- **Multi-field Generation** - Generate multiple content fields simultaneously
+- **Automatic SEO Optimization** - AI generates meta titles, descriptions, and keywords
+- **Multilingual AI Content** - Generate content in 6 languages with proper localization
+- **Template & Plugin Generation** - AI can generate complete website templates and plugin code
+- **Auto Blog Posts** - Generate blog posts based on your shop products automatically
+
+### 🛒 Complete E-Commerce Suite
+- **Product Management** - Categories, variants, inventory tracking, pricing
+- **Multiple Payment Gateways**:
+  - 💳 Stripe (Credit/Debit Cards)
+  - 💰 PayPal (Classic & API)
+  - 🏦 Bank Transfer
+  - ₿ Cryptocurrency Wallet Integration
+- **Order Management** - Full order lifecycle with status tracking
+- **Coupon System** - Discount codes with flexible rules
+- **Digital Products** - Support for downloadable products
+
+### 📧 Marketing Automation (Plugin)
+- **Email Harvesting** - Web scraping for business contact discovery
+- **Contact Management** - Lists, tags, segmentation, GDPR compliance
+- **Email Campaigns** - Rich HTML templates with TinyEditor
+- **Brevo Integration** - Send campaigns via Brevo (Sendinblue) API
+- **SMTP Support** - Native SMTP email sending
+- **Anti-Spam Protection** - Rate limiting, unsubscribe handling, CAN-SPAM compliance
+- **Google Places API** - Auto-complete company names, phones, and addresses
+
+### 🌍 Multilingual System
+- **6 Built-in Languages**: Romanian, English, German, French, Spanish, Italian
+- **JSON Translation Files** - Easy to extend and maintain
+- **Per-field Translations** - Each content field can have translations
+- **AI Translation** - Generate content in multiple languages automatically
+- **RTL Support** - Ready for right-to-left languages
+
+### 🎨 Modern Admin Panel (Filament 3)
+- **Cluster-based Navigation** - Organized menu structure:
+  - 🛍️ Shop (Products, Categories, Orders, Coupons)
+  - 📝 CMS (Pages, Posts, Widgets, Menus)
+  - 📊 Marketing (Contacts, Campaigns, Scraper)
+  - ⚙️ Settings (General, SEO, Email, Payments)
+  - 🤖 AI (Content Writer, Generations, Settings)
+- **Rich Text Editor** - TinyMCE integration for content editing
+- **Media Manager** - Upload and manage images and files
+- **Role-based Permissions** - Granular access control with Spatie Permissions
+
+### 🔍 Advanced SEO Features
+- **Meta Tags Management** - Title, description, keywords per page
+- **Open Graph Tags** - Optimized social media sharing
+- **Schema.org Markup** - Structured data for rich snippets
+- **XML Sitemap** - Auto-generated sitemap
+- **SEO Tools Integration** - artesaos/seotools package
+- **AI SEO Suggestions** - AI-powered SEO recommendations
+
+### 🔐 Security Features
+- **Laravel Sanctum** - API token authentication
+- **CSRF Protection** - Built-in cross-site request forgery protection
+- **Encrypted Credentials** - Payment gateway credentials stored encrypted
+- **Activity Logging** - Track all admin actions
+- **Rate Limiting** - API and form submission rate limiting
+
+### 📱 Responsive Design
+- **Mobile-First** - Fully responsive frontend
+- **PWA Ready** - Progressive Web App capabilities
+- **Touch-Friendly** - Optimized for mobile devices
 
 ---
 
-## 📸 Screenshots
+## 📋 Requirements
 
-<details>
-<summary><b>👉 Click to view admin panel screenshots</b></summary>
+- **PHP** 8.2 or higher
+- **MySQL** 8.0+ or MariaDB 10.6+
+- **Composer** 2.x
+- **Node.js** 18+ & NPM
+- **Redis** (recommended for sessions/cache)
 
-### 📊 Admin Dashboard
-> Modern analytics dashboard with visitor stats, browser distribution, and device tracking
-
-### 🤖 AI Content Generator  
-> Generate blog posts, pages, and product descriptions with AI assistance
-
-### 🛒 Product Management
-> Full-featured e-commerce product management with categories and variants
-
-### 📝 Page Builder
-> Intuitive drag-and-drop page builder with live preview
-
-### 🌐 Multilingual Manager
-> Manage content in multiple languages with ease
-
-### 🎨 Modern Frontend
-> Responsive, beautiful homepage design with Tailwind CSS
-
-</details>
-
----
-
-## 🚀 Quick Start
-
-### One-Line Install
-
-```bash
-git clone https://github.com/msrusu87-web/carpathian-cms.git && cd carpathian-cms && composer install && npm install && npm run build && php artisan migrate --seed
+### PHP Extensions Required
+```
+BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML, cURL
 ```
 
-### Requirements
+---
 
-| Requirement | Version |
-|------------|---------|
-| PHP | 8.4+ |
-| MySQL | 8.0+ |
-| Composer | 2.x |
-| Node.js | 18+ |
-| Nginx/Apache | Latest |
+## 🚀 Installation
 
-### Basic Installation
+### 1. Clone the Repository
 
 ```bash
-# 1. Clone repository
 git clone https://github.com/msrusu87-web/carpathian-cms.git
 cd carpathian-cms
-
-# 2. Install dependencies
-composer install --no-dev --optimize-autoloader
-npm install && npm run build
-
-# 3. Configure environment
-cp .env.example .env
-php artisan key:generate
-
-# 4. Setup database (update .env first)
-php artisan migrate --seed
-
-# 5. Create admin user
-php artisan make:filament-user
-
-# 6. Set permissions
-chmod -R 775 storage bootstrap/cache
-
-# 7. Start server
-php artisan serve
 ```
 
-Visit `http://localhost:8000/admin` to access the admin panel!
+### 2. Install Dependencies
 
-📖 **Full guide:** [Installation Documentation](docs/INSTALLATION.md)
+```bash
+composer install --optimize-autoloader
+npm install && npm run build
+```
 
----
+### 3. Environment Setup
 
-## 🎯 Why Carpathian CMS?
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-### For Developers 👨‍💻
-- ⚡ **Laravel 11** - Modern PHP framework
-- 🎨 **Filament v3** - Beautiful admin panel (saves 100+ hours)
-- 🧩 **Modular Architecture** - Easy to extend
-- 🔒 **Secure** - Built-in security features
-- 📦 **Well-documented** - Comprehensive docs
+### 4. Configure Environment
 
-### For Content Creators ✍️
-- 🤖 **AI Writing Assistant** - Generate content in seconds
-- 🌐 **Multi-language** - Reach global audiences
-- 📊 **Analytics** - Track visitor behavior
-- 🎨 **Visual Editor** - No coding required
-- 📱 **Mobile-friendly** - Works on all devices
+Edit `.env` with your settings:
 
-### For Businesses 💼
-- 💰 **Cost-effective** - Open source, no licensing fees
-- 🚀 **Fast** - Optimized performance
-- 📈 **Scalable** - Grows with your business
-- 🛡️ **Secure** - Regular security updates
-- 🔧 **Customizable** - Adapt to your needs
+```env
+# Application
+APP_NAME="Your Site Name"
+APP_URL=https://yourdomain.com
+APP_LOCALE=en
 
----
+# Database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_DATABASE=carpathian_cms
+DB_USERNAME=your_user
+DB_PASSWORD=your_password
 
-## 🔌 AI Integrations
+# Redis (Recommended)
+REDIS_HOST=127.0.0.1
 
-Powered by cutting-edge AI:
+# AI Integration (Groq - Free & Fast)
+GROQ_API_KEY=your_groq_api_key
 
-| Provider | Model | Use Case |
-|----------|-------|----------|
-| **Groq** | Llama 3.1 70B | Ultra-fast content generation |
-| **OpenAI** | GPT-4o | Advanced AI features |
-| **Custom** | FastAPI | Self-hosted AI service |
+# Email
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.yourdomain.com
+MAIL_PORT=587
+MAIL_USERNAME=your@email.com
+MAIL_PASSWORD=your_password
+MAIL_FROM_ADDRESS=noreply@yourdomain.com
 
-### AI Features:
-- 📝 Blog post generation
-- 🔍 SEO meta descriptions  
-- 🌐 Content translations
-- 💬 Smart chatbot
-- 🖼️ Image descriptions
-- 📊 Analytics insights
+# Payment Gateways (Optional)
+STRIPE_KEY=pk_live_xxx
+STRIPE_SECRET=sk_live_xxx
+PAYPAL_CLIENT_ID=xxx
+PAYPAL_SECRET=xxx
 
-**Setup guide:** [docs/AI_INTEGRATION.md](docs/AI_INTEGRATION.md)
+# Marketing (Optional)
+GOOGLE_PLACES_API_KEY=your_google_api_key
+BREVO_API_KEY=your_brevo_api_key
+```
 
----
+### 5. Database Setup
 
-## 🛒 E-Commerce Features
+```bash
+# Run migrations
+php artisan migrate
 
-### Products & Catalog
-✓ Unlimited products & variations  
-✓ Category & tag management  
-✓ Image galleries  
-✓ Stock tracking  
-✓ Bulk operations  
-✓ Import/Export
+# Seed default data (optional)
+php artisan db:seed
 
-### Orders & Payments
-✓ Shopping cart  
-✓ Multiple payment gateways (Stripe, PayPal)  
-✓ Order management  
-✓ Email notifications  
-✓ Invoice generation  
-✓ Tax calculations
+# Create storage symlink
+php artisan storage:link
+```
 
-### Customer Management
-✓ User accounts  
-✓ Order history  
-✓ Wishlist  
-✓ Reviews & ratings
+### 6. Create Admin User
 
----
+```bash
+php artisan make:filament-user
+```
 
-## 🌍 Multilingual System
+### 7. Production Optimization
 
-### Built-in Languages
-- 🇬🇧 **English** - Default
-- 🇷🇴 **Romanian** - Limba română  
-- 🇪🇸 **Spanish** - Español
-
-### Features:
-- Easy language switcher
-- SEO-friendly URLs per language
-- Translation management interface
-- Automated AI translations
-- RTL support ready
-
-**Add new languages in minutes!** See [docs/MULTILINGUAL.md](docs/MULTILINGUAL.md)
+```bash
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan icons:cache
+```
 
 ---
 
-## 📚 Documentation
+## 🎯 Quick Start
 
-| Topic | Description |
-|-------|-------------|
-| [📥 Installation](docs/INSTALLATION.md) | Complete installation guide |
-| [⚙️ Configuration](docs/CONFIGURATION.md) | System configuration |
-| [🎨 Customization](docs/CUSTOMIZATION.md) | Theming and customization |
-| [🤖 AI Integration](docs/AI_INTEGRATION.md) | Setup AI features |
-| [🌐 Multilingual](docs/MULTILINGUAL.md) | Language management |
-| [🛒 E-Commerce](docs/ECOMMERCE.md) | Shop setup and configuration |
-| [🔧 Development](docs/DEVELOPMENT.md) | Development guidelines |
-| [🚀 Deployment](docs/DEPLOYMENT.md) | Production deployment |
-| [📖 API Reference](docs/API.md) | API documentation |
+### Access Admin Panel
+Navigate to `https://yourdomain.com/admin`
+
+### Create Your First Content
+1. **Products**: Admin → Shop → Products → Create New
+2. **Blog Post**: Admin → Blog → Posts → Create New
+3. **Page**: Admin → CMS → Pages → Create New
+
+### Generate Content with AI
+1. Edit any product, page, or post
+2. Click "✨ Generate with AI" button
+3. Select fields to generate
+4. Add instructions and generate!
 
 ---
 
-## 🗂️ Project Structure
+## 📁 Project Structure
 
 ```
 carpathian-cms/
-├── app/                    # Application code
-│   ├── Filament/          # Admin panel (Resources, Pages, Widgets)
-│   ├── Http/              # Controllers, middleware
-│   ├── Models/            # Eloquent models
-│   └── Services/          # Business logic (AI, payments, etc.)
-├── database/              
-│   ├── migrations/        # Database migrations
-│   └── seeders/           # Sample data
-├── docs/                  # Documentation files
-├── lang/                  # Translations (en, ro, es)
-├── public/                # Web root
-├── resources/             
-│   ├── views/            # Blade templates
-│   └── js/css/           # Frontend assets
-├── routes/                # Route definitions
-└── tests/                 # Test suite
+├── app/
+│   ├── Filament/           # Admin panel resources
+│   │   ├── Clusters/       # Navigation clusters
+│   │   ├── Resources/      # CRUD resources
+│   │   └── Widgets/        # Dashboard widgets
+│   ├── Models/             # Eloquent models
+│   ├── Services/           # Business logic services
+│   │   ├── AIService.php
+│   │   ├── GroqAiService.php
+│   │   └── ...
+│   └── Http/               # Controllers & Middleware
+├── config/                 # Configuration files
+├── database/
+│   ├── migrations/         # Database migrations
+│   └── schema/             # Database schema (clean)
+├── lang/                   # Translation files
+│   ├── en/, ro/, de/, fr/, es/, it/
+├── plugins/                # Plugin system
+│   ├── marketing/          # Marketing automation plugin
+│   └── freelancer/         # Freelancer marketplace plugin
+├── public/                 # Public assets
+├── resources/
+│   ├── views/              # Blade templates
+│   ├── css/                # Stylesheets
+│   └── js/                 # JavaScript
+└── routes/                 # Route definitions
 ```
 
 ---
 
-## 🛠️ Technology Stack
+## 🔌 Plugin System
 
-### Backend
-- **Laravel 11.x** - PHP Framework
-- **Filament v3** - Admin Panel  
-- **MySQL 8.0** - Database
-- **Redis** - Caching
+### Marketing Automation Plugin
 
-### Frontend
-- **Tailwind CSS 3** - Styling
-- **Alpine.js** - JavaScript  
-- **Livewire** - Dynamic components
-- **Vite** - Asset bundling
+Located in `plugins/marketing/`, includes:
 
-### AI & Services  
-- **FastAPI** - AI microservice
-- **Groq API** - LLM inference
-- **OpenAI API** - GPT-4o
+- **Web Scraper** - Extract business contact info from websites
+- **Contact Manager** - Store and segment contacts
+- **Email Campaigns** - Create and send email campaigns
+- **Brevo Integration** - Use Brevo API for campaign delivery
+- **Analytics** - Track opens, clicks, and conversions
+
+### Activating Plugins
+
+```php
+// In config or via Admin → Settings → Plugins
+'plugins' => [
+    'marketing' => true,
+    'freelancer' => false,
+]
+```
 
 ---
 
-## 🔐 Security Features
+## 🛠️ Configuration
 
-✅ CSRF Protection  
-✅ SQL Injection Prevention  
-✅ XSS Protection  
-✅ SSL/TLS Encryption  
-✅ Rate Limiting  
-✅ Security Headers  
-✅ Password Hashing  
-✅ Two-Factor Auth Ready
+### AI Settings
 
-**Report security issues:** security@carphatian.ro
+```env
+# Groq (Recommended - Free tier available)
+AI_PROVIDER=groq
+GROQ_API_KEY=gsk_your_api_key
+GROQ_MODEL=llama-3.3-70b-versatile
+
+# OpenAI (Alternative)
+OPENAI_API_KEY=sk-your_api_key
+OPENAI_MODEL=gpt-4o
+```
+
+Get your free Groq API key: https://console.groq.com
+
+### Payment Gateway Configuration
+
+Configure via Admin → Settings → Shop Settings or in `.env`:
+
+```env
+# Stripe
+STRIPE_KEY=pk_live_...
+STRIPE_SECRET=sk_live_...
+
+# PayPal
+PAYPAL_MODE=live
+PAYPAL_CLIENT_ID=...
+PAYPAL_SECRET=...
+```
+
+### Email Marketing
+
+```env
+# SMTP (Direct sending)
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.yourdomain.com
+
+# Brevo Integration (Recommended for campaigns)
+BREVO_API_KEY=your_brevo_api_key
+BREVO_USE_API=true
+```
+
+---
+
+## 🚀 Deployment
+
+### Ubuntu/Debian Server
+
+```bash
+# Install requirements
+sudo apt update
+sudo apt install php8.3-fpm php8.3-mysql php8.3-mbstring php8.3-xml \
+    php8.3-curl php8.3-redis mysql-server nginx redis-server
+
+# Deploy
+cd /var/www
+git clone https://github.com/msrusu87-web/carpathian-cms.git your-site
+cd your-site
+composer install --optimize-autoloader --no-dev
+npm ci && npm run build
+
+# Set permissions
+sudo chown -R www-data:www-data storage bootstrap/cache
+sudo chmod -R 775 storage bootstrap/cache
+```
+
+### Nginx Configuration
+
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com;
+    root /var/www/your-site/public;
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+```
+
+---
+
+## 📝 API Documentation
+
+The CMS includes a REST API for headless usage:
+
+- **Products API**: `/api/products`
+- **Posts API**: `/api/posts`
+- **Pages API**: `/api/pages`
+
+API documentation available at: `/api/documentation` (Swagger/OpenAPI)
+
+---
+
+## 🔄 Maintenance
+
+### Clear Caches
+
+```bash
+php artisan optimize:clear
+```
+
+### Update Dependencies
+
+```bash
+composer update
+npm update && npm run build
+```
+
+### Backup Database
+
+```bash
+mysqldump -u user -p database > backup_$(date +%Y%m%d).sql
+```
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! 
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-```bash
-# Fork and clone
-git clone https://github.com/YOUR_USERNAME/carpathian-cms.git
-
-# Create branch  
-git checkout -b feature/amazing-feature
-
-# Commit changes
-git commit -m 'Add amazing feature'
-
-# Push and create PR
-git push origin feature/amazing-feature
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
-## 📝 License
+## 📄 License
 
-Carpathian CMS is open-source software licensed under the [MIT License](LICENSE).
-
-```
-MIT License - Copyright (c) 2024 Carpathian CMS
-
-Permission is hereby granted, free of charge, to any person obtaining a copy...
-```
+This project is open-source and available under the [MIT License](LICENSE).
 
 ---
 
-## 💬 Support & Community
+## 🙏 Credits
 
-- 📧 **Email:** support@carphatian.ro
-- 🐛 **Bug Reports:** [GitHub Issues](https://github.com/msrusu87-web/carpathian-cms/issues)
-- 💬 **Discussions:** [GitHub Discussions](https://github.com/msrusu87-web/carpathian-cms/discussions)
-- 📚 **Documentation:** [docs/](docs/)
-- 🌐 **Website:** [carphatian.ro](https://carphatian.ro)
-
----
-
-## 👥 Credits & Acknowledgments
-
-**Built with ❤️ by:**
-- **Lead Developer:** [msrusu87-web](https://github.com/msrusu87-web)
-- **Framework:** Laravel by Taylor Otwell
-- **Admin Panel:** Filament by Dan Harrin
-- **Contributors:** [All Contributors](https://github.com/msrusu87-web/carpathian-cms/graphs/contributors)
-
-**Special Thanks:**
-- Laravel Community
-- Filament Community  
-- All open-source contributors
+Built with:
+- [Laravel 11](https://laravel.com) - PHP Framework
+- [Filament 3](https://filamentphp.com) - Admin Panel
+- [Tailwind CSS](https://tailwindcss.com) - CSS Framework
+- [Groq AI](https://groq.com) - AI Content Generation
+- [Alpine.js](https://alpinejs.dev) - JavaScript Framework
+- [Livewire](https://livewire.laravel.com) - Full-stack Framework
 
 ---
 
-## 🌟 Star History
+## 📞 Support
 
-If you find this project useful, please consider giving it a star! ⭐
-
-[![Star History Chart](https://api.star-history.com/svg?repos=msrusu87-web/carpathian-cms&type=Date)](https://star-history.com/#msrusu87-web/carpathian-cms&Date)
-
----
-
-## 🚀 Roadmap
-
-### v1.1 (Coming Soon)
-- [ ] Advanced SEO tools
-- [ ] Email marketing integration
-- [ ] More payment gateways
-- [ ] Mobile app (React Native)
-- [ ] Theme marketplace
-
-### v2.0 (Future)
-- [ ] Multi-vendor marketplace
-- [ ] Advanced analytics
-- [ ] Membership system
-- [ ] Learning management system
-- [ ] Forum integration
+- **Issues**: [GitHub Issues](https://github.com/msrusu87-web/carpathian-cms/issues)
+- **Documentation**: [docs/](docs/)
+- **Email**: msrusu87@gmail.com
 
 ---
 
-## 📊 Statistics
-
-- **2000+** Lines of code
-- **50+** Database tables
-- **100+** Admin resources
-- **3** Languages supported
-- **10+** Integrations
-
----
-
-## 🔗 Quick Links
-
-| Link | URL |
-|------|-----|
-| 🌐 Live Demo | [carphatian.ro](https://carphatian.ro) |
-| 📚 Documentation | [docs/](docs/) |
-| 🐛 Issues | [GitHub Issues](https://github.com/msrusu87-web/carpathian-cms/issues) |
-| 💬 Discussions | [GitHub Discussions](https://github.com/msrusu87-web/carpathian-cms/discussions) |
-| 📧 Email | contact@carphatian.ro |
-
----
-
-<div align="center">
-
-**Made in Romania 🇷🇴 • Powered by Laravel ❤️ • Admin by Filament 🎨**
-
-[⬆ Back to top](#-carpathian-cms)
-
----
-
-*Star this repo if you find it useful! ⭐*
-
-</div>
-
----
-
-## 📸 Live Screenshots
-
-> **Note:** Visit [carphatian.ro](https://carphatian.ro) to see the CMS in action!
-
-The admin panel features:
-- Modern dashboard with analytics
-- AI-powered content generator
-- Intuitive product management
-- Drag-and-drop page builder
-- Multilingual content manager
-- Beautiful responsive frontend
-
-Screenshots coming soon! For now, visit the [live demo](https://carphatian.ro) to explore all features.
+**Made with ❤️ for modern web development**
 

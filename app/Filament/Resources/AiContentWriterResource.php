@@ -14,7 +14,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Tabs;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Http;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use AmidEsfahani\FilamentTinyEditor\TinyEditor;
 
 class AiContentWriterResource extends Resource
 {

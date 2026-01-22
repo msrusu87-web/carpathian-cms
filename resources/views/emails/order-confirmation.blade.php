@@ -178,8 +178,17 @@
         </div>
         
         <div class="footer">
-            <p>{{ __('messages.email_footer') }}</p>
-            <p>&copy; {{ date('Y') }} Carpathian CMS. {{ __('messages.all_rights_reserved') }}</p>
+            <div style="margin-bottom: 15px;">
+                <strong>Carpathian Web Solutions</strong><br>
+                Aziz Ride Sharing SRL<br>
+                Strada Ploiești 47-49, Cluj-Napoca
+            </div>
+            <p style="margin: 10px 0;">
+                🌐 <a href="https://www.carphatian.ro" style="color: #8b5cf6;">www.carphatian.ro</a><br>
+                📧 <a href="mailto:contact@carphatian.ro" style="color: #8b5cf6;">contact@carphatian.ro</a><br>
+                📞 Tel/WhatsApp: <a href="tel:+40774077860" style="color: #8b5cf6;">+40 774 077 860</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 11px; color: #999;">&copy; {{ date('Y') }} Aziz Ride Sharing S.R.L. - Carpathian Web Solutions. {{ __('messages.all_rights_reserved') }}</p>
         </div>
     </div>
 </body>
