@@ -76,7 +76,8 @@ class RolesAndPermissionsSeeder extends Seeder
         Role::create(['name' => 'Freelancer']);
         Role::create(['name' => 'Subscriber']);
 
-        $adminUser = User::where('email', 'msrusu87@gmail.com')->first();
+        // Assign Super Admin role to the first admin user
+        $adminUser = User::where('is_admin', true)->first();
         if ($adminUser) {
             $adminUser->assignRole('Super Admin');
         }

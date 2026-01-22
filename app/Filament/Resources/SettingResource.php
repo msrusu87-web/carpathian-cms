@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\SettingResource\Pages;
 use App\Filament\Resources\SettingResource\RelationManagers;
@@ -15,11 +16,16 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SettingResource extends Resource
 {
+    public static function getNavigationLabel(): string
+    {
+        return __('Settings');
+    }
+
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-8-tooth';
+    protected static ?string $cluster = Settings::class;
 
-    protected static ?string $navigationGroup = 'Global Settings';
-
+    
     protected static ?int $navigationSort = 1;
     protected static ?string $model = Setting::class;
 
@@ -28,19 +34,24 @@ class SettingResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('key')
+                                        ->label(__('Key'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('value')
+                                        ->label(__('Value'))
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('type')
+                                        ->label(__('Type'))
                     ->required()
                     ->maxLength(255)
                     ->default('string'),
                 Forms\Components\TextInput::make('group')
+                                        ->label(__('Group'))
                     ->required()
                     ->maxLength(255)
                     ->default('general'),
                 Forms\Components\Textarea::make('description')
+                                        ->label(__('Description'))
                     ->columnSpanFull(),
                 Forms\Components\Toggle::make('is_public')
                     ->required(),
@@ -52,18 +63,23 @@ class SettingResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('key')
+                                        ->label(__('Key'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type')
+                                        ->label(__('Type'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('group')
+                                        ->label(__('Group'))
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_public')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                                        ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                                        ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

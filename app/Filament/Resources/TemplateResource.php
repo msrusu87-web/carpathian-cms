@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Design;
 
 use App\Filament\Resources\TemplateResource\Pages;
 use App\Models\Template;
@@ -12,13 +13,24 @@ use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 
 class TemplateResource extends Resource
+
+
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Design');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Templates');
+    }
+
     protected static ?string $model = Template::class;
+    protected static ?string $cluster = Design::class;
     protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
-    protected static ?string $navigationGroup = 'Design';
-    protected static ?int $navigationSort = 1;
-    protected static ?string $navigationLabel = 'Templates';
-    protected static ?string $pluralModelLabel = 'Templates';
+        protected static ?int $navigationSort = 1;
+        protected static ?string $pluralModelLabel = 'Templates';
 
     public static function form(Form $form): Form
     {
@@ -26,17 +38,20 @@ class TemplateResource extends Resource
             Forms\Components\Section::make('Informații Template')
                 ->schema([
                     Forms\Components\TextInput::make('name')
+                                           ->label(__('Name'))
                         ->label('Nume')
                         ->required()
                         ->maxLength(255),
                     
                     Forms\Components\TextInput::make('slug')
+                                           ->label(__('Slug'))
                         ->label('Slug')
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->maxLength(255),
                     
                     Forms\Components\Textarea::make('description')
+                                           ->label(__('Description'))
                         ->label('Descriere')
                         ->rows(3)
                         ->maxLength(1000),
@@ -64,6 +79,7 @@ class TemplateResource extends Resource
                         ->helperText('Tipuri de pagini suportate'),
                     
                     Forms\Components\Toggle::make('is_active')
+                                           ->label(__('Active'))
                         ->label('Activ')
                         ->helperText('Template-ul este utilizat pe site')
                         ->default(false),
@@ -82,6 +98,7 @@ class TemplateResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                                       ->label(__('Name'))
                     ->label('Nume Template')
                     ->searchable()
                     ->weight('bold')
@@ -90,6 +107,7 @@ class TemplateResource extends Resource
                     ->description(fn ($record) => $record->description),
                 
                 Tables\Columns\TextColumn::make('slug')
+                                       ->label(__('Slug'))
                     ->label('Slug')
                     ->badge()
                     ->color('info'),
@@ -113,6 +131,7 @@ class TemplateResource extends Resource
                     ->color('gray'),
                 
                 Tables\Columns\IconColumn::make('is_active')
+                                       ->label(__('Active'))
                     ->label('Activ')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
@@ -129,6 +148,7 @@ class TemplateResource extends Resource
                     ->falseColor('gray'),
                 
                 Tables\Columns\TextColumn::make('created_at')
+                                       ->label(__('Created At'))
                     ->label('Instalat')
                     ->dateTime('d M Y')
                     ->sortable()

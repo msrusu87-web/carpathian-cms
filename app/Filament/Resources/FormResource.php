@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Content;
 
 use App\Filament\Resources\FormResource\Pages;
 use App\Models\Form;
@@ -12,10 +13,16 @@ use Filament\Tables\Table;
 
 class FormResource extends Resource
 {
-    protected static ?string $model = Form::class;
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationGroup = 'Conținut';
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Forms');
+    }
+
+    protected static ?string $model = Form::class;
+    protected static ?string $cluster = Content::class;
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    
     public static function form(FilamentForm $form): FilamentForm
     {
         return $form

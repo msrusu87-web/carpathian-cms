@@ -1,47 +1,77 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Communications;
 
 use App\Filament\Resources\ContactMessageResource\Pages;
-use App\Filament\Resources\ContactMessageResource\RelationManagers;
 use App\Models\ContactMessage;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ContactMessageResource extends Resource
 {
     protected static ?string $model = ContactMessage::class;
+    protected static ?string $navigationIcon = 'heroicon-o-inbox';
+    protected static ?string $cluster = Communications::class;
+    protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    public static function getNavigationLabel(): string
+    {
+        return __('Contact Messages');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Contact Message');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'new')->count() ?: null;
+    }
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('subject')
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('message')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('status')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('replied_at'),
-            ]);
+        return $form->schema([
+            Forms\Components\Section::make(__('Message Details'))
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->label(__('Name'))
+                        ->disabled(),
+                    Forms\Components\TextInput::make('email')
+                        ->label(__('Email'))
+                        ->disabled(),
+                    Forms\Components\TextInput::make('phone')
+                        ->label(__('Phone'))
+                        ->disabled(),
+                    Forms\Components\TextInput::make('subject')
+                        ->label(__('Subject'))
+                        ->disabled(),
+                    Forms\Components\Textarea::make('message')
+                        ->label(__('Message'))
+                        ->disabled()
+                        ->columnSpanFull()
+                        ->rows(5),
+                ])->columns(2),
+            
+            Forms\Components\Section::make(__('Status'))
+                ->schema([
+                    Forms\Components\Select::make('status')
+                        ->label(__('Status'))
+                        ->options([
+                            'new' => __('New'),
+                            'read' => __('Read'),
+                            'replied' => __('Replied'),
+                            'archived' => __('Archived'),
+                        ])
+                        ->required(),
+                    Forms\Components\DateTimePicker::make('replied_at')
+                        ->label(__('Replied At')),
+                ])->columns(2),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -49,31 +79,46 @@ class ContactMessageResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->label(__('Name'))
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
+                    ->label(__('Email'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('subject')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\TextColumn::make('replied_at')
+                    ->label(__('Subject'))
+                    ->limit(30),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->label(__('Status'))
+                    ->colors([
+                        'danger' => 'new',
+                        'warning' => 'read',
+                        'success' => 'replied',
+                        'gray' => 'archived',
+                    ]),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Received'))
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'new' => __('New'),
+                        'read' => __('Read'),
+                        'replied' => __('Replied'),
+                        'archived' => __('Archived'),
+                    ]),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('markRead')
+                    ->label(__('Mark as Read'))
+                    ->icon('heroicon-o-eye')
+                    ->action(fn ($record) => $record->update(['status' => 'read']))
+                    ->visible(fn ($record) => $record->status === 'new'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -84,14 +129,7 @@ class ContactMessageResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
-    }
-
-    public static function getNavigationGroup(): ?string
-    {
-        return __('messages.settings');
+        return [];
     }
 
     public static function getPages(): array

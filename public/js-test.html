@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #90EE90; }
+        .fail { background-color: #FFB6C1; }
+        .pending { background-color: #FFF8DC; }
+    </style>
+</head>
+<body>
+    <h1>JavaScript & Livewire Diagnostics</h1>
+    
+    <div id="js-basic" class="test pending">1. Basic JavaScript: Testing...</div>
+    <div id="js-fetch" class="test pending">2. Fetch API: Testing...</div>
+    <div id="js-livewire" class="test pending">3. Livewire JS Load: Testing...</div>
+    <div id="js-alpine" class="test pending">4. Alpine.js: Testing...</div>
+    <div id="js-csrf" class="test pending">5. CSRF Token: Testing...</div>
+    <div id="js-livewire-update" class="test pending">6. Livewire Update Endpoint: Testing...</div>
+    
+    <h2>Console Errors:</h2>
+    <div id="console-errors" style="background:#333;color:#0f0;padding:10px;font-family:monospace;min-height:100px;max-height:300px;overflow:auto;"></div>
+    
+    <script>
+        // Capture console errors
+        const consoleDiv = document.getElementById('console-errors');
+        const originalError = console.error;
+        console.error = function(...args) {
+            consoleDiv.innerHTML += '<div style="color:red">[ERROR] ' + args.join(' ') + '</div>';
+            originalError.apply(console, args);
+        };
+        
+        window.onerror = function(msg, url, line, col, error) {
+            consoleDiv.innerHTML += '<div style="color:red">[ONERROR] ' + msg + ' at ' + url + ':' + line + '</div>';
+            return false;
+        };
+        
+        // Test 1: Basic JavaScript
+        try {
+            document.getElementById('js-basic').className = 'test success';
+            document.getElementById('js-basic').textContent = '1. Basic JavaScript: ✓ Working';
+        } catch(e) {
+            document.getElementById('js-basic').className = 'test fail';
+            document.getElementById('js-basic').textContent = '1. Basic JavaScript: ✗ ' + e.message;
+        }
+        
+        // Test 2: Fetch API
+        fetch('/admin/login')
+            .then(response => {
+                document.getElementById('js-fetch').className = 'test success';
+                document.getElementById('js-fetch').textContent = '2. Fetch API: ✓ Working (Status: ' + response.status + ')';
+            })
+            .catch(e => {
+                document.getElementById('js-fetch').className = 'test fail';
+                document.getElementById('js-fetch').textContent = '2. Fetch API: ✗ ' + e.message;
+            });
+        
+        // Test 3: Load Livewire JS
+        const liveWireScript = document.createElement('script');
+        liveWireScript.src = '/vendor/livewire/livewire.min.js';
+        liveWireScript.onload = function() {
+            document.getElementById('js-livewire').className = 'test success';
+            document.getElementById('js-livewire').textContent = '3. Livewire JS Load: ✓ Loaded';
+            
+            // Test 4: Alpine check (Livewire 3 includes Alpine)
+            setTimeout(() => {
+                if (typeof Alpine !== 'undefined') {
+                    document.getElementById('js-alpine').className = 'test success';
+                    document.getElementById('js-alpine').textContent = '4. Alpine.js: ✓ Available (version: ' + (Alpine.version || 'unknown') + ')';
+                } else {
+                    document.getElementById('js-alpine').className = 'test fail';
+                    document.getElementById('js-alpine').textContent = '4. Alpine.js: ✗ Not found after Livewire load';
+                }
+            }, 1000);
+        };
+        liveWireScript.onerror = function(e) {
+            document.getElementById('js-livewire').className = 'test fail';
+            document.getElementById('js-livewire').textContent = '3. Livewire JS Load: ✗ Failed to load';
+        };
+        document.body.appendChild(liveWireScript);
+        
+        // Test 5: CSRF Token from meta or cookie
+        setTimeout(() => {
+            const cookies = document.cookie;
+            const hasXsrf = cookies.includes('XSRF-TOKEN');
+            if (hasXsrf) {
+                document.getElementById('js-csrf').className = 'test success';
+                document.getElementById('js-csrf').textContent = '5. CSRF Token: ✓ Cookie present';
+            } else {
+                document.getElementById('js-csrf').className = 'test fail';
+                document.getElementById('js-csrf').textContent = '5. CSRF Token: ✗ Cookie not found';
+            }
+        }, 500);
+        
+        // Test 6: Livewire update endpoint
+        setTimeout(() => {
+            const csrfCookie = document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN='));
+            let token = '';
+            if (csrfCookie) {
+                token = decodeURIComponent(csrfCookie.split('=')[1]);
+            }
+            
+            fetch('/livewire/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': token,
+                    'X-Livewire': 'true',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({components: []})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message && data.message.includes('CSRF')) {
+                    document.getElementById('js-livewire-update').className = 'test fail';
+                    document.getElementById('js-livewire-update').textContent = '6. Livewire Update: ✗ CSRF mismatch';
+                } else {
+                    document.getElementById('js-livewire-update').className = 'test success';
+                    document.getElementById('js-livewire-update').textContent = '6. Livewire Update: ✓ Endpoint responding';
+                }
+            })
+            .catch(e => {
+                document.getElementById('js-livewire-update').className = 'test fail';
+                document.getElementById('js-livewire-update').textContent = '6. Livewire Update: ✗ ' + e.message;
+            });
+        }, 1500);
+    </script>
+</body>
+</html>

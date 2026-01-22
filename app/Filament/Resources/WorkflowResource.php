@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\WorkflowResource\Pages;
 use App\Models\Workflow;
@@ -14,7 +15,7 @@ class WorkflowResource extends Resource
 {
     protected static ?string $model = Workflow::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-path';
-    protected static ?string $navigationGroup = 'Setări';
+    protected static ?string $cluster = Settings::class;
 
     public static function form(Form $form): Form
     {

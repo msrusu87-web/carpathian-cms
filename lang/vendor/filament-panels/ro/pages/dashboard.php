@@ -2,7 +2,7 @@
 
 return [
 
-    'title' => 'Panoul de control',
+    'title' => 'Panou Control',
 
     'actions' => [
 

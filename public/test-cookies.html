@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cookie Test</title>
+    <style>
+        body { background: #111; color: #0f0; font-family: monospace; padding: 20px; }
+        .box { background: #222; border: 2px solid #0f0; padding: 15px; margin: 10px 0; }
+        .error { color: #f00; font-weight: bold; }
+        .success { color: #0f0; }
+    </style>
+</head>
+<body>
+    <h1>Direct Cookie Test</h1>
+    <div class="box" id="output"></div>
+    
+    <script>
+        const output = document.getElementById('output');
+        
+        output.innerHTML = '<h2>Browser Info:</h2>';
+        output.innerHTML += 'URL: ' + window.location.href + '<br>';
+        output.innerHTML += 'Domain: ' + window.location.hostname + '<br>';
+        output.innerHTML += 'Protocol: ' + window.location.protocol + '<br>';
+        output.innerHTML += 'Cookies Enabled: ' + navigator.cookieEnabled + '<br>';
+        output.innerHTML += 'Secure Context: ' + window.isSecureContext + '<br>';
+        output.innerHTML += '<br><h2>All Cookies:</h2>';
+        output.innerHTML += document.cookie || 'NONE FOUND<br>';
+        
+        // Try to set a cookie
+        document.cookie = 'test_cookie=abc123; path=/; secure; samesite=lax';
+        
+        setTimeout(() => {
+            output.innerHTML += '<br><br><h2>After Setting Test Cookie:</h2>';
+            output.innerHTML += document.cookie || 'STILL NONE';
+            
+            if (document.cookie.includes('test_cookie')) {
+                output.innerHTML += '<br><span class="success">✓ JavaScript CAN set cookies!</span>';
+            } else {
+                output.innerHTML += '<br><span class="error">✗ JavaScript CANNOT set cookies!</span>';
+                output.innerHTML += '<br><span class="error">Your browser is blocking cookies!</span>';
+            }
+        }, 500);
+    </script>
+</body>
+</html>

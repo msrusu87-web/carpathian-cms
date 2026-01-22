@@ -29,8 +29,6 @@ class Dashboard extends BaseDashboard
     {
         return [
             \App\Filament\Widgets\StatsOverview::class,
-            \App\Filament\Widgets\RecentContactMessages::class,
-            \App\Filament\Widgets\QuickActions::class,
         ];
     }
 

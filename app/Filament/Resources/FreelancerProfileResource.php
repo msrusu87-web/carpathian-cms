@@ -12,10 +12,15 @@ use Filament\Tables\Table;
 
 class FreelancerProfileResource extends Resource
 {
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Freelancer');
+    }
     protected static ?string $model = FreelancerProfile::class;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationGroup = 'Freelancer';
-    protected static ?string $navigationLabel = 'Profiluri Freelancer';
+    
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -23,6 +28,7 @@ class FreelancerProfileResource extends Resource
         return $form->schema([
             Forms\Components\Section::make('Informații Profil')->schema([
                 Forms\Components\Select::make('user_id')
+                                        ->label(__('User'))
                     ->relationship('user', 'name')
                     ->required()
                     ->searchable()
@@ -82,6 +88,7 @@ class FreelancerProfileResource extends Resource
     {
         return $table->columns([
             Tables\Columns\TextColumn::make('user.name')
+                                    ->label(__('Author'))
                 ->searchable()
                 ->label('Nume')
                 ->weight('bold'),
@@ -104,6 +111,7 @@ class FreelancerProfileResource extends Resource
                 ->boolean()
                 ->label('Verificat'),
             Tables\Columns\TextColumn::make('created_at')
+                                    ->label(__('Created At'))
                 ->dateTime()
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),

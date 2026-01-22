@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Design;
 
 use App\Filament\Resources\PageBuilderTemplateResource\Pages;
 use App\Models\PageBuilderTemplate;
@@ -12,10 +13,16 @@ use Filament\Tables\Table;
 
 class PageBuilderTemplateResource extends Resource
 {
-    protected static ?string $model = PageBuilderTemplate::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Design';
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Page Builder Templates');
+    }
+
+    protected static ?string $model = PageBuilderTemplate::class;
+    protected static ?string $cluster = Design::class;
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    
     public static function form(Form $form): Form
     {
         return $form

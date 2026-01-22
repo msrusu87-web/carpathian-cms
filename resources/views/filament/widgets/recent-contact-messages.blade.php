@@ -17,7 +17,7 @@
                             To display contact messages here, we need to create a messages table to store form submissions.
                         </p>
                         <div class="flex gap-2">
-                            <a href="{{ route('filament.admin.resources.contact-settings.index') }}" 
+                            <a href="#" 
                                class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-sm rounded-md transition-colors">
                                 <x-heroicon-o-cog-6-tooth class="w-4 h-4" />
                                 Contact Settings

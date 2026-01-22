@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Shop;
 
 use App\Filament\Resources\CouponResource\Pages;
 use App\Filament\Resources\CouponResource\RelationManagers;
@@ -15,7 +16,18 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CouponResource extends Resource
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Shop');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Coupons');
+    }
+
     protected static ?string $model = Coupon::class;
+    protected static ?string $cluster = Shop::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -25,11 +37,13 @@ class CouponResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->schema([
                     Forms\Components\TextInput::make('code')
+                                            ->label(__('Code'))
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->maxLength(50),
                     
                     Forms\Components\Select::make('type')
+                                            ->label(__('Type'))
                         ->options([
                             'percentage' => 'Procent',
                             'fixed' => 'Sumă fixă',
@@ -37,6 +51,7 @@ class CouponResource extends Resource
                         ->required(),
                     
                     Forms\Components\TextInput::make('value')
+                                            ->label(__('Value'))
                         ->numeric()
                         ->required(),
                     
@@ -54,6 +69,7 @@ class CouponResource extends Resource
                         ->disabled(),
                     
                     Forms\Components\Toggle::make('is_active')
+                                            ->label(__('Active'))
                         ->default(true),
                 ]),
             ]);

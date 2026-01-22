@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\AI;
 
 use App\Filament\Resources\AiGenerationResource\Pages;
 use App\Filament\Resources\AiGenerationResource\RelationManagers;
@@ -15,11 +16,16 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AiGenerationResource extends Resource
 {
+    public static function getNavigationLabel(): string
+    {
+        return __('Ai Generations');
+    }
+
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
+    protected static ?string $cluster = AI::class;
 
-    protected static ?string $navigationGroup = 'AI';
-
+    
     protected static ?int $navigationSort = 3;
     protected static ?string $model = AiGeneration::class;
 
@@ -28,6 +34,7 @@ class AiGenerationResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('type')
+                                        ->label(__('Type'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('prompt')
@@ -41,9 +48,11 @@ class AiGenerationResource extends Resource
                     ->maxLength(255)
                     ->default('groq'),
                 Forms\Components\Select::make('user_id')
+                                        ->label(__('User'))
                     ->relationship('user', 'name')
                     ->required(),
                 Forms\Components\TextInput::make('status')
+                                        ->label(__('Status'))
                     ->required()
                     ->maxLength(255)
                     ->default('pending'),
@@ -61,13 +70,16 @@ class AiGenerationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('type')
+                                        ->label(__('Type'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('model')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
+                                        ->label(__('Author'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
+                                        ->label(__('Status'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tokens_used')
                     ->numeric()
@@ -76,10 +88,12 @@ class AiGenerationResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                                        ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                                        ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

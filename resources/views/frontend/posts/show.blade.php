@@ -68,7 +68,7 @@
                 <!-- Breadcrumb -->
                 <nav class="text-sm mb-6">
                     <ol class="flex items-center space-x-2 text-gray-600">
-                        <li><a href="/" class="hover:text-blue-600">Acasă</a></li>
+                        <li><a href="/" class="hover:text-blue-600">{{ __('messages.home') }}</a></li>
                         <li><i class="fas fa-chevron-right text-xs"></i></li>
                         <li><a href="/blog" class="hover:text-blue-600">Blog</a></li>
                         <li><i class="fas fa-chevron-right text-xs"></i></li>
@@ -159,7 +159,7 @@
                 <!-- Related Posts -->
                 @if($relatedPosts->count() > 0)
                 <div class="mt-16">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-8">Articole Similare</h2>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">{{ __('messages.related_articles') }}</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         @foreach($relatedPosts as $related)
                         <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
@@ -196,12 +196,19 @@
                     <a href="/blog" 
                        class="inline-flex items-center bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-8 py-4 rounded-lg transition shadow-md hover:shadow-xl">
                         <i class="fas fa-arrow-left mr-3"></i>
-                        Înapoi la Blog
+                        {{ __('messages.back_to_blog') }}
                     </a>
                 </div>
             </div>
         </div>
     </article>
+
+    @php
+        $footerWidget = \App\Models\Widget::where('type', 'footer')->where('status', 'active')->first();
+    @endphp
+    @if($footerWidget)
+        @include('widgets.footer', ['widget' => $footerWidget])
+    @endif
 
 </body>
 </html>

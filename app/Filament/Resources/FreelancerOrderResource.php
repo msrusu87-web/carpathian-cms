@@ -12,10 +12,15 @@ use Filament\Tables\Table;
 
 class FreelancerOrderResource extends Resource
 {
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Freelancer');
+    }
     protected static ?string $model = FreelancerOrder::class;
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
     protected static ?string $navigationGroup = 'Freelancer';
-    protected static ?string $navigationLabel = 'Comenzi Freelancer';
+    
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -42,11 +47,13 @@ class FreelancerOrderResource extends Resource
             ]),
             Forms\Components\Section::make('Financiar')->schema([
                 Forms\Components\TextInput::make('price')
+                                        ->label(__('Price'))
                     ->required()
                     ->numeric()
                     ->prefix('$')
                     ->label('Preț'),
                 Forms\Components\TextInput::make('delivery_time')
+                                        ->label(__('Delivery Time'))
                     ->required()
                     ->numeric()
                     ->suffix('zile')
@@ -54,6 +61,7 @@ class FreelancerOrderResource extends Resource
             ]),
             Forms\Components\Section::make('Status & Evaluare')->schema([
                 Forms\Components\Select::make('status')
+                                        ->label(__('Status'))
                     ->options([
                         'pending' => 'În Așteptare',
                         'in_progress' => 'În Lucru',
@@ -95,10 +103,12 @@ class FreelancerOrderResource extends Resource
                 ->label('Serviciu')
                 ->limit(30),
             Tables\Columns\TextColumn::make('price')
+                                    ->label(__('Price'))
                 ->money('USD')
                 ->sortable()
                 ->label('Preț'),
             Tables\Columns\BadgeColumn::make('status')
+                                   ->label(__('Status'))
                 ->label('Status')
                 ->colors([
                     'warning' => 'pending',
@@ -108,9 +118,11 @@ class FreelancerOrderResource extends Resource
                     'danger' => fn ($state) => in_array($state, ['cancelled', 'disputed']),
                 ]),
             Tables\Columns\TextColumn::make('delivery_time')
+                                    ->label(__('Delivery Time'))
                 ->suffix(' zile')
                 ->label('Livrare'),
             Tables\Columns\TextColumn::make('created_at')
+                                    ->label(__('Created At'))
                 ->dateTime()
                 ->sortable()
                 ->since()

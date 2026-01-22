@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Blog;
 
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Models\Category;
@@ -14,11 +15,16 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CategoryResource extends Resource
 {
+    public static function getNavigationLabel(): string
+    {
+        return __('Categories');
+    }
+
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
+    protected static ?string $cluster = Blog::class;
 
-    protected static ?string $navigationGroup = 'Blog';
-
+    
     protected static ?int $navigationSort = 2;
     protected static ?string $model = Category::class;
 
@@ -29,18 +35,21 @@ class CategoryResource extends Resource
                 Forms\Components\Section::make()->schema([
                     Forms\Components\Grid::make(2)->schema([
                         Forms\Components\TextInput::make('name')
+                                                ->label(__('Name'))
                             ->required()
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Str::slug($state)))
                             ->maxLength(255),
                         
                         Forms\Components\TextInput::make('slug')
+                                                ->label(__('Slug'))
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                     ]),
                     
                     Forms\Components\Textarea::make('description')
+                                            ->label(__('Description'))
                         ->rows(3)
                         ->columnSpanFull(),
                     
@@ -49,6 +58,7 @@ class CategoryResource extends Resource
                             ->helperText('Display color for badges'),
                         
                         Forms\Components\Toggle::make('is_active')
+                                               ->label(__('Active'))
                             ->label('Active')
                             ->default(true),
                     ]),
@@ -61,11 +71,13 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                                        ->label(__('Name'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
                 
                 Tables\Columns\TextColumn::make('slug')
+                                        ->label(__('Slug'))
                     ->searchable()
                     ->copyable()
                     ->copyMessage('Slug copied!')
@@ -81,10 +93,12 @@ class CategoryResource extends Resource
                     ->color('success'),
                 
                 Tables\Columns\IconColumn::make('is_active')
+                                       ->label(__('Active'))
                     ->label('Active')
                     ->boolean(),
                 
                 Tables\Columns\TextColumn::make('created_at')
+                                        ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

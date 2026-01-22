@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Design;
 
 use App\Filament\Resources\MenuResource\Pages;
 use App\Models\Menu;
@@ -11,12 +12,23 @@ use Filament\Tables;
 use Filament\Tables\Table;
 
 class MenuResource extends Resource
+
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('CMS');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Menus');
+    }
+
 
     protected static ?string $navigationIcon = 'heroicon-o-bars-3';
+    protected static ?string $cluster = Design::class;
 
-    protected static ?string $navigationGroup = 'CMS';
-
+    
     protected static ?int $navigationSort = 2;
     protected static ?string $model = Menu::class;
 
@@ -27,6 +39,7 @@ class MenuResource extends Resource
                 Forms\Components\Section::make('Menu Details')
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                                                ->label(__('Name'))
                             ->required()
                             ->maxLength(255)
                             ->columnSpanFull(),
@@ -38,15 +51,18 @@ class MenuResource extends Resource
                             ->helperText('Choose where this menu should appear on your site'),
                         
                         Forms\Components\TextInput::make('order')
+                                                ->label(__('Order'))
                             ->numeric()
                             ->default(0)
                             ->helperText('Lower numbers appear first'),
                         
                         Forms\Components\Textarea::make('description')
+                                                ->label(__('Description'))
                             ->rows(3)
                             ->columnSpanFull(),
                         
                         Forms\Components\Toggle::make('is_active')
+                                               ->label(__('Active'))
                             ->label('Active')
                             ->default(true)
                             ->inline(false),
@@ -60,6 +76,7 @@ class MenuResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                                        ->label(__('Name'))
                     ->searchable()
                     ->sortable(),
                 
@@ -81,9 +98,11 @@ class MenuResource extends Resource
                     ->label('Active'),
                 
                 Tables\Columns\TextColumn::make('order')
+                                        ->label(__('Order'))
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('created_at')
+                                        ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -117,10 +136,6 @@ class MenuResource extends Resource
         ];
     }
 
-    public static function getNavigationGroup(): ?string
-    {
-        return __('messages.cms');
-    }
 
     public static function getPages(): array
     {

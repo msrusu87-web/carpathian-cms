@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\PluginResource\Pages;
 use App\Models\Plugin;
@@ -14,11 +15,21 @@ use Filament\Notifications\Notification;
 
 class PluginResource extends Resource
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Settings');
+    }
+
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Plugin-uri');
+    }
     protected static ?string $model = Plugin::class;
+    protected static ?string $cluster = Settings::class;
     protected static ?string $navigationIcon = 'heroicon-o-puzzle-piece';
-    protected static ?string $navigationGroup = 'Setări';
-    protected static ?int $navigationSort = 10;
-    protected static ?string $navigationLabel = 'Plugin-uri';
+        protected static ?int $navigationSort = 10;
+    
 
     public static function form(Form $form): Form
     {
@@ -41,6 +52,7 @@ class PluginResource extends Resource
     {
         return $table->columns([
             Tables\Columns\TextColumn::make('name')
+                                    ->label(__('Name'))
                 ->searchable()
                 ->label('Nume Plugin')
                 ->weight('bold')

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\RedirectResource\Pages;
 use App\Models\Redirect;
@@ -16,7 +17,7 @@ class RedirectResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-path';
     
-    protected static ?string $navigationGroup = 'SEO & Settings';
+    protected static ?string $cluster = Settings::class;
     
     protected static ?int $navigationSort = 2;
 

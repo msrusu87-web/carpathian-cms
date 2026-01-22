@@ -13,6 +13,11 @@ class ListLanguages extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('manage_translations')
+                ->label('Editează Traduceri')
+                ->icon('heroicon-o-language')
+                ->color('success')
+                ->url(fn () => LanguageResource::getUrl('translations')),
             Actions\CreateAction::make(),
         ];
     }

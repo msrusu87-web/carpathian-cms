@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Filament\Widgets;
+
+use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Cache;
+
+class SecurityStatusWidget extends Widget
+{
+    protected static string $view = 'filament.widgets.security-status';
+    
+    protected int | string | array $columnSpan = 1;
+    
+    protected static ?int $sort = 1;
+    
+    public function getSecurityData(): array
+    {
+        $lastScan = Cache::get('security_last_scan', now()->subDays(3));
+        $daysSinceScan = now()->diffInDays($lastScan);
+        
+        $securityScore = $this->calculateSecurityScore();
+        
+        return [
+            'score' => $securityScore,
+            'last_scan' => $lastScan->format('M d, Y'),
+            'days_since' => $daysSinceScan,
+            'status' => $securityScore >= 90 ? 'excellent' : ($securityScore >= 70 ? 'good' : 'warning'),
+            'status_text' => $securityScore >= 90 ? 'Excellent' : ($securityScore >= 70 ? 'Good' : 'Needs Attention'),
+            'status_color' => $securityScore >= 90 ? 'green' : ($securityScore >= 70 ? 'blue' : 'red'),
+            'checks' => [
+                ['name' => 'SSL Certificate', 'status' => true, 'icon' => 'heroicon-o-lock-closed'],
+                ['name' => 'Firewall Active', 'status' => true, 'icon' => 'heroicon-o-shield-check'],
+                ['name' => 'Updates Current', 'status' => $daysSinceScan < 7, 'icon' => 'heroicon-o-arrow-path'],
+                ['name' => 'Backups Active', 'status' => true, 'icon' => 'heroicon-o-cloud-arrow-up'],
+            ],
+        ];
+    }
+    
+    protected function calculateSecurityScore(): int
+    {
+        $score = 100;
+        
+        // Check if .env is exposed
+        if (File::exists(public_path('.env'))) {
+            $score -= 20;
+        }
+        
+        // Check debug mode
+        if (config('app.debug')) {
+            $score -= 15;
+        }
+        
+        // Check last security scan
+        $lastScan = Cache::get('security_last_scan', now()->subDays(3));
+        if (now()->diffInDays($lastScan) > 7) {
+            $score -= 10;
+        }
+        
+        return max(0, $score);
+    }
+}

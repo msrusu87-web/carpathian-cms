@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Content;
 
 use App\Filament\Resources\MediaResource\Pages;
 use App\Models\Media;
@@ -12,10 +13,22 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
 
 class MediaResource extends Resource
+
+
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('CMS');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Media');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-photo';
-    protected static ?string $navigationGroup = 'CMS';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $cluster = Content::class;
+        protected static ?int $navigationSort = 1;
     protected static ?string $model = Media::class;
 
     public static function form(Form $form): Form
@@ -46,6 +59,7 @@ class MediaResource extends Resource
                     }),
                     
                 Forms\Components\TextInput::make('name')
+                                        ->label(__('Name'))
                     ->required()
                     ->maxLength(255)
                     ->columnSpanFull(),
@@ -71,16 +85,19 @@ class MediaResource extends Resource
                     ->size(60),
                     
                 Tables\Columns\TextColumn::make('name')
+                                        ->label(__('Name'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
                     
                 Tables\Columns\TextColumn::make('mime_type')
+                                       ->label(__('Type'))
                     ->label('Type')
                     ->badge()
                     ->searchable(),
                     
                 Tables\Columns\TextColumn::make('size')
+                                        ->label(__('Size'))
                     ->formatStateUsing(fn ($state) => number_format($state / 1024, 2) . ' KB')
                     ->sortable(),
                     
@@ -89,10 +106,12 @@ class MediaResource extends Resource
                     ->formatStateUsing(fn ($record) => $record->width && $record->height ? "{$record->width}×{$record->height}" : 'N/A'),
                     
                 Tables\Columns\TextColumn::make('user.name')
+                                       ->label(__('Author'))
                     ->label('Uploaded By')
                     ->sortable(),
                     
                 Tables\Columns\TextColumn::make('created_at')
+                                       ->label(__('Created At'))
                     ->label('Uploaded')
                     ->dateTime()
                     ->sortable()

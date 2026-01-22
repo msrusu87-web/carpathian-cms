@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Pages;
+use App\Filament\Clusters\AI;
 
 use Filament\Pages\Page;
 use Filament\Forms\Components\Textarea;
@@ -18,12 +19,24 @@ use Illuminate\Support\Str;
 
 class AiContentWriter extends Page implements HasForms
 {
+    protected static ?string $cluster = AI::class;
+
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
-    protected static ?string $navigationGroup = 'AI';
     protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.pages.ai-content-writer';
+
+
+    public static function getNavigationLabel(): string
+    {
+        return __('AI Content Writer');
+    }
+
+    public function getTitle(): string
+    {
+        return __('AI Content Writer');
+    }
 
     public ?array $data = [];
     public ?string $generatedContent = null;
@@ -39,50 +52,50 @@ class AiContentWriter extends Page implements HasForms
         return $form
             ->schema([
                 Select::make('content_type')
-                    ->label('Content Type')
+                    ->label(__('Content Type'))
                     ->options([
-                        'blog_post' => 'Blog Post',
-                        'page' => 'Page',
-                        'product_description' => 'Product Description',
+                        'blog_post' => __('Blog Post'),
+                        'page' => __('Page'),
+                        'product_description' => __('Product Description'),
                     ])
                     ->required()
                     ->default('blog_post')
                     ->live(),
 
                 TextInput::make('title')
-                    ->label('Content Title')
+                    ->label(__('Content Title'))
                     ->required()
-                    ->placeholder('e.g., "10 Tips for Better SEO"')
+                    ->placeholder(__('e.g., "10 Tips for Better SEO"'))
                     ->maxLength(255),
 
                 Textarea::make('description')
-                    ->label('Content Description / Instructions')
-                    ->placeholder('Describe what you want the AI to write about...')
+                    ->label(__('Content Description / Instructions'))
+                    ->placeholder(__('Describe what you want the AI to write about...'))
                     ->rows(4)
                     ->required(),
 
                 Select::make('tone')
-                    ->label('Tone')
+                    ->label(__('Tone'))
                     ->options([
-                        'professional' => 'Professional',
-                        'casual' => 'Casual',
-                        'friendly' => 'Friendly',
-                        'formal' => 'Formal',
-                        'humorous' => 'Humorous',
+                        'professional' => __('Professional'),
+                        'casual' => __('Casual'),
+                        'friendly' => __('Friendly'),
+                        'formal' => __('Formal'),
+                        'humorous' => __('Humorous'),
                     ])
                     ->default('professional'),
 
                 Select::make('length')
-                    ->label('Content Length')
+                    ->label(__('Content Length'))
                     ->options([
-                        'short' => 'Short (300-500 words)',
-                        'medium' => 'Medium (500-1000 words)',
-                        'long' => 'Long (1000-2000 words)',
+                        'short' => __('Short (300-500 words)'),
+                        'medium' => __('Medium (500-1000 words)'),
+                        'long' => __('Long (1000-2000 words)'),
                     ])
                     ->default('medium'),
 
                 Select::make('category_id')
-                    ->label('Category (for Blog Posts)')
+                    ->label(__('Category (for Blog Posts)'))
                     ->options(Category::pluck('name', 'id'))
                     ->visible(fn ($get) => $get('content_type') === 'blog_post'),
             ])
@@ -112,13 +125,13 @@ class AiContentWriter extends Page implements HasForms
                 
                 Notification::make()
                     ->success()
-                    ->title('Content Generated!')
-                    ->body('Your content has been generated successfully.')
+                    ->title(__('Content Generated!'))
+                    ->body(__('Your content has been generated successfully.'))
                     ->send();
             } else {
                 Notification::make()
                     ->danger()
-                    ->title('Generation Failed')
+                    ->title(__('Generation Failed'))
                     ->body($response['error'] ?? 'Failed to generate content')
                     ->send();
             }
@@ -126,7 +139,7 @@ class AiContentWriter extends Page implements HasForms
         } catch (\Exception $e) {
             Notification::make()
                 ->danger()
-                ->title('Error')
+                ->title(__('Error'))
                 ->body($e->getMessage())
                 ->send();
         } finally {
@@ -139,8 +152,8 @@ class AiContentWriter extends Page implements HasForms
         if (!$this->generatedContent) {
             Notification::make()
                 ->warning()
-                ->title('No Content')
-                ->body('Please generate content first')
+                ->title(__('No Content'))
+                ->body(__('Please generate content first'))
                 ->send();
             return;
         }
@@ -161,8 +174,8 @@ class AiContentWriter extends Page implements HasForms
 
         Notification::make()
             ->success()
-            ->title('Post Created!')
-            ->body('Your post has been saved as a draft.')
+            ->title(__('Post Created!'))
+            ->body(__('Your post has been saved as a draft.'))
             ->send();
 
         $this->redirect(route('filament.admin.resources.posts.edit', ['record' => $post->id]));
@@ -173,8 +186,8 @@ class AiContentWriter extends Page implements HasForms
         if (!$this->generatedContent) {
             Notification::make()
                 ->warning()
-                ->title('No Content')
-                ->body('Please generate content first')
+                ->title(__('No Content'))
+                ->body(__('Please generate content first'))
                 ->send();
             return;
         }
@@ -193,8 +206,8 @@ class AiContentWriter extends Page implements HasForms
 
         Notification::make()
             ->success()
-            ->title('Page Created!')
-            ->body('Your page has been saved as a draft.')
+            ->title(__('Page Created!'))
+            ->body(__('Your page has been saved as a draft.'))
             ->send();
 
         $this->redirect(route('filament.admin.resources.pages.edit', ['record' => $page->id]));

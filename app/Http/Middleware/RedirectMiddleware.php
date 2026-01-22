@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Redirect;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,19 +10,12 @@ class RedirectMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $url = $request->path();
-        
-        if ($url !== '/') {
-            $url = '/' . $url;
+        // Don't interfere with login, logout, or admin routes
+        if ($request->is('login') || $request->is('logout') || $request->is('admin*') || $request->is('auth-test')) {
+            return $next($request);
         }
-        
-        $redirect = Redirect::findByUrl($url);
-        
-        if ($redirect) {
-            $redirect->incrementHits();
-            return redirect($redirect->to_url, $redirect->status_code);
-        }
-        
+
+        // Let everything else pass through
         return $next($request);
     }
 }

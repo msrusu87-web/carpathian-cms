@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Pages;
+use App\Filament\Clusters\AI;
 
 use Filament\Pages\Page;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -17,14 +18,24 @@ use Illuminate\Support\Facades\Storage;
 
 class AiPluginGenerator extends Page implements HasForms
 {
+    protected static ?string $cluster = AI::class;
+
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-code-bracket';
     protected static string $view = 'filament.pages.ai-plugin-generator';
-    protected static ?string $navigationLabel = 'AI Plugin Generator';
-    protected static ?string $navigationGroup = 'AI';
     protected static ?int $navigationSort = 2;
-    protected static ?string $title = 'AI Plugin Generator';
+
+
+    public static function getNavigationLabel(): string
+    {
+        return __('AI Plugin Generator');
+    }
+
+    public function getTitle(): string
+    {
+        return __('AI Plugin Generator');
+    }
 
     public ?array $data = [];
     public ?string $generatedCode = null;
@@ -41,35 +52,35 @@ class AiPluginGenerator extends Page implements HasForms
         return $form
             ->schema([
                 TextInput::make('name')
-                    ->label('Plugin Name')
+                    ->label(__('Plugin Name'))
                     ->required()
-                    ->placeholder('e.g., Contact Form Manager')
-                    ->helperText('Enter a descriptive name for your plugin'),
+                    ->placeholder(__('e.g., Contact Form Manager'))
+                    ->helperText(__('Enter a descriptive name for your plugin')),
 
                 Textarea::make('description')
-                    ->label('Plugin Description')
+                    ->label(__('Plugin Description'))
                     ->required()
                     ->rows(4)
-                    ->placeholder('Describe what your plugin should do...')
-                    ->helperText('Be as detailed as possible about the features and functionality'),
+                    ->placeholder(__('Describe what your plugin should do...'))
+                    ->helperText(__('Be as detailed as possible about the features and functionality')),
 
                 Select::make('plugin_type')
-                    ->label('Plugin Type')
+                    ->label(__('Plugin Type'))
                     ->required()
                     ->options([
-                        'widget' => 'Widget - Display custom content',
-                        'shortcode' => 'Shortcode - Embed dynamic content',
-                        'module' => 'Module - Extend functionality',
-                        'integration' => 'Integration - Connect with external services',
-                        'admin_tool' => 'Admin Tool - Backend utilities',
+                        'widget' => __('Widget - Display custom content'),
+                        'shortcode' => __('Shortcode - Embed dynamic content'),
+                        'module' => __('Module - Extend functionality'),
+                        'integration' => __('Integration - Connect with external services'),
+                        'admin_tool' => __('Admin Tool - Backend utilities'),
                     ])
                     ->default('module'),
 
                 Textarea::make('requirements')
-                    ->label('Specific Requirements (Optional)')
+                    ->label(__('Specific Requirements (Optional)'))
                     ->rows(3)
-                    ->placeholder('List any specific features, integrations, or technical requirements...')
-                    ->helperText('e.g., "Must use Bootstrap 5", "Should integrate with SendGrid API"'),
+                    ->placeholder(__('List any specific features, integrations, or technical requirements...'))
+                    ->helperText(__('e.g., "Must use Bootstrap 5", "Should integrate with SendGrid API"')),
             ])
             ->statePath('data');
     }
@@ -97,16 +108,16 @@ class AiPluginGenerator extends Page implements HasForms
                 $this->generatedReadme = $data['readme'] ?? $data['documentation'] ?? '';
 
                 Notification::make()
-                    ->title('Plugin generated successfully!')
+                    ->title(__('Plugin generated successfully!'))
                     ->success()
-                    ->body('Review the code and save it as a plugin.')
+                    ->body(__('Review the code and save it as a plugin.'))
                     ->send();
             } else {
                 throw new \Exception($result['error'] ?? 'Failed to generate plugin');
             }
         } catch (\Exception $e) {
             Notification::make()
-                ->title('Generation failed')
+                ->title(__('Generation failed'))
                 ->danger()
                 ->body($e->getMessage())
                 ->send();
@@ -119,9 +130,9 @@ class AiPluginGenerator extends Page implements HasForms
     {
         if (!$this->generatedCode) {
             Notification::make()
-                ->title('No code to save')
+                ->title(__('No code to save'))
                 ->warning()
-                ->body('Please generate plugin code first')
+                ->body(__('Please generate plugin code first'))
                 ->send();
             return;
         }
@@ -164,9 +175,9 @@ class AiPluginGenerator extends Page implements HasForms
             ]);
 
             Notification::make()
-                ->title('Plugin saved successfully!')
+                ->title(__('Plugin saved successfully!'))
                 ->success()
-                ->body("Plugin '{$this->data['name']}' has been created and saved.")
+                ->body(__("Plugin ':name' has been created and saved.", ['name' => $this->data['name']]))
                 ->send();
 
             // Reset form
@@ -176,7 +187,7 @@ class AiPluginGenerator extends Page implements HasForms
 
         } catch (\Exception $e) {
             Notification::make()
-                ->title('Save failed')
+                ->title(__('Save failed'))
                 ->danger()
                 ->body($e->getMessage())
                 ->send();

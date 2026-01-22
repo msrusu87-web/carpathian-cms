@@ -1,0 +1,14 @@
+
+  // Email verification messages
+  'user_not_found' => 'Utilizatorul nu a fost gasit',
+  'invalid_verification_link' => 'Link-ul de verificare este invalid sau a expirat',
+  'email_already_verified' => 'Email-ul tau a fost deja verificat',
+  'email_verified_successfully' => 'Email-ul tau a fost verificat cu succes',
+
+  // Error pages
+  'access_forbidden' => 'Acces Interzis',
+  'access_forbidden_desc' => 'Nu ai permisiunea de a accesa aceasta resursa.',
+  'possible_causes' => 'Cauze posibile',
+  'cause_not_logged_in' => 'Este posibil sa fie necesar sa te autentifici pentru a accesa aceasta pagina',
+  'cause_no_permission' => 'Contul tau nu are permisiunile necesare',
+  'cause_restricted' => 'Acest continut poate fi restrictionat pentru anumiti utilizatori',

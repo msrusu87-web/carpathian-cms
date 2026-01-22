@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Debug</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+        .log { border: 1px solid #0f0; padding: 10px; margin: 10px 0; }
+        button { background: #0f0; color: #000; padding: 10px 20px; border: none; cursor: pointer; }
+        input { padding: 5px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Login Debug Tool</h1>
+    <div id="log"></div>
+    
+    <h2>Test 1: Check Current Auth</h2>
+    <button onclick="checkAuth()">Check Auth Status</button>
+    
+    <h2>Test 2: Manual Login</h2>
+    <input type="email" id="email" value="msrusu87@gmail.com" placeholder="Email">
+    <input type="password" id="password" value="Maria1940!!!" placeholder="Password">
+    <button onclick="doLogin()">Login Now</button>
+    
+    <h2>Test 3: Check Cookies</h2>
+    <button onclick="showCookies()">Show Cookies</button>
+    
+    <h2>Test 4: Check Admin Access</h2>
+    <button onclick="checkAdmin()">Try Admin</button>
+    
+    <script>
+        function log(msg, color = '#0f0') {
+            const div = document.createElement('div');
+            div.className = 'log';
+            div.style.borderColor = color;
+            div.style.color = color;
+            div.innerHTML = new Date().toLocaleTimeString() + ' - ' + msg;
+            document.getElementById('log').appendChild(div);
+        }
+        
+        async function checkAuth() {
+            log('Checking /auth-test...');
+            try {
+                const resp = await fetch('/auth-test');
+                const data = await resp.json();
+                log('Auth status: ' + JSON.stringify(data, null, 2), data.authenticated ? '#0f0' : '#f00');
+            } catch(e) {
+                log('ERROR: ' + e.message, '#f00');
+            }
+        }
+        
+        async function doLogin() {
+            log('Getting CSRF token...');
+            const tokenResp = await fetch('/login');
+            const html = await tokenResp.text();
+            const match = html.match(/name="_token" value="([^"]+)"/);
+            if (!match) {
+                log('ERROR: No CSRF token!', '#f00');
+                return;
+            }
+            const token = match[1];
+            log('CSRF: ' + token.substring(0, 20) + '...');
+            
+            log('Submitting login...');
+            const formData = new FormData();
+            formData.append('_token', token);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('password', document.getElementById('password').value);
+            formData.append('remember', '1');
+            
+            const resp = await fetch('/login', {
+                method: 'POST',
+                body: formData,
+                redirect: 'manual'
+            });
+            
+            log('Response: ' + resp.status + ' ' + resp.statusText);
+            const location = resp.headers.get('location');
+            if (location) {
+                log('Redirect to: ' + location, '#ff0');
+                setTimeout(() => {
+                    log('Following redirect...');
+                    window.location = location;
+                }, 2000);
+            } else {
+                const text = await resp.text();
+                if (text.includes('419')) {
+                    log('419 CSRF ERROR!', '#f00');
+                } else if (text.includes('invalid') || text.includes('credentials')) {
+                    log('INVALID CREDENTIALS!', '#f00');
+                } else {
+                    log('Unknown response, check console', '#ff0');
+                    console.log(text.substring(0, 500));
+                }
+            }
+        }
+        
+        function showCookies() {
+            log('Cookies: ' + document.cookie);
+        }
+        
+        async function checkAdmin() {
+            log('Trying to access /admin...');
+            try {
+                const resp = await fetch('/admin', { redirect: 'manual' });
+                log('Admin response: ' + resp.status);
+                if (resp.status === 200) {
+                    log('✅ CAN ACCESS ADMIN!', '#0f0');
+                    setTimeout(() => window.location='/admin', 1000);
+                } else if (resp.status === 302) {
+                    const loc = resp.headers.get('location');
+                    log('Redirected to: ' + loc, '#ff0');
+                } else {
+                    log('Cannot access: ' + resp.status, '#f00');
+                }
+            } catch(e) {
+                log('ERROR: ' + e.message, '#f00');
+            }
+        }
+        
+        log('Debug tool ready. Run tests above.');
+        checkAuth();
+    </script>
+</body>
+</html>

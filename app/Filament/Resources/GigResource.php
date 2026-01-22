@@ -15,28 +15,42 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class GigResource extends Resource
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Shop');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Services');
+    }
+
     protected static ?string $model = Gig::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Freelancer';
-    protected static ?int $navigationSort = 3;
+        protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('user_id')
+                                        ->label(__('User'))
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('category_id')
+                                        ->label(__('Category'))
                     ->numeric(),
                 Forms\Components\TextInput::make('title')
+                                        ->label(__('Title'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('slug')
+                                        ->label(__('Slug'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
+                                        ->label(__('Description'))
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('requirements')
@@ -50,12 +64,15 @@ class GigResource extends Resource
                     ->numeric()
                     ->default(7),
                 Forms\Components\TextInput::make('revisions')
+                                        ->label(__('Revisions'))
                     ->required()
                     ->numeric()
                     ->default(1),
                 Forms\Components\TextInput::make('status')
+                                        ->label(__('Status'))
                     ->required(),
                 Forms\Components\TextInput::make('views')
+                                        ->label(__('Views'))
                     ->required()
                     ->numeric()
                     ->default(0),
@@ -79,14 +96,18 @@ class GigResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user_id')
+                                        ->label(__('User'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('category_id')
+                                        ->label(__('Category'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('title')
+                                        ->label(__('Title'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                                        ->label(__('Slug'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('base_price')
                     ->numeric()
@@ -95,10 +116,12 @@ class GigResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('revisions')
+                                        ->label(__('Revisions'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('views')
+                                        ->label(__('Views'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('orders_in_queue')
@@ -111,10 +134,12 @@ class GigResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                                        ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                                        ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

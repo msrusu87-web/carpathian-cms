@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Content;
 
 use App\Filament\Resources\CustomPostTypeResource\Pages;
 use App\Models\CustomPostType;
@@ -12,10 +13,16 @@ use Filament\Tables\Table;
 
 class CustomPostTypeResource extends Resource
 {
-    protected static ?string $model = CustomPostType::class;
-    protected static ?string $navigationIcon = 'heroicon-o-cube';
-    protected static ?string $navigationGroup = 'Conținut';
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Custom Post Types');
+    }
+
+    protected static ?string $model = CustomPostType::class;
+    protected static ?string $cluster = Content::class;
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
+    
     public static function form(Form $form): Form
     {
         return $form

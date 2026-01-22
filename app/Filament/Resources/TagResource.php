@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Blog;
 
 use App\Filament\Resources\TagResource\Pages;
 use App\Filament\Resources\TagResource\RelationManagers;
@@ -14,12 +15,23 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TagResource extends Resource
+
 {
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Blog');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Tags');
+    }
+
 
     protected static ?string $navigationIcon = 'heroicon-o-bookmark';
+    protected static ?string $cluster = Blog::class;
 
-    protected static ?string $navigationGroup = 'Shop Plugin';
-
+    
     protected static ?int $navigationSort = 5;
     protected static ?string $model = Tag::class;
 
@@ -28,12 +40,15 @@ class TagResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                                        ->label(__('Name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('slug')
+                                        ->label(__('Slug'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
+                                        ->label(__('Description'))
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('color')
                     ->maxLength(255),
@@ -45,16 +60,20 @@ class TagResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                                        ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                                        ->label(__('Slug'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('color')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                                        ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                                        ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -79,10 +98,6 @@ class TagResource extends Resource
         ];
     }
 
-    public static function getNavigationGroup(): ?string
-    {
-        return __('messages.blog');
-    }
 
     public static function getPages(): array
     {

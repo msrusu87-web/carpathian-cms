@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\ApiKeyResource\Pages;
 use App\Models\ApiKey;
@@ -15,7 +16,7 @@ class ApiKeyResource extends Resource
 {
     protected static ?string $model = ApiKey::class;
     protected static ?string $navigationIcon = 'heroicon-o-key';
-    protected static ?string $navigationGroup = 'Setări';
+    protected static ?string $cluster = Settings::class;
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Filament\Clusters\Settings;
 
 use App\Filament\Resources\PaymentGatewayResource\Pages;
 use App\Models\PaymentGateway;
@@ -14,7 +15,7 @@ class PaymentGatewayResource extends Resource
 {
     protected static ?string $model = PaymentGateway::class;
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
-    protected static ?string $navigationGroup = 'E-commerce';
+    protected static ?string $cluster = Settings::class;
 
     public static function form(Form $form): Form
     {

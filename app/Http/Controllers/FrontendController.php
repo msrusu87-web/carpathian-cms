@@ -51,6 +51,11 @@ class FrontendController extends Controller
 
     public function page(string $slug)
     {
+        // Special handling for portfolios page
+        if ($slug === 'portfolios') {
+            return view('frontend.pages.portfolios');
+        }
+
         $page = Page::where('slug', $slug)
             ->where('status', 'published')
             ->firstOrFail();

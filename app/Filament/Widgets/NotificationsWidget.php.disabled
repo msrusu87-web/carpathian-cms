@@ -1,0 +1,114 @@
+<?php
+
+namespace App\Filament\Widgets;
+
+use Filament\Widgets\Widget;
+use App\Models\ContactMessage;
+use App\Models\ChatConversation;
+use App\Models\Order;
+
+class NotificationsWidget extends Widget
+{
+    protected static string $view = 'filament.widgets.notifications';
+    
+    protected int | string | array $columnSpan = 'full';
+    
+    protected static ?int $sort = 0;
+    
+    public function getNotifications(): array
+    {
+        try {
+            $recentContacts = ContactMessage::where('status', 'unread')
+                ->orWhere('status', 'new')
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(fn($msg) => [
+                    'type' => 'contact',
+                    'title' => 'New Contact Message',
+                    'message' => substr($msg->message ?? 'New message received', 0, 60) . '...',
+                    'time' => $msg->created_at->diffForHumans(),
+                    'icon' => 'heroicon-o-envelope',
+                    'color' => 'cyan',
+                    'url' => '#',
+                ]);
+        } catch (\Exception $e) {
+            $recentContacts = collect([]);
+        }
+        
+        try {
+            $recentChats = ChatConversation::whereHas('messages', function($q) {
+                    $q->where('is_admin', false)->where('is_read', false);
+                })
+                ->latest()
+                ->take(3)
+                ->get()
+                ->map(fn($chat) => [
+                    'type' => 'chat',
+                    'title' => 'Support Chat Message',
+                    'message' => 'New message from ' . ($chat->user->name ?? 'Guest'),
+                    'time' => $chat->updated_at->diffForHumans(),
+                    'icon' => 'heroicon-o-chat-bubble-left-right',
+                    'color' => 'green',
+                    'url' => '/admin-chat',
+                ]);
+        } catch (\Exception $e) {
+            $recentChats = collect([]);
+        }
+        
+        try {
+            $recentOrders = Order::where('order_status', 'pending')
+                ->latest()
+                ->take(3)
+                ->get()
+                ->map(fn($order) => [
+                    'type' => 'order',
+                    'title' => 'New Order #' . $order->id,
+                    'message' => '$' . number_format($order->total, 2) . ' - ' . ($order->user->name ?? 'Guest'),
+                    'time' => $order->created_at->diffForHumans(),
+                    'icon' => 'heroicon-o-shopping-bag',
+                    'color' => 'amber',
+                    'url' => '#',
+                ]);
+        } catch (\Exception $e) {
+            $recentOrders = collect([]);
+        }
+        
+        return $recentContacts
+            ->concat($recentChats)
+            ->concat($recentOrders)
+            ->take(10)
+            ->toArray();
+    }
+    
+    public function getCounts(): array
+    {
+        try {
+            $emailCount = ContactMessage::where('status', 'unread')
+                ->orWhere('status', 'new')
+                ->count();
+        } catch (\Exception $e) {
+            $emailCount = 0;
+        }
+        
+        try {
+            $chatCount = ChatConversation::whereHas('messages', function($q) {
+                $q->where('is_admin', false)->where('is_read', false);
+            })->count();
+        } catch (\Exception $e) {
+            $chatCount = 0;
+        }
+        
+        try {
+            $orderCount = Order::where('order_status', 'pending')->count();
+        } catch (\Exception $e) {
+            $orderCount = 0;
+        }
+        
+        return [
+            'emails' => $emailCount,
+            'chats' => $chatCount,
+            'orders' => $orderCount,
+        ];
+    }
+}
