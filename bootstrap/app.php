@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Global middleware - security headers on every response
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        
         // Web middleware
         $middleware->web(append: [
             \App\Http\Middleware\RequestId::class,
