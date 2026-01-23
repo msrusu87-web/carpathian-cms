@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\UsersPermissions;
 use App\Filament\Resources\FreelancerProfileResource\Pages;
 use Plugins\Freelancer\Models\FreelancerProfile;
 use Filament\Forms;
@@ -12,6 +13,7 @@ use Filament\Tables\Table;
 
 class FreelancerProfileResource extends Resource
 {
+    protected static ?string $cluster = UsersPermissions::class;
 
     public static function getNavigationLabel(): string
     {

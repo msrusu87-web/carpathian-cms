@@ -36,13 +36,12 @@ class SecurityHeaders
         // Permissions policy - restrict dangerous features
         $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=(self)');
         
-        // Content Security Policy - nonce-based for scripts
-        $nonce = base64_encode(random_bytes(16));
+        // Content Security Policy
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'nonce-{$nonce}' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'unsafe-inline'",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
-            "font-src 'self' https://fonts.gstatic.com data:",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://unpkg.com",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
+            "font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net https://cdnjs.cloudflare.com data:",
             "img-src 'self' data: https: blob:",
             "connect-src 'self' https://api.stripe.com wss://*.qubitpage.com",
             "frame-ancestors 'none'",

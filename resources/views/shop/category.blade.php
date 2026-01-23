@@ -18,7 +18,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50" x-data="{ mobileMenuOpen: false }">
+<body class="bg-slate-900 text-gray-100" x-data="{ mobileMenuOpen: false }">
     @include('partials.navigation')
 
     <main class="container mx-auto px-4 py-8">

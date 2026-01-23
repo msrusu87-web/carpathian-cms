@@ -44,7 +44,7 @@
     }
     </script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-900">
     @include('partials.navigation')
 
     <!-- Hero Section -->

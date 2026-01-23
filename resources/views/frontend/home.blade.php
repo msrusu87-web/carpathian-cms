@@ -128,7 +128,7 @@
     </style>
     @endif
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-900 text-gray-100">
     @include('partials.navigation')
 
     <!-- Widgets Area -->
@@ -142,7 +142,7 @@
                 @include('widgets.products', ['widget' => $widget])
             @elseif($widget->type === 'blog')
                 {{-- Show portfolio showcase instead of blog --}}
-                @include('widgets.portfolio-showcase')
+                @include('widgets.blog', ['widget' => $widget])
                 {{-- @include('widgets.blog', ['widget' => $widget]) --}}
             @elseif($widget->type === 'documentation')
                 @include('widgets.documentation', ['widget' => $widget])

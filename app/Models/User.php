@@ -9,8 +9,10 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
     use HasFactory, Notifiable, HasApiTokens, HasRoles, TwoFactorAuthenticatable;
 
@@ -64,5 +66,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function canAccessAdmin(): bool
     {
         return $this->hasAnyRole(['Super Admin', 'Admin', 'Editor']);
+    }
+
+    /**
+     * Determine if the user can access the Filament panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Allow all authenticated users to access admin panel
+        // For stricter access, use: return $this->hasAnyRole(['Super Admin', 'Admin', 'Editor']);
+        return true;
     }
 }

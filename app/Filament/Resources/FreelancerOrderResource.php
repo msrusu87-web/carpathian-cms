@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\Shop;
 use App\Filament\Resources\FreelancerOrderResource\Pages;
 use Plugins\Freelancer\Models\FreelancerOrder;
 use Filament\Forms;
@@ -12,6 +13,7 @@ use Filament\Tables\Table;
 
 class FreelancerOrderResource extends Resource
 {
+    protected static ?string $cluster = Shop::class;
 
     public static function getNavigationLabel(): string
     {

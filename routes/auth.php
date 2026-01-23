@@ -47,10 +47,10 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:6,1')
         ->name('verification.send');
 
-    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-        ->name('password.confirm');
+    // Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
+    //     ->name('password.confirm'); // Disabled - handled by Fortify
 
-    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+    // // Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']); // Disabled - handled by Fortify // Disabled - handled by Fortify
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 

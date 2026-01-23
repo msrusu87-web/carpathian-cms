@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\Marketing;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
@@ -14,6 +15,8 @@ use App\Filament\Resources\MarketingMenuResource\Pages;
 
 class MarketingMenuResource extends Resource
 {
+    protected static ?string $cluster = Marketing::class;
+    
     protected static ?string $model = \Plugins\Marketing\Models\MarketingContact::class;
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
     protected static ?string $navigationLabel = 'MARKETING MENU';

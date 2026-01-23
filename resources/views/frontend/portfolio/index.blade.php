@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-900">
     @include('partials.navigation')
     
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 py-20">

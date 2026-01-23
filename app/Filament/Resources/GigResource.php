@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\Shop;
 use App\Filament\Resources\GigResource\Pages;
 use App\Filament\Resources\GigResource\RelationManagers;
 use App\Models\Gig;
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class GigResource extends Resource
 {
+    protected static ?string $cluster = Shop::class;
+
     public static function getNavigationGroup(): ?string
     {
         return __('Shop');

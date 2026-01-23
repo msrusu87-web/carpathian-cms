@@ -63,7 +63,7 @@
         .pulse-badge { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-900 text-gray-100">
     @include('partials.navigation')
 
     <!-- Breadcrumb -->
