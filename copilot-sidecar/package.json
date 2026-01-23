@@ -1,17 +1,25 @@
 {
   "name": "copilot-sidecar",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
+  "description": "Copilot Sidecar for Carpathian CMS",
+  "main": "src/index.js",
   "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "copilot",
+    "cms",
+    "ai"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@github/copilot-sdk": "^0.1.16",
     "axios": "^1.13.2",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "winston": "^3.19.0",
