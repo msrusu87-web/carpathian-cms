@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\GroqAiService;
 use Illuminate\Http\Request;
-use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class AiGeneratorController extends Controller
 {
+    protected string $sidecarUrl = 'http://127.0.0.1:3001';
+
     public function generate(Request $request)
     {
         try {
@@ -157,77 +158,52 @@ class AiGeneratorController extends Controller
 
     protected function callAi(string $prompt, string $provider): string
     {
-        if ($provider === 'groq') {
-            return $this->callGroq($prompt);
-        } else {
-            return $this->callOpenAi($prompt);
+        // Use Copilot sidecar for all AI calls
+        return $this->callCopilotSidecar($prompt);
+    }
+
+    protected function callCopilotSidecar(string $prompt): string
+    {
+        try {
+            $response = Http::timeout(120)->post("{$this->sidecarUrl}/chat", [
+                'message' => $prompt,
+                'sessionId' => 'ai-generator-' . time(),
+                'context' => [
+                    'task' => 'content_generation',
+                    'format' => 'text',
+                ],
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $content = $data['response']['content'] ?? '';
+                
+                // Clean up markdown code blocks if present
+                $content = preg_replace('/^```(?:html|json)?\s*/i', '', $content);
+                $content = preg_replace('/```\s*$/', '', $content);
+                
+                return trim($content);
+            }
+
+            \Log::error('Copilot Sidecar Error: ' . $response->body());
+            throw new \Exception('Failed to get response from AI service');
+
+        } catch (\Exception $e) {
+            \Log::error('Copilot Sidecar Exception: ' . $e->getMessage());
+            throw $e;
         }
     }
 
     protected function callGroq(string $prompt): string
     {
-        try {
-            $client = new Client([
-                'base_uri' => 'https://api.groq.com/openai/v1/',
-                'headers' => [
-                    'Authorization' => 'Bearer ' . env('GROQ_API_KEY'),
-                    'Content-Type' => 'application/json',
-                ],
-                'timeout' => 120,
-            ]);
-
-            $response = $client->post('chat/completions', [
-                'json' => [
-                    'model' => 'llama-3.3-70b-versatile',
-                    'messages' => [
-                        ['role' => 'user', 'content' => $prompt]
-                    ],
-                    'max_tokens' => 8000,
-                    'temperature' => 0.7,
-                ]
-            ]);
-
-            $result = json_decode($response->getBody(), true);
-            return $result['choices'][0]['message']['content'] ?? '';
-            
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
-            $errorBody = $e->getResponse()->getBody()->getContents();
-            \Log::error('Groq API Client Error: ' . $errorBody);
-            throw new \Exception('Groq API Error: ' . $errorBody);
-        } catch (\GuzzleHttp\Exception\ServerException $e) {
-            $errorBody = $e->getResponse()->getBody()->getContents();
-            \Log::error('Groq API Server Error: ' . $errorBody);
-            throw new \Exception('Groq API Server Error: ' . $errorBody);
-        } catch (\Exception $e) {
-            \Log::error('Groq API Exception: ' . $e->getMessage());
-            throw $e;
-        }
+        // Deprecated - using Copilot sidecar instead
+        return $this->callCopilotSidecar($prompt);
     }
 
     protected function callOpenAi(string $prompt): string
     {
-        $client = new Client([
-            'base_uri' => 'https://api.openai.com/v1/',
-            'headers' => [
-                'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
-                'Content-Type' => 'application/json',
-            ],
-            'timeout' => 120,
-        ]);
-
-        $response = $client->post('chat/completions', [
-            'json' => [
-                'model' => 'gpt-3.5-turbo',
-                'messages' => [
-                    ['role' => 'user', 'content' => $prompt]
-                ],
-                'max_tokens' => 4000,
-                'temperature' => 0.7,
-            ]
-        ]);
-
-        $result = json_decode($response->getBody(), true);
-        return $result['choices'][0]['message']['content'] ?? '';
+        // Deprecated - using Copilot sidecar instead
+        return $this->callCopilotSidecar($prompt);
     }
 
     protected function processContent(string $field, string $content): string

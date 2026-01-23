@@ -11,7 +11,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use App\Services\GroqAiService;
+use Illuminate\Support\Facades\Http;
 use App\Models\Post;
 use App\Models\Page as PageModel;
 use App\Models\Category;
@@ -26,6 +26,8 @@ class AiContentWriter extends Page implements HasForms
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
     protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.pages.ai-content-writer';
+
+    protected string $sidecarUrl = 'http://127.0.0.1:3001';
 
 
     public static function getNavigationLabel(): string
@@ -112,16 +114,28 @@ class AiContentWriter extends Page implements HasForms
         try {
             $data = $this->form->getState();
             
-            $groqService = new GroqAiService();
-            
             // Build the prompt
             $prompt = $this->buildPrompt($data);
             
-            // Generate content
-            $response = $groqService->generateContent($prompt);
+            // Generate content using Copilot sidecar
+            $response = Http::timeout(120)->post("{$this->sidecarUrl}/chat", [
+                'message' => $prompt,
+                'sessionId' => 'content-writer-' . auth()->id() . '-' . time(),
+                'context' => [
+                    'task' => 'content_generation',
+                    'user_id' => auth()->id(),
+                    'content_type' => $data['content_type'],
+                ],
+            ]);
             
-            if ($response['success']) {
-                $this->generatedContent = $response['content'];
+            if ($response->successful()) {
+                $responseData = $response->json();
+                $this->generatedContent = $responseData['response']['content'] ?? '';
+                
+                // Clean up the content - remove markdown code blocks if present
+                $this->generatedContent = preg_replace('/^```html?\s*/i', '', $this->generatedContent);
+                $this->generatedContent = preg_replace('/```\s*$/', '', $this->generatedContent);
+                $this->generatedContent = trim($this->generatedContent);
                 
                 Notification::make()
                     ->success()
@@ -132,7 +146,7 @@ class AiContentWriter extends Page implements HasForms
                 Notification::make()
                     ->danger()
                     ->title(__('Generation Failed'))
-                    ->body($response['error'] ?? 'Failed to generate content')
+                    ->body('Failed to generate content: ' . ($response->json()['error'] ?? 'Unknown error'))
                     ->send();
             }
             
