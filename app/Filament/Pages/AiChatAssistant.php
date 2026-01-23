@@ -2,7 +2,7 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Clusters\AI;
+use App\Filament\Clusters\CMS;
 use Filament\Pages\Page;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -16,7 +16,7 @@ class AiChatAssistant extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $cluster = AI::class;
+    protected static ?string $cluster = CMS::class;
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
     protected static ?int $navigationSort = 0;
     protected static string $view = 'filament.pages.ai-chat-assistant';

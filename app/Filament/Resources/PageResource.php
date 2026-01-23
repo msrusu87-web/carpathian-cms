@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-use App\Filament\Clusters\Content;
+use App\Filament\Clusters\CMS;
 
 use App\Filament\Resources\PageResource\Pages;
 use App\Filament\Resources\PageResource\RelationManagers;
@@ -26,7 +26,7 @@ class PageResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $cluster = Content::class;
+    protected static ?string $cluster = CMS::class;
 
     protected static ?int $navigationSort = 5;
     protected static ?string $model = Page::class;

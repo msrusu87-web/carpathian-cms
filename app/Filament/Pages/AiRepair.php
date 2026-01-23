@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Pages;
-use App\Filament\Clusters\AI;
+use App\Filament\Clusters\CMS;
 
 use Filament\Pages\Page;
 use Filament\Notifications\Notification;
@@ -12,7 +12,7 @@ use Filament\Actions\Action;
 
 class AiRepair extends Page
 {
-    protected static ?string $cluster = AI::class;
+    protected static ?string $cluster = CMS::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?int $navigationSort = 3;

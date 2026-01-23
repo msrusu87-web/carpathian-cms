@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Clusters\Design;
+use App\Filament\Clusters\CMS;
 use App\Filament\Resources\WidgetResource\Pages;
 use App\Models\Widget;
 use Filament\Forms;
@@ -17,7 +17,7 @@ class WidgetResource extends Resource
 {
     protected static ?string $model = Widget::class;
     protected static ?string $navigationIcon = 'heroicon-o-puzzle-piece';
-    protected static ?string $cluster = Design::class;
+    protected static ?string $cluster = CMS::class;
     protected static ?int $navigationSort = 10;
 
     public static function getNavigationLabel(): string

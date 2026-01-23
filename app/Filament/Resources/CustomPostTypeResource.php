@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-use App\Filament\Clusters\Content;
+use App\Filament\Clusters\CMS;
 
 use App\Filament\Resources\CustomPostTypeResource\Pages;
 use App\Models\CustomPostType;
@@ -20,7 +20,7 @@ class CustomPostTypeResource extends Resource
     }
 
     protected static ?string $model = CustomPostType::class;
-    protected static ?string $cluster = Content::class;
+    protected static ?string $cluster = CMS::class;
     protected static ?string $navigationIcon = 'heroicon-o-cube';
     
     public static function form(Form $form): Form

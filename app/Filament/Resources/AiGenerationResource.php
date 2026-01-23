@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-use App\Filament\Clusters\AI;
+use App\Filament\Clusters\CMS;
 
 use App\Filament\Resources\AiGenerationResource\Pages;
 use App\Filament\Resources\AiGenerationResource\RelationManagers;
@@ -23,7 +23,7 @@ class AiGenerationResource extends Resource
 
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
-    protected static ?string $cluster = AI::class;
+    protected static ?string $cluster = CMS::class;
 
     
     protected static ?int $navigationSort = 3;

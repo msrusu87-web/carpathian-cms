@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-use App\Filament\Clusters\Content;
+use App\Filament\Clusters\CMS;
 
 use App\Filament\Resources\MediaResource\Pages;
 use App\Models\Media;
@@ -27,7 +27,7 @@ class MediaResource extends Resource
     }
 
     protected static ?string $navigationIcon = 'heroicon-o-photo';
-    protected static ?string $cluster = Content::class;
+    protected static ?string $cluster = CMS::class;
         protected static ?int $navigationSort = 1;
     protected static ?string $model = Media::class;
 

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Clusters\AI;
+use App\Filament\Clusters\CMS;
 use Filament\Pages\Page;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -24,7 +24,7 @@ class AiBlogAutomation extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $cluster = AI::class;
+    protected static ?string $cluster = CMS::class;
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
     protected static ?int $navigationSort = 5;
     protected static string $view = 'filament.pages.ai-blog-automation';

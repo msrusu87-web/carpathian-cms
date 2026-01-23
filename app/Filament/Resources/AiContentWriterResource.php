@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Clusters\AI;
+use App\Filament\Clusters\CMS;
 use App\Filament\Resources\AiContentWriterResource\Pages;
 use App\Models\AiGeneration;
 use Filament\Forms;
@@ -19,7 +19,7 @@ use AmidEsfahani\FilamentTinyEditor\TinyEditor;
 
 class AiContentWriterResource extends Resource
 {
-    protected static ?string $cluster = AI::class;
+    protected static ?string $cluster = CMS::class;
     
     protected static ?string $model = AiGeneration::class;
     

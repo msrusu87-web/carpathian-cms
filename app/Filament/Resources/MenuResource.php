@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-use App\Filament\Clusters\Design;
+use App\Filament\Clusters\CMS;
 
 use App\Filament\Resources\MenuResource\Pages;
 use App\Models\Menu;
@@ -26,7 +26,7 @@ class MenuResource extends Resource
 
 
     protected static ?string $navigationIcon = 'heroicon-o-bars-3';
-    protected static ?string $cluster = Design::class;
+    protected static ?string $cluster = CMS::class;
 
     
     protected static ?int $navigationSort = 2;

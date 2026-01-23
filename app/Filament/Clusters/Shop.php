@@ -6,11 +6,11 @@ use Filament\Clusters\Cluster;
 
 class Shop extends Cluster
 {
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-    protected static ?int $navigationSort = 50;
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?int $navigationSort = 20;
     
     public static function getNavigationLabel(): string
     {
-        return __('messages.shop');
+        return __('Magazin');
     }
 }

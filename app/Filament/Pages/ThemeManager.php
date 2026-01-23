@@ -2,7 +2,7 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Clusters\Design;
+use App\Filament\Clusters\CMS;
 use Filament\Pages\Page;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -24,7 +24,7 @@ class ThemeManager extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $cluster = Design::class;
+    protected static ?string $cluster = CMS::class;
     protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
     protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.pages.theme-manager';

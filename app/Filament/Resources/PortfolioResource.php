@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Clusters\Content;
+use App\Filament\Clusters\CMS;
 use App\Filament\Resources\PortfolioResource\Pages;
 use App\Models\Portfolio;
 use Filament\Forms;
@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 
 class PortfolioResource extends Resource
 {
-    protected static ?string $cluster = Content::class;
+    protected static ?string $cluster = CMS::class;
     
     protected static ?string $model = Portfolio::class;
 

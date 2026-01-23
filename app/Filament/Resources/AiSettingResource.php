@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-use App\Filament\Clusters\AI;
+use App\Filament\Clusters\CMS;
 
 use App\Filament\Resources\AiSettingResource\Pages;
 use App\Models\AiSetting;
@@ -21,7 +21,7 @@ class AiSettingResource extends Resource
         return __('AI Settings');
     }
     protected static ?string $model = AiSetting::class;
-    protected static ?string $cluster = AI::class;
+    protected static ?string $cluster = CMS::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
 

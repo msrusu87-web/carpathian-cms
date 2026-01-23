@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Pages;
-use App\Filament\Clusters\AI;
+use App\Filament\Clusters\CMS;
 
 use Filament\Pages\Page;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AiPluginGenerator extends Page implements HasForms
 {
-    protected static ?string $cluster = AI::class;
+    protected static ?string $cluster = CMS::class;
 
     use InteractsWithForms;
 

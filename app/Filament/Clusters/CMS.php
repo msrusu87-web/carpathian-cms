@@ -6,11 +6,11 @@ use Filament\Clusters\Cluster;
 
 class CMS extends Cluster
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?int $navigationSort = 30;
+    protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
+    protected static ?int $navigationSort = 10;
     
     public static function getNavigationLabel(): string
     {
-        return __('messages.cms');
+        return 'CMS';
     }
 }

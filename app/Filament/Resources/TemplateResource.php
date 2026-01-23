@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-use App\Filament\Clusters\Design;
+use App\Filament\Clusters\CMS;
 
 use App\Filament\Resources\TemplateResource\Pages;
 use App\Models\Template;
@@ -27,7 +27,7 @@ class TemplateResource extends Resource
     }
 
     protected static ?string $model = Template::class;
-    protected static ?string $cluster = Design::class;
+    protected static ?string $cluster = CMS::class;
     protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
         protected static ?int $navigationSort = 1;
         protected static ?string $pluralModelLabel = 'Templates';
