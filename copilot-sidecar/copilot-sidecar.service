@@ -1,0 +1,19 @@
+[Unit]
+Description=Copilot Sidecar for Carpathian CMS
+After=network.target redis.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/demo.qubitpage.com/html/copilot-sidecar
+ExecStart=/usr/bin/node src/index.js
+Restart=on-failure
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=copilot-sidecar
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
